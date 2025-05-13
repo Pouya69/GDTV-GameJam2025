@@ -1,0 +1,38 @@
+using UnityEngine;
+
+public class PlayerAnimationScript : MonoBehaviour
+{
+    [Header("Components")]
+    public PlayerCharacter PlayerCharacterRef;
+    public Animator PlayerAnimator;
+    [Header("Parameters")]
+    public float CharacterSpeedDamping = 0.2f;
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        UpdateAnimator();
+    }
+
+    // Updating the animator's parameters and etc.
+    public void UpdateAnimator()
+    {
+        float deltaTime = Time.deltaTime;
+        bool IsPlayerIOnGround = PlayerCharacterRef.MyController.IsOnGround;
+        PlayerAnimator.SetBool("IsCharacterOnGround", IsPlayerIOnGround);
+        PlayerAnimator.SetFloat("CharacterSpeed", PlayerCharacterRef.MyPlayerController.RigidbodyRef.linearVelocity.magnitude, CharacterSpeedDamping, deltaTime);
+        
+        // PlayerAnimator.SetFloat("CharacterRotation", );
+    }
+
+    public void PlayMontage(string ClipName, bool UseRootMotion, float NormalizedBlendTime = 0.1f, int MontageLayerIndex=0, float NormalizedTimeOffset=0f)
+    {
+        PlayerAnimator.applyRootMotion = UseRootMotion;
+        PlayerAnimator.CrossFade(ClipName, NormalizedBlendTime, MontageLayerIndex, NormalizedTimeOffset);
+    }
+}

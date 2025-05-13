@@ -1,0 +1,69 @@
+using Unity.Cinemachine;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class PlayerController : CustomCharacterController
+{
+    [Header("Components")]
+    public PlayerCharacter PlayerCharacterRef;
+    public CinemachineCamera PlayerCameraRef;
+
+    [Header("Movements")]
+    public bool InvertLookX = false;
+    public bool InvertLookY = false;
+    public float LookSensivityX = 1f;
+    public float LookSensivityY = 1f;
+    public float MinVerticalRotation = -45f;
+    public float MaxVerticalRotation = 45f;
+    public bool ShouldCharacterUseZRotation = false;  // For aiming and etc.
+    public Vector2 FramingOffset;
+    public Vector3 CameraRotation;
+    public float CameraDistance = 3f;
+    public GameObject CameraFocusTarget;
+
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public override void Start()
+    {
+        base.Start();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    // Update is called once per frame
+    public override void Update()
+    {
+        base.Update();
+    }
+
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
+
+    public override void AddMovementInput(Vector3 Direction, float Scale)
+    {
+        base.AddMovementInput(Direction, Scale);
+    }
+
+    public override void InteroplateCharacterRotation()
+    {
+        base.InteroplateCharacterRotation();
+        CameraFocusTarget.transform.rotation = Quaternion.RotateTowards(CameraFocusTarget.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
+        //if (InputVelocity.magnitude > 0)
+        //{
+         //   CameraFocusTarget.transform.rotation = Quaternion.RotateTowards(CameraFocusTarget.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
+        //}
+    }
+
+    public override void UpdateCharacterMovement()
+    {
+        base.UpdateCharacterMovement();
+    }
+
+    //public Quaternion GetCameraPlanarRotation() { 
+    //}
+    // public Quaternion CameraPlanarRotation => Quaternion.AngleAxis(CameraRotation.y, -GetGravityDirection());  // TODO
+    public Quaternion CameraPlanarRotation => Quaternion.Euler(0, CameraRotation.y, 0);
+    // public Quaternion CameraPlanarRotation => Quaternion.Euler(0, CameraRotation.y, 0);
+}
