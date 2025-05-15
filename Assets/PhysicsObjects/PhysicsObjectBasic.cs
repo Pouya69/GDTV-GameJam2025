@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,13 +8,13 @@ public class PhysicsObjectBasic : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     // BaseVelocity and BaseAcceleration are for normal velocity at CustomTimeDilation = 1.
-    [DoNotSerialize] public Vector3 BaseVelocity = Vector3.zero;
+    [NonSerialized] public Vector3 BaseVelocity = Vector3.zero;
     public Vector3 BaseGravity = Vector3.zero;
     public Rigidbody RigidbodyRef;
     public float CustomTimeDilation = 1f;  // Varies from 0f to 1f. 1 -> normal time. 0 -> stopped
     public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
-    [DoNotSerialize] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
-    [DoNotSerialize] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
+    [NonSerialized] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
+    [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
 
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
     {
@@ -53,6 +54,7 @@ public class PhysicsObjectBasic : MonoBehaviour
     {
         this.BaseGravity = new Vector3(Final.x, Final.y, Final.z) * RigidbodyRef.mass;
     }
+
 
     public Vector3 GetTimeScaledVelocity() { return BaseVelocity * CustomTimeDilation; }
 

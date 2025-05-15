@@ -1,3 +1,4 @@
+using System;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,6 +20,10 @@ public class PlayerController : CustomCharacterController
     public Vector2 FramingOffset;
     public Vector3 CameraRotation;
     public float CameraDistance = 3f;
+    [NonSerialized] public float TargetCameraDistance;
+    public float CameraDistanceInterpSpeed = 0.5f;
+    public float CameraDistanceAiming = 1f;
+    [NonSerialized] public float CameraDistanceInit;
     public GameObject CameraFocusTarget;
 
 
@@ -28,6 +33,8 @@ public class PlayerController : CustomCharacterController
         base.Start();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        CameraDistanceInit = CameraDistance;
+        TargetCameraDistance = CameraDistance;
     }
 
     // Update is called once per frame
@@ -39,6 +46,12 @@ public class PlayerController : CustomCharacterController
     public override void FixedUpdate()
     {
         base.FixedUpdate();
+        if (CameraDistance != TargetCameraDistance)
+        {
+            CameraDistance = Mathf.Lerp(CameraDistance, TargetCameraDistance, 1 - Mathf.Exp(-CameraDistanceInterpSpeed * Time.deltaTime));
+            if (Math.Abs(CameraDistance - TargetCameraDistance) <= 0.001) CameraDistance = TargetCameraDistance;
+            // Debug.Log(CameraDistance);
+        }
     }
 
     public override void AddMovementInput(Vector3 Direction, float Scale)

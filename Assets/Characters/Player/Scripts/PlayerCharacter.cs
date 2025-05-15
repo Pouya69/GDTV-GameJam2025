@@ -1,19 +1,19 @@
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerCharacter : CharacterBase
 {
-    [Header("Weapons")]
-    [DoNotSerialize] private WeaponBase CurrentWeaponEquipped;
-    // [DoNotSerialize] WeaponBase CurrentWeaponEquipped;
+    //[Header("Weapons")]
 
     [Header("Input Actions")]
     InputAction MoveAction;
     InputAction LookAction;
     InputAction JumpAction;
+    InputAction InteractAction;
     InputAction AttackPrimaryAction;
     InputAction AttackSecondaryAction;
     InputAction ChangeWorldGravityAction;
@@ -23,10 +23,23 @@ public class PlayerCharacter : CharacterBase
 
     [Header("Movements")]
     public float BoostUpForce = 100f;
-    [DoNotSerialize] public Vector2 MoveDirectionXYKeyboard;  // Just the keyboard WASD in the form of Vector2. For Gravity Change.
+    [NonSerialized] public Vector2 MoveDirectionXYKeyboard;  // Just the keyboard WASD in the form of Vector2. For Gravity Change.
     [Header("Components")]
     public CinemachineCamera CameraComp;
     public PlayerController MyPlayerController;
+    public BoxCollider InteractionOverlapZone;
+    public InventoryComponent InventoryComp;
+    [Header("Interaction")]
+    public float InteractionDistance = 1f;  // How far away an object should be for interaction.
+    public float PickableInteractablePickupDistance = 0.2f;
+    [NonSerialized] public float InteractionAmount = 0f;
+    [NonSerialized] List<GameObject> NearbyInteractables = new List<GameObject>();
+    [NonSerialized] public InteractableBase ClosestInteractable = null;
+    [NonSerialized] public bool IsInteracting = false;
+    [NonSerialized] public bool CanInteract = true;
+    [Header("Time Dilation On Objects")]
+    [NonSerialized] public TimeDilationField CurrentTimeDilationFieldActive = null;
+    [NonSerialized] public bool IsJumpBoosting = false;
 
     public override void Awake()
     {
@@ -34,6 +47,8 @@ public class PlayerCharacter : CharacterBase
     }
 
     public void SetupPlayerActions() {
+        InteractAction = InputSystem.actions.FindAction("Interact");
+        InteractAction.Enable();
         ChangeWorldGravityAction = InputSystem.actions.FindAction("Change Gravity World");
         ChangeWorldGravityAction.Enable();
         ChangeWorldGravityAction_DIRECTION = InputSystem.actions.FindAction("Change Gravity World Direction");
@@ -52,6 +67,8 @@ public class PlayerCharacter : CharacterBase
         AttackPrimaryAction.Enable();
         AttackSecondaryAction = InputSystem.actions.FindAction("AttackSecondary");
         AttackSecondaryAction.Enable();
+        InteractAction.performed += InteractAction_performed;
+        InteractAction.canceled += InteractAction_canceled;
         JumpAction.performed += Jump_performed;
         AttackPrimaryAction.performed += AttackPrimary_performed;
         AttackSecondaryAction.performed += AttackSecondary_performed;
@@ -60,6 +77,18 @@ public class PlayerCharacter : CharacterBase
         JumpAction.canceled += Jump_canceled;
         ChangeSelfGravityAction.performed += ChangeSelfGravityAction_performed;
         ChangeWorldGravityAction.performed += ChangeWorldGravityAction_performed;
+    }
+
+    private void InteractAction_canceled(InputAction.CallbackContext obj)
+    {
+        IsInteracting = false;
+        InteractionAmount = 0f;
+    }
+
+    private void InteractAction_performed(InputAction.CallbackContext obj)
+    {
+        IsInteracting = true;
+        CanInteract = true;
     }
 
     private void ChangeWorldGravityAction_performed(InputAction.CallbackContext obj)
@@ -81,31 +110,31 @@ public class PlayerCharacter : CharacterBase
 
     private void AttackSecondary_performed(InputAction.CallbackContext obj)
     {
-        //throw new System.NotImplementedException();
+        AimWeapon(true);
     }
 
     private void AttackSecondary_canceled(InputAction.CallbackContext obj)
     {
-        //throw new System.NotImplementedException();
+        AimWeapon(false);
     }
     private void Jump_performed(InputAction.CallbackContext obj)
     {
-        //throw new System.NotImplementedException();
+        IsJumpBoosting = true;
     }
 
     private void Jump_canceled(InputAction.CallbackContext obj)
     {
-        //throw new System.NotImplementedException();
+        IsJumpBoosting = false;
     }
 
     private void AttackPrimary_performed(InputAction.CallbackContext obj)
     {
-        //throw new System.NotImplementedException();
+        Attack();
     }
 
     private void AttackPrimary_canceled(InputAction.CallbackContext obj)
     {
-        //throw new System.NotImplementedException();
+        StopShootingWeapon();
     }
 
     public void DisablePlayerActions() {
@@ -145,18 +174,25 @@ public class PlayerCharacter : CharacterBase
     public override void Update()
     {
         base.Update();
+        HandleInteract();
+    }
+
+    public void FixedUpdate()
+    {
         HandleInputs();
     }
 
     void HandleInputs()
     {
+        if (IsJumpBoosting)
+            BoostJump();
         MoveDirectionXYKeyboard = MoveAction.ReadValue<Vector2>();
         Move(MoveDirectionXYKeyboard);
         Look(LookAction.ReadValue<Vector2>());
     }
 
     public void BoostJump() {
-        MyPlayerController.AddMovementInput(transform.up, BoostUpForce);
+        MyPlayerController.AddMovementInput(-MyPlayerController.GetGravityDirection(), BoostUpForce);
     }
 
     public void Look(Vector2 Direction) {
@@ -169,15 +205,11 @@ public class PlayerCharacter : CharacterBase
         if (capsuleUp == Vector3.zero)
             capsuleUp = CapsuleCollision.transform.up;
         Vector3 capsuleRight = MyPlayerController.GetRightBasedOnGravity();
-        // Vector3 capsuleRight = -transform.right;
-        //Debug.DrawLine(transform.position, transform.position + (capsuleRight * 4));
-        //Debug.DrawLine(transform.position, transform.position + (capsuleUp * 4));
-        // Vector3 capsuleRight = CapsuleCollision.transform.right;
         Quaternion TargetCameraRotation = Quaternion.AngleAxis(MyPlayerController.CameraRotation.y, capsuleUp) * Quaternion.AngleAxis(MyPlayerController.CameraRotation.x, capsuleRight);
         Vector3 FocusPosition = MyPlayerController.CameraFocusTarget.transform.position;// + new Vector3(MyPlayerController.FramingOffset.x, MyPlayerController.FramingOffset.y, 0);
         Vector3 CameraDistance = TargetCameraRotation * new Vector3(0, 0, MyPlayerController.CameraDistance);
         CameraComp.transform.position = FocusPosition - CameraDistance;
-        CameraComp.transform.rotation = Quaternion.LookRotation(CapsuleCollision.transform.position - CameraComp.transform.position, capsuleUp);
+        CameraComp.transform.rotation = Quaternion.LookRotation((CapsuleCollision.transform.position - CameraComp.transform.position).normalized, capsuleUp);
     }
 
     public override void Move(Vector2 Direction)
@@ -185,30 +217,107 @@ public class PlayerCharacter : CharacterBase
         if (Mathf.Abs(Direction.x) + Mathf.Abs(Direction.y) > 0)
         {
             Vector3 Dir = new Vector3(Direction.x, 0f, Direction.y).normalized;
-            Vector3 moveDirection = Quaternion.LookRotation(Vector3.forward , -MyPlayerController.GetGravityDirection()) * MyPlayerController.CameraPlanarRotation * Dir;
-            MyPlayerController.AddMovementInput(moveDirection, CurrentMovementSpeed);
+            Vector3 moveDirection = Quaternion.LookRotation(MyPlayerController.GetForwardBasedOnGravity() , -MyPlayerController.GetGravityDirection()) * MyPlayerController.CameraPlanarRotation * Dir;
+            MyPlayerController.AddMovementInput(moveDirection.normalized, CurrentMovementSpeed);
         }
     }
     public Vector3 GetCameraForwardVector() { return CameraComp.transform.forward; }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        NearbyInteractables.Add(other.gameObject);
+        // Debug.Log(other.gameObject.name);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        NearbyInteractables.Remove(other.gameObject);
+    }
+
+    public void GetNearestInteractable()
+    {
+        if (!NearbyInteractables.Any()) return;
+        // TODO: MAKE SURE TO USE LAYERS
+        InteractableBase closest = null;
+        float closestDist = float.MaxValue;
+        Vector3 position = transform.position;
+        foreach (GameObject obj in NearbyInteractables)
+        {
+            if (obj == null) continue;
+            if (!obj.TryGetComponent<InteractableBase>(out var InteractableComp)) continue;
+            float dist = Vector3.Distance(position, obj.transform.position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closest = InteractableComp;
+            }
+        }
+        if (closest == null) return;
+        InteractablePickable CloseInteractablePickable = null;
+        bool IsPickable = closest.TryGetComponent<InteractablePickable>(out CloseInteractablePickable);
+        if (IsPickable && CloseInteractablePickable != null && CloseInteractablePickable.IsInstantPickup && closestDist > this.PickableInteractablePickupDistance)
+        {
+            bool AddedToInventory = InventoryComp.AddItemToInventory(this, CloseInteractablePickable);
+            if (AddedToInventory) return;
+        }
+        if (ClosestInteractable == null)
+            ClosestInteractable = closest;
+        else if (!closest.Equals(ClosestInteractable) && closestDist < Vector3.Distance(position, ClosestInteractable.transform.position))
+        {
+            IsInteracting = false;
+            CanInteract = false;
+            InteractionAmount = 0;
+            ClosestInteractable = closest;
+        }
+    }
+
     public void HandleInteract()
     {
-
+        GetNearestInteractable();
+        if (ClosestInteractable && this.IsInteracting && this.CanInteract) {
+            InteractionAmount = Mathf.MoveTowards(InteractionAmount, 100f, ClosestInteractable.InteractionSpeed * Time.deltaTime);
+            if (InteractionAmount >= 100)
+            {
+                InteractionComplete(ClosestInteractable);
+                return;
+            }
+            return;
+        }
+        // Not Interacting.
+        InteractionAmount = 0;
+        if (ClosestInteractable == null) return;
     }
 
-    public void InteractionComplete()
+    public void InteractionComplete(InteractableBase Interactable)
     {
-
+        Interactable.Interact(this);
+        InteractionAmount = 0;
+        CanInteract = false;
     }
 
-    public void AimWeapon()
-    {
-
+    public void PickupInteractable(InteractablePickable interactablePickable) {
+        InventoryComp.AddItemToInventory(this, interactablePickable);
     }
 
-    public void ShootWeapon()
+    public void AimWeapon(bool IsAiming)
     {
+        MyPlayerController.TargetCameraDistance = IsAiming ? MyPlayerController.CameraDistanceAiming : MyPlayerController.CameraDistanceInit;
+    }
 
+    public override void Attack()
+    {
+        base.Attack();
+        if (CurrentWeaponEquipped == null) return;
+        if (CurrentWeaponEquipped.IsWeaponSingleShot())
+            CurrentWeaponEquipped.Shoot();
+        else
+            CurrentWeaponEquipped.StartShooting();
+    }
+
+    public void StopShootingWeapon()
+    {
+        if (CurrentWeaponEquipped == null) return;
+        CurrentWeaponEquipped.StopShoot();
     }
 
 }

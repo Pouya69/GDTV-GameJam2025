@@ -2,18 +2,25 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class WeaponBase : MonoBehaviour
+public class WeaponBase : InteractablePickable
 {
     [Header("Components")]
     public GameObject BulletClass;  // The bullet prefab we shoot/spawn.
     [Header("Weapon")]
     public int CurrentBulletsInMagazine;
     public int MaxBulletsInMagazine;
+    public int MaxBulletsAllowed = 80;
     public int BulletsLeft;  // Max bullets left (does not include CurrentBulletsInMagazine)
-    public String WeaponName = "";
-    [DoNotSerialize] private CharacterBase OwnerCharacterRef;
-    [DoNotSerialize] public bool IsReloading;
-    [DoNotSerialize] public int BulletsAddingAfterAnimation = 0;  // After the animation is done.
+    public int BulletsShootingOneShot = 1;  // Things like double barrel shotgun or burst rifles and etc.
+    public float BulletVelocityBase = 800f;  // When spawning a bullet, how fast it should go.
+    [NonSerialized] private CharacterBase OwnerCharacterRef;
+    [NonSerialized] public bool IsReloading;
+    [NonSerialized] public int BulletsAddingAfterAnimation = 0;  // After the animation is done.
+    [DoNotSerialize] public bool CanShoot = true;
+    public float WeaponFireRate = 1f;
+    [NonSerialized] private float TimePassedSinceLastShot = 0f;
+    public Transform ShootLocation_TEST_ONLY;  // Hopefully we will have a skeleton with a reload animation...
+    [NonSerialized] public bool IsShooting = false;
 
     public void InitializeWeapon(CharacterBase InOwnerCharacterRef)
     {
@@ -24,29 +31,56 @@ public class WeaponBase : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        // CurrentBulletsInMagazine = MaxBulletsInMagazine;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (OwnerCharacterRef == null || WeaponFireRate == 1f || !IsShooting) return;
+        TimePassedSinceLastShot += Time.deltaTime;
+        if (TimePassedSinceLastShot >= 1/WeaponFireRate)
+        {
+            if (IsShooting)
+                Shoot();
+            TimePassedSinceLastShot = 0f;
+        }
     }
 
-    public void AddBullets(int Magazines)
+    public bool IsWeaponSingleShot() { return WeaponFireRate == 1f; }
+
+    public void AddBullets(int BulletsToAdd)
     {
-        BulletsLeft += Magazines;
+        BulletsLeft += BulletsToAdd;
         if (IsCurrentMagazineEmpty())
             Reload();
     }
 
-    public void AddedWeaponToCharacter()
+    public void AddedWeaponToCharacter(CharacterBase CharacterRef)
     {
+        InitializeWeapon(CharacterRef);
+        this.RigidbodyRef.freezeRotation = false;
+        this.RigidbodyRef.useGravity = false;
+        this.RigidbodyRef.detectCollisions = false;
+        this.RigidbodyRef.isKinematic = true;
+        this.RigidbodyRef.linearVelocity = Vector3.zero;
+        this.RigidbodyRef.angularVelocity = Vector3.zero;
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+        CharacterRef.CurrentWeaponEquipped = this;
         // Stuff like collision and stuff
     }
 
     public void RemovedWeaponToCharacter()
     {
+        this.RigidbodyRef.freezeRotation = true;
+        this.OwnerCharacterRef.CurrentWeaponEquipped = null;
+        this.OwnerCharacterRef = null;
+        this.RigidbodyRef.isKinematic = false;
+        this.RigidbodyRef.useGravity = true;
+        this.RigidbodyRef.detectCollisions = true;
+        this.RigidbodyRef.linearVelocity = Vector3.zero;
+        this.RigidbodyRef.angularVelocity = Vector3.zero;
         // Stuff like collision and stuff
     }
 
@@ -68,7 +102,6 @@ public class WeaponBase : MonoBehaviour
         IsReloading = true;
         PlayReloadAnimation();
         return true;
-        
 
     }
 
@@ -78,6 +111,7 @@ public class WeaponBase : MonoBehaviour
         CurrentBulletsInMagazine += BulletsAddingAfterAnimation;
         BulletsLeft -= BulletsAddingAfterAnimation;
         BulletsAddingAfterAnimation = 0;
+        IsReloading = false;
     }
 
     public void CancelReload()
@@ -96,22 +130,38 @@ public class WeaponBase : MonoBehaviour
 
     }
 
+    public void StartShooting() { IsShooting = true; }
+
+    public void StopShoot() { IsShooting = false; }
+
+    // ONLY CALL FROM THE FIRERATE UNLESS SINGLE SHOT
     public void Shoot()
     {
         if (IsCurrentMagazineEmpty())
         {
-            Reload();
+            StopShoot();
+            if (!IsReloading)
+                Reload();
             return;
         }
-        Vector3 BulletSpawnLocation = Vector3.zero;  // TODO
-        Quaternion BulletSpawnRotation = Quaternion.identity;  // TODO
-        GameObject BulletSpawned = Instantiate(BulletClass, BulletSpawnLocation, BulletSpawnRotation);
-        if (BulletSpawned == null)
+        for (int i = 0; i < BulletsShootingOneShot; i++)
         {
-            Debug.LogError("Bullet did not spawn.");
-            return;
+            if (CurrentBulletsInMagazine == 0)
+            {
+                StopShoot();
+                break;
+            }
+            Vector3 BulletSpawnLocation = ShootLocation_TEST_ONLY.position;  // TODO
+            Quaternion BulletSpawnRotation = ShootLocation_TEST_ONLY.rotation;  // TODO
+            GameObject BulletSpawned = Instantiate(BulletClass, BulletSpawnLocation, BulletSpawnRotation);
+            if (BulletSpawned == null)
+            {
+                Debug.LogError("Bullet did not spawn.");
+                return;
+            }
+            BulletBase BulletComponentOnObject = BulletSpawned.GetComponent<BulletBase>();
+            BulletComponentOnObject.InitializeBullet(OwnerCharacterRef, default, ShootLocation_TEST_ONLY.forward * BulletVelocityBase, 1f);
+            CurrentBulletsInMagazine--;
         }
-        BulletBase BulletComponentOnObject = BulletSpawned.GetComponent<BulletBase>();
-        BulletComponentOnObject.InitializeBullet(this.OwnerCharacterRef);
     }
 }

@@ -17,19 +17,22 @@ public class CharacterBase : MonoBehaviour
     public GameObject SkeletalMesh;  // Handles the mesh for animations. Consists of Animator and Skinned Mesh Renderer.
     public CustomCharacterController MyController;
 
-    [Header("Movement")]
+    [Header("Movement Character")]
     [NonSerialized] public float CurrentMovementSpeed;
     public float MovementSpeed = 10f;
     public float MovementSpeedSprint = 50f;
     [NonSerialized] public bool IsSprinting = false;
+    public float GravityForce = 981f;  // For when we are changing gravity. It's the strength that can be changed through code/inspector.
 
     [Header("Time Dilation")]
     public float CustomTimeDilation = 1f;  // Varies from 0f to 1f. 1 -> normal time. 0 -> stopped
     public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
-    [DoNotSerialize] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
-    [DoNotSerialize] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
+    [NonSerialized] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
+    [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
 
-    public float GravityForce = 981f;  // For when we are changing gravity. It's the strength that can be changed through code/inspector.
+    [Header("Weapon")]
+    [NonSerialized] public WeaponBase CurrentWeaponEquipped;
+
     [Header("Health")]
     float Health;
     public float MaxHealth = 100f;
@@ -85,6 +88,8 @@ public class CharacterBase : MonoBehaviour
     {
         MyController.AddMovementInput(Axis * -MyController.GetGravityDirection(), CurrentMovementSpeed);
     }
+
+    public bool HasWeaponEquipped() { return CurrentWeaponEquipped != null; }
 
     public virtual void Attack()
     {

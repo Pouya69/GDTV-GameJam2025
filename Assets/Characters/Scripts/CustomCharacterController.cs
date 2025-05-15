@@ -9,6 +9,7 @@ public class CustomCharacterController : MonoBehaviour
     public CharacterBase CharacterBaseRef;
     public Rigidbody RigidbodyRef;
     [Header("Movements")]
+    public float DownGroundCheckAfterCapsule = 0.4f;
     [NonSerialized] public Vector3 CurrentAcceleration = Vector3.zero;  // Movement Only. Gravity is done using ConstantGravityForce
     [NonSerialized] public Vector3 InputVelocity = Vector3.zero;  // Clears out after doing the actions
     public float RotationSpeed = 500f;
@@ -19,7 +20,7 @@ public class CustomCharacterController : MonoBehaviour
     public bool IsMovementDisabled = false;  // For disabling Character Movement
     [NonSerialized] public bool IsOnGround = true;
     public bool IsAirCharacter = false;  // For characters that roam in the air
-    Vector3 LastMovementDirection = Vector3.zero;  // For interpolating the character
+    [NonSerialized] Vector3 LastMovementDirection = Vector3.zero;  // For interpolating the character
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
     {
@@ -29,6 +30,7 @@ public class CustomCharacterController : MonoBehaviour
         {
             ConstantGravityForce.force = new Vector3(Physics.gravity.x, Physics.gravity.y, Physics.gravity.z) * 100;
         }
+        RigidbodyRef.linearDamping = Damping;
     }
 
     // Update is called once per frame
@@ -48,26 +50,24 @@ public class CustomCharacterController : MonoBehaviour
     {
         InputVelocity += Direction.normalized * Scale;
         LastMovementDirection = InputVelocity.normalized;
-        // ebug.Log("Input Velocity: " + InputVelocity.ToString());
     }
 
     public virtual void InteroplateCharacterRotation()
     {
         // Vector3 FinalDirection = -(transform.rotation * LastMovementDirection);
         Vector3 FinalDirection = -(transform.rotation * LastMovementDirection);
-        TargetRotation = Quaternion.LookRotation(FinalDirection, -GetGravityDirection());
+        Vector3 LocalUp = -GetGravityDirection();
+        TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
+        // Debug.LogWarning(TargetRotation.ToString());
     }
 
     public virtual void UpdateCharacterMovement()
     {
         if (!this.IsAirCharacter)
             CheckIsOnGround();  // Air characters will never check for onGround
-        
-        // RigidbodyRef.linearDamping = IsOnGround ? Damping : 0;
-
-        RigidbodyRef.linearDamping = Damping;
         RigidbodyRef.AddForce(InputVelocity);
-        Debug.LogWarning("Mag: " + RigidbodyRef.linearVelocity.magnitude.ToString());
+        Debug.Log(InputVelocity.magnitude.ToString());
+        // Debug.LogWarning("Mag: " + RigidbodyRef.linearVelocity.magnitude.ToString());
         InputVelocity = Vector3.zero;
     }
 
@@ -77,10 +77,8 @@ public class CustomCharacterController : MonoBehaviour
         Vector3 Start = CharacterBaseRef.CapsuleCollision.transform.position;
         Vector3 GravityDirection = GetGravityDirection();
         RaycastHit HitResult;
-        bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, 0.2f + (CharacterBaseRef.GetCapsuleCollisionHeight()), 1);
-        Debug.DrawLine(Start, Start + GravityDirection * (0.2f + (CharacterBaseRef.GetCapsuleCollisionHeight())), Color.green);
+        bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), 1);
         IsOnGround = didHitGround;
-        // Debug.Log("On Ground: " + IsOnGround.ToString());
     }
 
     public Vector3 GetGravityDirection() { return ConstantGravityForce.force.normalized; }
@@ -89,6 +87,12 @@ public class CustomCharacterController : MonoBehaviour
     {
         Vector3 LocalUp = -GetGravityDirection();
         return Quaternion.FromToRotation(Vector3.up, LocalUp) * Vector3.right;
+    }
+
+    public Vector3 GetForwardBasedOnGravity()
+    {
+        Vector3 LocalUp = -GetGravityDirection();
+        return Quaternion.FromToRotation(Vector3.up, LocalUp) * Vector3.forward;
     }
 
     public virtual void SetGravityForceAndDirection(Vector3 Final) {
