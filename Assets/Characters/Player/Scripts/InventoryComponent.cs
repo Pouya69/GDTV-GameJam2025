@@ -52,7 +52,7 @@ public class InventoryComponent : MonoBehaviour
         {
             // If we have the weapon already we add bullets
             WeaponHaveAlready.AddBullets(BulletsToAddByDefault);
-            Destroy(WeaponToAdd);
+            Destroy(WeaponToAdd.gameObject);
             return false;
         }
             

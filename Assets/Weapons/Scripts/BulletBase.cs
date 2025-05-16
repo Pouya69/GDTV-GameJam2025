@@ -39,14 +39,14 @@ public class BulletBase : PhysicsObjectBasic
             if (AnotherBulletHit != null) return;
             if (PhysicsObjectHit == null)
             {
-                Destroy(this);
+                Destroy(gameObject);
                 return;
             }
             HandlePhysicsObjectHit(PhysicsObjectHit);
         }
         else
             HandleCharacterHit(CharacterHit);
-        Destroy(this);
+        Destroy(gameObject);
     }
 
     public float GetDamage() { return this.BaseDamage * CustomTimeDilation; }

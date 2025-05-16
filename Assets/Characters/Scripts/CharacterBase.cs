@@ -27,8 +27,6 @@ public class CharacterBase : MonoBehaviour
     [Header("Time Dilation")]
     public float CustomTimeDilation = 1f;  // Varies from 0f to 1f. 1 -> normal time. 0 -> stopped
     public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
-    [NonSerialized] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
-    [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
 
     [Header("Weapon")]
     [NonSerialized] public WeaponBase CurrentWeaponEquipped;

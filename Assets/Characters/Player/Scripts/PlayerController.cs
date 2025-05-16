@@ -69,7 +69,7 @@ public class PlayerController : CustomCharacterController
         //}
     }
 
-    public override void UpdateCharacterMovement()
+    public override void UpdateCharacterMovement(float Multiplier = 1f)
     {
         base.UpdateCharacterMovement();
     }

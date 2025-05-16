@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class EnemyBaseCharacter : CharacterBase
 {
+    public EnemyBaseController MyEnemyController;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Start()
     {

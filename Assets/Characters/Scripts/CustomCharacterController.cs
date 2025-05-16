@@ -5,7 +5,8 @@ using UnityEngine;
 public class CustomCharacterController : MonoBehaviour
 {
     [Header("Components")]
-    public ConstantForce ConstantGravityForce;
+    // public ConstantForce ConstantGravityForce;
+    public Vector3 BaseGravity = new Vector3(0, -981f, 0);
     public CharacterBase CharacterBaseRef;
     public Rigidbody RigidbodyRef;
     [Header("Movements")]
@@ -26,9 +27,9 @@ public class CustomCharacterController : MonoBehaviour
     {
         // For when gravity is not set beforehand, we set it to default. Gives more control for initialization.
         if (IsAirCharacter) IsOnGround = false;
-        if (!IsAirCharacter && ConstantGravityForce.force.magnitude == 0)
+        if (!IsAirCharacter && BaseGravity.magnitude == 0)
         {
-            ConstantGravityForce.force = new Vector3(Physics.gravity.x, Physics.gravity.y, Physics.gravity.z) * 100;
+            BaseGravity = new Vector3(Physics.gravity.x, Physics.gravity.y, Physics.gravity.z) * 100;
         }
         RigidbodyRef.linearDamping = Damping;
     }
@@ -61,11 +62,11 @@ public class CustomCharacterController : MonoBehaviour
         // Debug.LogWarning(TargetRotation.ToString());
     }
 
-    public virtual void UpdateCharacterMovement()
+    public virtual void UpdateCharacterMovement(float Multiplier = 1f)
     {
         if (!this.IsAirCharacter)
             CheckIsOnGround();  // Air characters will never check for onGround
-        RigidbodyRef.AddForce(InputVelocity);
+        RigidbodyRef.AddForce(Multiplier * (InputVelocity + this.BaseGravity));
         Debug.Log(InputVelocity.magnitude.ToString());
         // Debug.LogWarning("Mag: " + RigidbodyRef.linearVelocity.magnitude.ToString());
         InputVelocity = Vector3.zero;
@@ -81,7 +82,7 @@ public class CustomCharacterController : MonoBehaviour
         IsOnGround = didHitGround;
     }
 
-    public Vector3 GetGravityDirection() { return ConstantGravityForce.force.normalized; }
+    public Vector3 GetGravityDirection() { return BaseGravity.normalized; }
 
     public Vector3 GetRightBasedOnGravity()
     {
@@ -96,7 +97,7 @@ public class CustomCharacterController : MonoBehaviour
     }
 
     public virtual void SetGravityForceAndDirection(Vector3 Final) {
-        this.ConstantGravityForce.force = new Vector3(Final.x, Final.y, Final.z);
+        this.BaseGravity = new Vector3(Final.x, Final.y, Final.z);
     }
 
     // Changes EVERY physics objects' gravity that does not have custom gravity and is not simulated by ConstantForce.
