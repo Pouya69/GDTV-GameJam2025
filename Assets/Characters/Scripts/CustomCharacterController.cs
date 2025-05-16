@@ -96,7 +96,7 @@ public class CustomCharacterController : MonoBehaviour
         return Quaternion.FromToRotation(Vector3.up, LocalUp) * Vector3.forward;
     }
 
-    public virtual void SetGravityForceAndDirection(Vector3 Final) {
+    public virtual void SetGravityForceAndDirection(Vector3 Final, bool IsDoneByForceField=false) {
         this.BaseGravity = new Vector3(Final.x, Final.y, Final.z);
     }
 

@@ -10,6 +10,7 @@ public class PhysicsObjectBasic : MonoBehaviour
     // BaseVelocity and BaseAcceleration are for normal velocity at CustomTimeDilation = 1.
     [NonSerialized] public Vector3 BaseVelocity = Vector3.zero;
     public Vector3 BaseGravity = Vector3.zero;
+    [NonSerialized] public Vector3 GravityBeforeCustomGravity = Vector3.zero;  // For force fields
     public Rigidbody RigidbodyRef;
     public float CustomTimeDilation = 1f;  // Varies from 0f to 1f. 1 -> normal time. 0 -> stopped
     public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
@@ -50,9 +51,11 @@ public class PhysicsObjectBasic : MonoBehaviour
     }
 
     public Vector3 GetGravityDirection() { return BaseGravity.normalized; }
-    public void SetGravityForceAndDirection(Vector3 Final)
+    public void SetGravityForceAndDirection(Vector3 Final, bool IsDoneByForceField=false)
     {
         this.BaseGravity = new Vector3(Final.x, Final.y, Final.z) * RigidbodyRef.mass;
+        if (!IsDoneByForceField)
+            this.GravityBeforeCustomGravity = this.BaseGravity;
     }
 
 
@@ -62,6 +65,7 @@ public class PhysicsObjectBasic : MonoBehaviour
     {
         if (BaseGravity.magnitude <= 0)
             SetGravityForceAndDirection(Physics.gravity);
+        GravityBeforeCustomGravity = BaseGravity;
     }
 
     // Update is called once per frame

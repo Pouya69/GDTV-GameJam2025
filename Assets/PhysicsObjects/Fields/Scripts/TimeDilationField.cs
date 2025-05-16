@@ -2,17 +2,12 @@ using UnityEngine;
 
 public class TimeDilationField : FieldBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    public override void Start()
     {
-        
+        base.Start();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public override void UpdateOverlappingObjects()
     {
@@ -42,22 +37,30 @@ public class TimeDilationField : FieldBase
 
     protected override void OnTriggerEnter(Collider other)
     {
-        bool IsTimeDilation = other.TryGetComponent<TimeDilationField>(out TimeDilationField _);
-        if (IsTimeDilation)
+        FieldBaseGrenade GrenadeEntered;
+        bool IsFieldGrenade = other.TryGetComponent<FieldBaseGrenade>(out GrenadeEntered);
+        if (IsFieldGrenade)
         {
-            Destroy(other.gameObject);
-            return;
+            if (GrenadeEntered.IsTimeDilationFieldGrenade())
+            {
+                Destroy(other.gameObject);
+                return;
+            }
         }
         base.OnTriggerEnter(other);
     }
 
     protected override void OnTriggerExit(Collider other)
     {
-        bool IsTimeDilation = other.TryGetComponent<TimeDilationField>(out TimeDilationField _);
-        if (IsTimeDilation)
+        FieldBaseGrenade GrenadeExited;
+        bool IsFieldGrenade = other.TryGetComponent<FieldBaseGrenade>(out GrenadeExited);
+        if (IsFieldGrenade)
         {
-            Destroy(other.gameObject);
-            return;
+            if (GrenadeExited.IsTimeDilationFieldGrenade())
+            {
+                Destroy(other.gameObject);
+                return;
+            }
         }
         base.OnTriggerExit(other);
     }

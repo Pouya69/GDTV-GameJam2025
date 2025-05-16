@@ -7,6 +7,7 @@ public class EnemyBaseController : CustomCharacterController
     public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
     [NonSerialized] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
     [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
+    [NonSerialized] public Vector3 GravityBeforeCustomGravity = Vector3.zero;  // For force fields
 
 
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
@@ -29,6 +30,13 @@ public class EnemyBaseController : CustomCharacterController
     public Vector3 GetTimeScaledVelocity() { return InputVelocity * CustomTimeDilation; }
 
     public Vector3 GetGravityForceTimeScaled() { return this.BaseGravity * this.CustomTimeDilation; }
+
+    public override void SetGravityForceAndDirection(Vector3 Final, bool IsDoneByForceField = false)
+    {
+        base.SetGravityForceAndDirection(Final);
+        if (!IsDoneByForceField)
+            this.GravityBeforeCustomGravity = this.BaseGravity;
+    }
 
     public bool IsInterpolatingTimeDilation()
     {
