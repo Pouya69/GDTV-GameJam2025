@@ -87,13 +87,13 @@ public class CustomCharacterController : MonoBehaviour
     public Vector3 GetRightBasedOnGravity()
     {
         Vector3 LocalUp = -GetGravityDirection();
-        return Quaternion.FromToRotation(Vector3.up, LocalUp) * Vector3.right;
+        return (Quaternion.FromToRotation(Vector3.up, LocalUp) * Vector3.right).normalized;
     }
 
     public Vector3 GetForwardBasedOnGravity()
     {
         Vector3 LocalUp = -GetGravityDirection();
-        return Quaternion.FromToRotation(Vector3.up, LocalUp) * Vector3.forward;
+        return (Quaternion.FromToRotation(Vector3.up, LocalUp) * Vector3.forward).normalized;
     }
 
     public virtual void SetGravityForceAndDirection(Vector3 Final, bool IsDoneByForceField=false) {

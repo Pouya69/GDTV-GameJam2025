@@ -217,7 +217,8 @@ public class PlayerCharacter : CharacterBase
         if (Mathf.Abs(Direction.x) + Mathf.Abs(Direction.y) > 0)
         {
             Vector3 Dir = new Vector3(Direction.x, 0f, Direction.y).normalized;
-            Vector3 moveDirection = Quaternion.LookRotation(MyPlayerController.GetForwardBasedOnGravity() , -MyPlayerController.GetGravityDirection()) * MyPlayerController.CameraPlanarRotation * Dir;
+            Vector3 LocalUp = -MyPlayerController.GetGravityDirection();
+            Vector3 moveDirection = Quaternion.LookRotation(MyPlayerController.GetForwardBasedOnGravity() * (LocalUp.y < 0 ? -1f : 1f), LocalUp) * MyPlayerController.CameraPlanarRotation * Dir;
             MyPlayerController.AddMovementInput(moveDirection.normalized, CurrentMovementSpeed);
         }
     }

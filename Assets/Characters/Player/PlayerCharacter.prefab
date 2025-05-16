@@ -44,7 +44,6 @@ GameObject:
   - component: {fileID: 4829410219625231076}
   - component: {fileID: 68458773095703299}
   - component: {fileID: 1455683732554113747}
-  - component: {fileID: 8436874635978904435}
   m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Untagged
@@ -111,8 +110,8 @@ MonoBehaviour:
   CapsuleCollision: {fileID: 2088728099371190200}
   SkeletalMesh: {fileID: 5762986786911169088}
   MyController: {fileID: 68458773095703299}
-  MovementSpeed: 1000
-  MovementSpeedSprint: 1500
+  MovementSpeed: 2000
+  MovementSpeedSprint: 2500
   GravityForce: 981
   CustomTimeDilation: 1
   TimeDilationDifferenceIgnore: 0.01
@@ -136,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81274f676b293ec42a631005c96858eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConstantGravityForce: {fileID: 8436874635978904435}
+  BaseGravity: {x: 0, y: -981, z: 0}
   CharacterBaseRef: {fileID: 4829410219625231076}
   RigidbodyRef: {fileID: 3707294762048664588}
   DownGroundCheckAfterCapsule: 0.1
@@ -174,18 +173,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponAttachHandTransform: {fileID: 4707945772740147310}
---- !u!75 &8436874635978904435
-ConstantForce:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5043409899933712041}
-  m_Enabled: 1
-  m_Force: {x: 0, y: -981, z: 0}
-  m_RelativeForce: {x: 0, y: 0, z: 0}
-  m_Torque: {x: 0, y: 0, z: 0}
-  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!1 &5175022874877880778
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,7 +199,7 @@ Transform:
   m_GameObject: {fileID: 5175022874877880778}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.2608002, y: 2.287, z: 9.723797}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
