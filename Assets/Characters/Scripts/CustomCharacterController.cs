@@ -55,11 +55,10 @@ public class CustomCharacterController : MonoBehaviour
 
     public virtual void InteroplateCharacterRotation()
     {
-        // Vector3 FinalDirection = -(transform.rotation * LastMovementDirection);
         Vector3 FinalDirection = -(transform.rotation * LastMovementDirection);
         Vector3 LocalUp = -GetGravityDirection();
-        TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
-        // Debug.LogWarning(TargetRotation.ToString());
+        if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
+            TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
     }
 
     public virtual void UpdateCharacterMovement(float Multiplier = 1f)
@@ -67,7 +66,7 @@ public class CustomCharacterController : MonoBehaviour
         if (!this.IsAirCharacter)
             CheckIsOnGround();  // Air characters will never check for onGround
         RigidbodyRef.AddForce(Multiplier * (InputVelocity + this.BaseGravity));
-        Debug.Log(InputVelocity.magnitude.ToString());
+        // Debug.Log(InputVelocity.magnitude.ToString());
         // Debug.LogWarning("Mag: " + RigidbodyRef.linearVelocity.magnitude.ToString());
         InputVelocity = Vector3.zero;
     }
