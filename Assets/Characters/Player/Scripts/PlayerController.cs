@@ -73,10 +73,5 @@ public class PlayerController : CustomCharacterController
     {
         base.UpdateCharacterMovement();
     }
-
-    //public Quaternion GetCameraPlanarRotation() { 
-    //}
-    // public Quaternion CameraPlanarRotation => Quaternion.AngleAxis(CameraRotation.y, -GetGravityDirection());  // TODO
     public Quaternion CameraPlanarRotation => Quaternion.Euler(0, CameraRotation.y, 0);
-    // public Quaternion CameraPlanarRotation => Quaternion.Euler(0, CameraRotation.y, 0);
 }

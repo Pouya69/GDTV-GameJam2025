@@ -14,10 +14,13 @@ public class TimeDilationField : FieldBase
         base.UpdateOverlappingObjects();
         foreach (PhysicsObjectBasic ObjectOverlapping in PhysicsObjectsInsideField)
         {
+            if (ObjectOverlapping == null) continue;
+            //  Debug.Log("Time Dilating: " + ObjectOverlapping.gameObject.name);
             ObjectOverlapping.SetTimeDilation(FieldAmount);  // Instant
         }
         foreach (EnemyBaseCharacter ChaeracterOverlapping in CharactersInsideField)
         {
+            if (ChaeracterOverlapping == null) continue;
             ChaeracterOverlapping.MyEnemyController.SetTimeDilation(FieldAmount);  // Instant
         }
     }
@@ -27,41 +30,55 @@ public class TimeDilationField : FieldBase
         base.OnDestroy();
         foreach (PhysicsObjectBasic ObjectOverlapping in PhysicsObjectsInsideField)
         {
-            ObjectOverlapping.SetTimeDilation(1f);  // Instant
+            ResetPhysicsObject(ObjectOverlapping);
         }
         foreach (EnemyBaseCharacter ChaeracterOverlapping in CharactersInsideField)
         {
-            ChaeracterOverlapping.MyEnemyController.SetTimeDilation(1f);  // Instant
+            ResetCharacter(ChaeracterOverlapping);
         }
     }
 
     protected override void OnTriggerEnter(Collider other)
     {
-        FieldBaseGrenade GrenadeEntered;
-        bool IsFieldGrenade = other.TryGetComponent<FieldBaseGrenade>(out GrenadeEntered);
-        if (IsFieldGrenade)
-        {
-            if (GrenadeEntered.IsTimeDilationFieldGrenade())
-            {
-                Destroy(other.gameObject);
-                return;
-            }
-        }
         base.OnTriggerEnter(other);
     }
 
     protected override void OnTriggerExit(Collider other)
     {
-        FieldBaseGrenade GrenadeExited;
-        bool IsFieldGrenade = other.TryGetComponent<FieldBaseGrenade>(out GrenadeExited);
-        if (IsFieldGrenade)
-        {
-            if (GrenadeExited.IsTimeDilationFieldGrenade())
-            {
-                Destroy(other.gameObject);
-                return;
-            }
-        }
         base.OnTriggerExit(other);
     }
+
+    public override void CharacterEntered(EnemyBaseCharacter Character)
+    {
+        base.CharacterEntered(Character);
+        Character.MyEnemyController.SetTimeDilation(FieldAmount);
+        Character.MyController.UpdateCharacterMovement();
+    }
+
+    public override void PhysicsObjectEntered(PhysicsObjectBasic PhysicsObject)
+    {
+        //PhysicsObject.RigidbodyRef.angularVelocity = Vector3.zero;
+        base.PhysicsObjectEntered(PhysicsObject);
+        PhysicsObject.SetTimeDilation(FieldAmount);
+        PhysicsObject.UpdatePhysicsObjectBasedOnTimeDilation();
+    }
+
+    // For things like bullets that on spawn need to be checked.
+    public void PhysicsObjectEntered_ONSTART(PhysicsObjectBasic PhysicsObject)
+    {
+        PhysicsObject.SetTimeDilation(FieldAmount);
+        PhysicsObject.UpdatePhysicsObjectBasedOnTimeDilation();
+    }
+
+    protected override void ResetCharacter(EnemyBaseCharacter Character) {
+        if (Character == null) return;
+        base.ResetCharacter(Character);
+        Character.MyEnemyController.SetTimeDilation(1f);
+    }
+    protected override void ResetPhysicsObject(PhysicsObjectBasic PhysicsObject) {
+        if (PhysicsObject == null) return;
+        base.ResetPhysicsObject(PhysicsObject);
+        PhysicsObject.SetTimeDilation(1f);
+    }
+
 }

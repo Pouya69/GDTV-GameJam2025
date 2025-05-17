@@ -29,8 +29,10 @@ public class CustomCharacterController : MonoBehaviour
         if (IsAirCharacter) IsOnGround = false;
         if (!IsAirCharacter && BaseGravity.magnitude == 0)
         {
-            BaseGravity = new Vector3(Physics.gravity.x, Physics.gravity.y, Physics.gravity.z) * 100;
+            BaseGravity = new Vector3(Physics.gravity.x, Physics.gravity.y, Physics.gravity.z) * this.RigidbodyRef.mass;
         }
+        else
+            SetGravityForceAndDirection(this.BaseGravity);
         RigidbodyRef.linearDamping = Damping;
     }
 
@@ -55,6 +57,7 @@ public class CustomCharacterController : MonoBehaviour
 
     public virtual void InteroplateCharacterRotation()
     {
+        // TODO: When character is boosing himself, does not work still needs work. :(
         Vector3 FinalDirection = -(transform.rotation * LastMovementDirection);
         Vector3 LocalUp = -GetGravityDirection();
         if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
@@ -96,7 +99,7 @@ public class CustomCharacterController : MonoBehaviour
     }
 
     public virtual void SetGravityForceAndDirection(Vector3 Final, bool IsDoneByForceField=false) {
-        this.BaseGravity = new Vector3(Final.x, Final.y, Final.z);
+        this.BaseGravity = new Vector3(Final.x, Final.y, Final.z) * this.RigidbodyRef.mass;
     }
 
     // Changes EVERY physics objects' gravity that does not have custom gravity and is not simulated by ConstantForce.

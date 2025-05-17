@@ -17,6 +17,7 @@ public class EnemyBaseController : CustomCharacterController
         else  // If the speed is less than equal 0, we set the time dilation instantly
             this.CustomTimeDilation = NewTimeDilation;
         this.CustomTimeDilationTarget = NewTimeDilation;
+        // this.RigidbodyRef.linearVelocity = GetTimeScaledVelocity() + (GetGravityForceTimeScaled() * Time.deltaTime);
     }
 
     public virtual void UpdatePhysicsObjectBasedOnTimeDilation()
@@ -33,9 +34,9 @@ public class EnemyBaseController : CustomCharacterController
 
     public override void SetGravityForceAndDirection(Vector3 Final, bool IsDoneByForceField = false)
     {
-        base.SetGravityForceAndDirection(Final);
+        base.SetGravityForceAndDirection(Final, IsDoneByForceField);
         if (!IsDoneByForceField)
-            this.GravityBeforeCustomGravity = this.BaseGravity;
+            this.GravityBeforeCustomGravity = Final;
     }
 
     public bool IsInterpolatingTimeDilation()

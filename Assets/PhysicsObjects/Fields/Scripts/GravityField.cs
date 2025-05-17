@@ -4,7 +4,7 @@ using UnityEngine;
 public class GravityField : FieldBase
 {
     public bool IsSuckingField = false;  // Naughty... For sucking things instead of just normal gravity
-    public bool IsGravityTemporary = false;  // If false, the effect of gravity will stay on the objects after Destroy() of this field.
+    public bool IsGravityPermanent = false;  // If true, the effect of gravity will stay on the objects after Destroy() of this field.
     public Vector3 FieldGravity = Vector3.down;
 
     public override void Awake()
@@ -24,11 +24,15 @@ public class GravityField : FieldBase
         base.UpdateOverlappingObjects();
         foreach (PhysicsObjectBasic ObjectOverlapping in PhysicsObjectsInsideField)
         {
-            ObjectOverlapping.SetGravityForceAndDirection(this.IsSuckingField ? GetObjectForceTowardsMe(ObjectOverlapping) : this.FieldGravity, !IsGravityTemporary);  // Instant
+            if (ObjectOverlapping == null) continue;
+            // ObjectOverlapping.BaseGravity = this.IsSuckingField ? GetObjectForceTowardsMe(ObjectOverlapping) : this.FieldGravity;
+            ObjectOverlapping.SetGravityForceAndDirection(this.IsSuckingField ? GetObjectForceTowardsMe(ObjectOverlapping) : this.FieldGravity, !IsGravityPermanent);  // Instant
         }
         foreach (EnemyBaseCharacter ChaeracterOverlapping in CharactersInsideField)
         {
-            ChaeracterOverlapping.MyEnemyController.SetGravityForceAndDirection(this.IsSuckingField ? GetObjectForceTowardsMe(ChaeracterOverlapping) : this.FieldGravity, !IsGravityTemporary);
+            if (ChaeracterOverlapping == null) continue;
+            // ChaeracterOverlapping.MyEnemyController.BaseGravity = this.IsSuckingField ? GetObjectForceTowardsMe(ChaeracterOverlapping) : this.FieldGravity;
+            ChaeracterOverlapping.MyEnemyController.SetGravityForceAndDirection(this.IsSuckingField ? GetObjectForceTowardsMe(ChaeracterOverlapping) : this.FieldGravity, !IsGravityPermanent);
         }
     }
 
@@ -37,11 +41,11 @@ public class GravityField : FieldBase
         base.OnDestroy();
         foreach (PhysicsObjectBasic ObjectOverlapping in PhysicsObjectsInsideField)
         {
-            ObjectOverlapping.SetGravityForceAndDirection(ObjectOverlapping.GravityBeforeCustomGravity, !IsGravityTemporary);  // Instant
+            ResetPhysicsObject(ObjectOverlapping);
         }
         foreach (EnemyBaseCharacter ChaeracterOverlapping in CharactersInsideField)
         {
-            ChaeracterOverlapping.MyEnemyController.SetGravityForceAndDirection(ChaeracterOverlapping.MyEnemyController.GravityBeforeCustomGravity, !IsGravityTemporary);  // Instant
+            ResetCharacter(ChaeracterOverlapping);
         }
     }
 
@@ -52,31 +56,46 @@ public class GravityField : FieldBase
 
     protected override void OnTriggerEnter(Collider other)
     {
-        FieldBaseGrenade GrenadeEntered;
-        bool IsFieldGrenade = other.TryGetComponent<FieldBaseGrenade>(out GrenadeEntered);
-        if (IsFieldGrenade)
-        {
-            if (GrenadeEntered.IsGravityFieldGrenade())
-            {
-                Destroy(other.gameObject);
-                return;
-            }
-        }
         base.OnTriggerEnter(other);
     }
 
     protected override void OnTriggerExit(Collider other)
     {
-        FieldBaseGrenade GrenadeExited;
-        bool IsFieldGrenade = other.TryGetComponent<FieldBaseGrenade>(out GrenadeExited);
-        if (IsFieldGrenade)
-        {
-            if (GrenadeExited.IsGravityFieldGrenade())
-            {
-                Destroy(other.gameObject);
-                return;
-            }
-        }
+
         base.OnTriggerExit(other);
+    }
+
+    protected override void ResetCharacter(EnemyBaseCharacter Character)
+    {
+        base.ResetCharacter(Character);
+        Character.MyEnemyController.SetGravityForceAndDirection(Character.MyEnemyController.GravityBeforeCustomGravity, true);
+        Character.MyEnemyController.RigidbodyRef.linearVelocity = Vector3.zero;
+        Character.MyEnemyController.RigidbodyRef.angularVelocity = Vector3.zero;
+    }
+
+    protected override void ResetPhysicsObject(PhysicsObjectBasic PhysicsObject)
+    {
+        base.ResetPhysicsObject(PhysicsObject);
+        PhysicsObject.SetGravityForceAndDirection(PhysicsObject.GravityBeforeCustomGravity, true);  // Instant
+        PhysicsObject.RigidbodyRef.linearVelocity = Vector3.zero;
+        PhysicsObject.RigidbodyRef.angularVelocity = Vector3.zero;
+    }
+
+    public override void CharacterEntered(EnemyBaseCharacter Character)
+    {
+        Character.MyEnemyController.GravityBeforeCustomGravity = Character.MyEnemyController.BaseGravity;
+        base.CharacterEntered(Character);
+    }
+
+    public override void PhysicsObjectEntered(PhysicsObjectBasic PhysicsObject)
+    {
+        PhysicsObject.GravityBeforeCustomGravity = PhysicsObject.BaseGravity;
+        base.PhysicsObjectEntered(PhysicsObject);
+    }
+
+    // For things like bullets that on spawn need to be checked.
+    public void PhysicsObjectEntered_ONSTART(PhysicsObjectBasic PhysicsObject)
+    {
+        PhysicsObject.GravityBeforeCustomGravity = PhysicsObject.BaseGravity;
     }
 }

@@ -39,18 +39,24 @@ public class CharacterBase : MonoBehaviour
     {
         Health = MaxHealth;
         CurrentMovementSpeed = MovementSpeed;
+
     }
 
     public virtual void Awake()
     {
         // CharacterMesh = SkeletalMesh.GetComponent<SkinnedMeshRenderer>();
         // CharacterAnimator = SkeletalMesh.GetComponent<Animator>();
+        this.transform.rotation = Quaternion.Euler(0, 0, 0);
     }
 
     public virtual void Update()
     {
         // Debug.Log(CurrentMovementSpeed.ToString());
     }
+
+   
+
+
     public float GetCapsuleCollisionRadius() { return this.CapsuleCollision.radius; }
     public float GetCapsuleCollisionHeight() { return this.CapsuleCollision.height; }
 

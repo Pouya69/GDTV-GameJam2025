@@ -91,14 +91,10 @@ MonoBehaviour:
   MaxBulletsAllowed: 150
   BulletsLeft: 80
   BulletsShootingOneShot: 1
-  WeaponName: SMG_TEST
-  BulletVelocityBase: 800
-  IsReloading: 0
-  BulletsAddingAfterAnimation: 0
+  BulletVelocityBase: 80
   CanShoot: 1
   WeaponFireRate: 50
   ShootLocation_TEST_ONLY: {fileID: 6455776132884955884}
-  IsShooting: 0
 --- !u!114 &1266569019648744215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +135,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0

@@ -6,17 +6,31 @@ public class BulletBase : PhysicsObjectBasic
     [Header("Bullet")]
     public float BaseDamage = 20f;  // Wihtout time dilation 
     [DoNotSerialize] private CharacterBase OwnerCharacterRef;
+    public float DestroyBulletAfterSeconds = 30;
 
     // When we call Shoot() on weapon, we create a new bullet and we initialize it here.
     public void InitializeBullet(CharacterBase InOwnerCharacterRef, Vector3 Gravity=new Vector3(), Vector3 Velocity=new Vector3(), float InCustomTimeDilation=1f)
     {
         base.InitializePhysicsObject(Gravity, Velocity, InCustomTimeDilation);
         this.OwnerCharacterRef = InOwnerCharacterRef;
+        this.RigidbodyRef.linearVelocity = Velocity;
+        this.BaseVelocity = Velocity;
+        this.RigidbodyRef.linearDamping = 0;
+        Destroy(gameObject, DestroyBulletAfterSeconds);
     }
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Start()
     {
+        Collider[] Colliders = Physics.OverlapSphere(this.RigidbodyRef.transform.position, 0.05f);
+        foreach (Collider collider in Colliders)
+        {
+            TimeDilationField timeDilationField;
+            bool IsTimeDilationField = collider.transform.root.TryGetComponent<TimeDilationField>(out timeDilationField);
+            if (!IsTimeDilationField) continue;
+            timeDilationField.PhysicsObjectEntered_ONSTART(this);
+            // Debug.LogError("WORKS");
+        }
         
     }
 
@@ -25,27 +39,39 @@ public class BulletBase : PhysicsObjectBasic
 
     public override void UpdatePhysicsObjectBasedOnTimeDilation()
     {
-        base.UpdatePhysicsObjectBasedOnTimeDilation();
+        this.RigidbodyRef.linearVelocity = GetTimeScaledVelocity();// + (GetGravityForceTimeScaled() * Time.deltaTime);
+        if (!IsInterpolatingTimeDilation()) return;
+        this.CustomTimeDilation = Mathf.Lerp(this.CustomTimeDilation, this.CustomTimeDilationTarget, 1 - Mathf.Exp(-this.TimeDilationInterpSpeed * Time.deltaTime));
+        if (Mathf.Abs(this.CustomTimeDilationTarget - this.CustomTimeDilation) < TimeDilationDifferenceIgnore)
+            this.CustomTimeDilation = this.CustomTimeDilationTarget;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collider)
     {
-        if (collision == null || !this.CanDamageOrAffect() || collision.gameObject == null) return;
-        CharacterBase CharacterHit = collision.gameObject.GetComponent<CharacterBase>();
-        if (CharacterHit == null)
+        if (!this.CanDamageOrAffect() || collider.transform.root.TryGetComponent<FieldBase>(out _)) return;
+        CharacterBase CharacterHit;
+        bool IsCharacter = collider.transform.root.TryGetComponent<CharacterBase>(out CharacterHit);
+        if (!IsCharacter)
         {
-            PhysicsObjectBasic PhysicsObjectHit = collision.gameObject.GetComponent<PhysicsObjectBasic>();
-            BulletBase AnotherBulletHit = collision.gameObject.GetComponent<BulletBase>();  // For when we hit another bullet coincidentally.
-            if (AnotherBulletHit != null) return;
-            if (PhysicsObjectHit == null)
+            PhysicsObjectBasic PhysicsObjectHit;
+            bool IsCustomPhysicsObject = collider.transform.root.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectHit);
+            BulletBase AnotherBulletHit;
+            bool IsAnotherBullet = collider.transform.root.TryGetComponent<BulletBase>(out AnotherBulletHit);  // For when we hit another bullet coincidentally.
+            if (IsAnotherBullet) return;
+            if (!IsCustomPhysicsObject)
             {
+                Debug.Log("CUSTOMPHYSICS Bullet Collided with: " + collider.gameObject.name);
                 Destroy(gameObject);
                 return;
             }
             HandlePhysicsObjectHit(PhysicsObjectHit);
         }
         else
+        {
             HandleCharacterHit(CharacterHit);
+            return;
+        }
+        Debug.Log("DEFAULT Bullet Collided with: " + collider.gameObject.name);
         Destroy(gameObject);
     }
 
@@ -58,8 +84,10 @@ public class BulletBase : PhysicsObjectBasic
 
     public void HandleCharacterHit(CharacterBase CharacterHit)
     {
-        if (CharacterHit == OwnerCharacterRef) return;  // If the owner of the bullet (the person who shot the bullet) was hit nothing happens.
+        if (CharacterHit.Equals(OwnerCharacterRef)) return;  // If the owner of the bullet (the person who shot the bullet) was hit nothing happens.
         CharacterHit.ReduceHealth(CharacterBase.EDamageType.BULLET, GetDamage());
+        Debug.Log("CHARACTER Bullet Collided with: " + CharacterHit.gameObject.name);
+        Destroy(gameObject);
     }
 
     // Update is called once per frame

@@ -8,11 +8,11 @@ public class PhysicsObjectBasic : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     // BaseVelocity and BaseAcceleration are for normal velocity at CustomTimeDilation = 1.
-    [NonSerialized] public Vector3 BaseVelocity = Vector3.zero;
     public Vector3 BaseGravity = Vector3.zero;
     [NonSerialized] public Vector3 GravityBeforeCustomGravity = Vector3.zero;  // For force fields
     public Rigidbody RigidbodyRef;
     public float CustomTimeDilation = 1f;  // Varies from 0f to 1f. 1 -> normal time. 0 -> stopped
+    [NonSerialized] public Vector3 BaseVelocity = Vector3.zero;
     public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
     [NonSerialized] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
     [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
@@ -24,19 +24,21 @@ public class PhysicsObjectBasic : MonoBehaviour
         else  // If the speed is less than equal 0, we set the time dilation instantly
             this.CustomTimeDilation = NewTimeDilation;
         this.CustomTimeDilationTarget = NewTimeDilation;
+        // this.RigidbodyRef.linearVelocity = GetTimeScaledVelocity() + (GetGravityForceTimeScaled() * Time.deltaTime);
     }
 
     public virtual void InitializePhysicsObject(Vector3 InBaseGravity = new Vector3(), Vector3 Velocity=new Vector3(), float NewTimeDilation=1f)
     {
-        this.BaseVelocity = Velocity;
         SetGravityForceAndDirection(InBaseGravity);
-        SetTimeDilation(NewTimeDilation);
+        // SetTimeDilation(NewTimeDilation);
     }
 
     public virtual void UpdatePhysicsObjectBasedOnTimeDilation()
     {
-        this.RigidbodyRef.AddForce(GetGravityForceTimeScaled() + GetTimeScaledVelocity());  // The velocity and the gravity force are applied.
-        // this.ConstantGravityForce.force = this.BaseVelocity * this.CustomTimeDilation;
+        if (Mathf.Abs(this.CustomTimeDilation-1) <= 0.001)
+            this.BaseVelocity = this.RigidbodyRef.linearVelocity;
+        this.RigidbodyRef.linearVelocity = GetTimeScaledVelocity() + (GetGravityForceTimeScaled() * Time.deltaTime);
+        this.RigidbodyRef.angularVelocity *= CustomTimeDilation;
         if (!IsInterpolatingTimeDilation()) return;
         this.CustomTimeDilation = Mathf.Lerp(this.CustomTimeDilation, this.CustomTimeDilationTarget, 1 - Mathf.Exp(-this.TimeDilationInterpSpeed * Time.deltaTime));
         if (Mathf.Abs(this.CustomTimeDilationTarget - this.CustomTimeDilation) < TimeDilationDifferenceIgnore)
@@ -55,11 +57,11 @@ public class PhysicsObjectBasic : MonoBehaviour
     {
         this.BaseGravity = new Vector3(Final.x, Final.y, Final.z) * RigidbodyRef.mass;
         if (!IsDoneByForceField)
-            this.GravityBeforeCustomGravity = this.BaseGravity;
+            this.GravityBeforeCustomGravity = new Vector3(Final.x, Final.y, Final.z);
     }
 
 
-    public Vector3 GetTimeScaledVelocity() { return BaseVelocity * CustomTimeDilation; }
+    public Vector3 GetTimeScaledVelocity() { return this.BaseVelocity * CustomTimeDilation; }
 
     public virtual void Start()
     {

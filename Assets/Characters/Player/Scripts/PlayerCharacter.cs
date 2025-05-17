@@ -20,6 +20,7 @@ public class PlayerCharacter : CharacterBase
     InputAction ChangeSelfGravityAction;
     InputAction ChangeWorldGravityAction_DIRECTION;
     InputAction ChangeSelfGravityAction_DIRECTION;
+    InputAction ReloadAction;
 
     [Header("Movements")]
     public float BoostUpForce = 100f;
@@ -49,6 +50,8 @@ public class PlayerCharacter : CharacterBase
     public void SetupPlayerActions() {
         InteractAction = InputSystem.actions.FindAction("Interact");
         InteractAction.Enable();
+        ReloadAction = InputSystem.actions.FindAction("Reload");
+        ReloadAction.Enable();
         ChangeWorldGravityAction = InputSystem.actions.FindAction("Change Gravity World");
         ChangeWorldGravityAction.Enable();
         ChangeWorldGravityAction_DIRECTION = InputSystem.actions.FindAction("Change Gravity World Direction");
@@ -69,6 +72,7 @@ public class PlayerCharacter : CharacterBase
         AttackSecondaryAction.Enable();
         InteractAction.performed += InteractAction_performed;
         InteractAction.canceled += InteractAction_canceled;
+        ReloadAction.performed += ReloadAction_performed;
         JumpAction.performed += Jump_performed;
         AttackPrimaryAction.performed += AttackPrimary_performed;
         AttackSecondaryAction.performed += AttackSecondary_performed;
@@ -77,6 +81,11 @@ public class PlayerCharacter : CharacterBase
         JumpAction.canceled += Jump_canceled;
         ChangeSelfGravityAction.performed += ChangeSelfGravityAction_performed;
         ChangeWorldGravityAction.performed += ChangeWorldGravityAction_performed;
+    }
+
+    private void ReloadAction_performed(InputAction.CallbackContext obj)
+    {
+        
     }
 
     private void InteractAction_canceled(InputAction.CallbackContext obj)
@@ -138,6 +147,17 @@ public class PlayerCharacter : CharacterBase
     }
 
     public void DisablePlayerActions() {
+        ChangeSelfGravityAction.performed -= ChangeSelfGravityAction_performed;
+        ChangeWorldGravityAction.performed -= ChangeWorldGravityAction_performed;
+        JumpAction.performed -= Jump_performed;
+        AttackPrimaryAction.performed -= AttackPrimary_performed;
+        AttackSecondaryAction.performed -= AttackSecondary_performed;
+        AttackSecondaryAction.canceled -= AttackSecondary_canceled;
+        AttackPrimaryAction.canceled -= AttackPrimary_canceled;
+        JumpAction.canceled -= Jump_canceled;
+        ReloadAction.performed -= ReloadAction_performed;
+
+
         MoveAction.Disable();
         LookAction.Disable();
         JumpAction.Disable();
@@ -148,14 +168,7 @@ public class PlayerCharacter : CharacterBase
         ChangeSelfGravityAction_DIRECTION.Disable();
         ChangeWorldGravityAction_DIRECTION.Disable();
 
-        ChangeSelfGravityAction.performed -= ChangeSelfGravityAction_performed;
-        ChangeWorldGravityAction.performed -= ChangeWorldGravityAction_performed;
-        JumpAction.performed -= Jump_performed;
-        AttackPrimaryAction.performed -= AttackPrimary_performed;
-        AttackSecondaryAction.performed -= AttackSecondary_performed;
-        AttackSecondaryAction.canceled -= AttackSecondary_canceled;
-        AttackPrimaryAction.canceled -= AttackPrimary_canceled;
-        JumpAction.canceled -= Jump_canceled;
+        
     }
 
     public void OnDisable()
@@ -197,11 +210,11 @@ public class PlayerCharacter : CharacterBase
 
     public void Look(Vector2 Direction) {
         Vector3 capsuleUp = -MyPlayerController.GetGravityDirection();
-        MyPlayerController.CameraRotation.x += Direction.y * MyPlayerController.LookSensivityY * (capsuleUp.y < 0 ? -1f : 1f) * (MyPlayerController.InvertLookY ? -1f : 1f);
+        MyPlayerController.CameraRotation.x += Direction.y * MyPlayerController.LookSensivityY * (capsuleUp.y < 0 ? -1f : 1f) * (MyPlayerController.InvertLookY ? -1f : 1f) * Time.deltaTime;
         MyPlayerController.CameraRotation.x = Mathf.Clamp(MyPlayerController.CameraRotation.x, MyPlayerController.MinVerticalRotation, MyPlayerController.MaxVerticalRotation);
-        MyPlayerController.CameraRotation.y += Direction.x * MyPlayerController.LookSensivityX * (MyPlayerController.InvertLookX ? -1f : 1f);
-        // Vector3 capsuleUp = -MyPlayerController.GetGravityDirection();
-        
+        MyPlayerController.CameraRotation.y += Direction.x * MyPlayerController.LookSensivityX * (MyPlayerController.InvertLookX ? -1f : 1f) * Time.deltaTime;
+        // Vector3 capsuleUp = -MyPlayerController.GetGravityDirection();   
+
         if (capsuleUp == Vector3.zero)
             capsuleUp = CapsuleCollision.transform.up;
         Vector3 capsuleRight = MyPlayerController.GetRightBasedOnGravity();
@@ -259,6 +272,9 @@ public class PlayerCharacter : CharacterBase
         if (IsPickable && CloseInteractablePickable != null && CloseInteractablePickable.IsInstantPickup && closestDist > this.PickableInteractablePickupDistance)
         {
             bool AddedToInventory = InventoryComp.AddItemToInventory(this, CloseInteractablePickable);
+            CanInteract = false;
+            InteractionAmount = 0;
+            IsInteracting = false;
             if (AddedToInventory) return;
         }
         if (ClosestInteractable == null)
@@ -319,6 +335,12 @@ public class PlayerCharacter : CharacterBase
     {
         if (CurrentWeaponEquipped == null) return;
         CurrentWeaponEquipped.StopShoot();
+    }
+
+    public void Reload()
+    {
+        if (CurrentWeaponEquipped == null) return;
+        CurrentWeaponEquipped.Reload();
     }
 
 }

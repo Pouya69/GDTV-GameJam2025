@@ -152,15 +152,15 @@ public class WeaponBase : InteractablePickable
                 break;
             }
             Vector3 BulletSpawnLocation = ShootLocation_TEST_ONLY.position;  // TODO
-            Quaternion BulletSpawnRotation = ShootLocation_TEST_ONLY.rotation;  // TODO
-            GameObject BulletSpawned = Instantiate(BulletClass, BulletSpawnLocation, BulletSpawnRotation);
+            GameObject BulletSpawned = Instantiate(BulletClass, BulletSpawnLocation, ShootLocation_TEST_ONLY.rotation);
             if (BulletSpawned == null)
             {
                 Debug.LogError("Bullet did not spawn.");
                 return;
             }
             BulletBase BulletComponentOnObject = BulletSpawned.GetComponent<BulletBase>();
-            BulletComponentOnObject.InitializeBullet(OwnerCharacterRef, default, ShootLocation_TEST_ONLY.forward * BulletVelocityBase, 1f);
+            BulletComponentOnObject.InitializeBullet(OwnerCharacterRef, default, ShootLocation_TEST_ONLY.right * BulletVelocityBase, 1f);
+            Debug.DrawLine(ShootLocation_TEST_ONLY.position, ShootLocation_TEST_ONLY.position + (ShootLocation_TEST_ONLY.right * BulletVelocityBase), Color.red);
             CurrentBulletsInMagazine--;
         }
     }
