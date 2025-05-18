@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,6 +22,8 @@ public class PlayerCharacter : CharacterBase
     InputAction ChangeWorldGravityAction_DIRECTION;
     InputAction ChangeSelfGravityAction_DIRECTION;
     InputAction ReloadAction;
+    InputAction GrenadeAction;
+    InputAction ChangeSelectedGrenade;
 
     [Header("Movements")]
     public float BoostUpForce = 100f;
@@ -30,6 +33,7 @@ public class PlayerCharacter : CharacterBase
     public PlayerController MyPlayerController;
     public BoxCollider InteractionOverlapZone;
     public InventoryComponent InventoryComp;
+    public PlayerAnimationScript PlayerAnimation;
     [Header("Interaction")]
     public float InteractionDistance = 1f;  // How far away an object should be for interaction.
     public float PickableInteractablePickupDistance = 0.2f;
@@ -41,6 +45,11 @@ public class PlayerCharacter : CharacterBase
     [Header("Time Dilation On Objects")]
     [NonSerialized] public TimeDilationField CurrentTimeDilationFieldActive = null;
     [NonSerialized] public bool IsJumpBoosting = false;
+    [Header("Grenades")]
+    public Transform GrenadeAttachPointToHand;
+    public float GrenadeThrowPower = 5f;
+    [NonSerialized] public bool CurrentGrenadeSelected = true;  // For deciding whether to throw the time or gravity grenade. true => TimeDilationField   false => GravityField
+    [NonSerialized] public FieldBaseGrenade CurrentGrenadeInHand = null;
 
     public override void Awake()
     {
@@ -48,6 +57,10 @@ public class PlayerCharacter : CharacterBase
     }
 
     public void SetupPlayerActions() {
+        ChangeSelectedGrenade = InputSystem.actions.FindAction("Change Selected Grenade");
+        ChangeSelectedGrenade.Enable();
+        GrenadeAction = InputSystem.actions.FindAction("Grenade");
+        GrenadeAction.Enable();
         InteractAction = InputSystem.actions.FindAction("Interact");
         InteractAction.Enable();
         ReloadAction = InputSystem.actions.FindAction("Reload");
@@ -70,6 +83,9 @@ public class PlayerCharacter : CharacterBase
         AttackPrimaryAction.Enable();
         AttackSecondaryAction = InputSystem.actions.FindAction("AttackSecondary");
         AttackSecondaryAction.Enable();
+        ChangeSelectedGrenade.performed += ChangeSelectedGrenade_performed;
+        GrenadeAction.performed += GrenadeAction_performed;
+        GrenadeAction.canceled += GrenadeAction_canceled;
         InteractAction.performed += InteractAction_performed;
         InteractAction.canceled += InteractAction_canceled;
         ReloadAction.performed += ReloadAction_performed;
@@ -81,6 +97,25 @@ public class PlayerCharacter : CharacterBase
         JumpAction.canceled += Jump_canceled;
         ChangeSelfGravityAction.performed += ChangeSelfGravityAction_performed;
         ChangeWorldGravityAction.performed += ChangeWorldGravityAction_performed;
+    }
+
+    private void ChangeSelectedGrenade_performed(InputAction.CallbackContext obj)
+    {
+        this.CurrentGrenadeSelected = !this.CurrentGrenadeSelected;
+        Debug.LogWarning("Grenade Selected: " + (this.CurrentGrenadeSelected ? "Time" : "Gravity"));
+    }
+
+    private void GrenadeAction_canceled(InputAction.CallbackContext obj)
+    {
+        StartThrowingGrenade();
+    }
+
+    private void GrenadeAction_performed(InputAction.CallbackContext obj)
+    {
+        if (CurrentGrenadeSelected)
+            GiveTimeGrenadeToPlayerFromInventory();
+        else
+            GiveGravityGrenadeToPlayerFromInventory();
     }
 
     private void ReloadAction_performed(InputAction.CallbackContext obj)
@@ -155,12 +190,18 @@ public class PlayerCharacter : CharacterBase
         AttackSecondaryAction.canceled -= AttackSecondary_canceled;
         AttackPrimaryAction.canceled -= AttackPrimary_canceled;
         JumpAction.canceled -= Jump_canceled;
+        InteractAction.performed -= InteractAction_performed;
+        InteractAction.canceled -= InteractAction_canceled;
         ReloadAction.performed -= ReloadAction_performed;
-
-
+        GrenadeAction.performed -= GrenadeAction_performed;
+        GrenadeAction.canceled -= GrenadeAction_canceled;
+        ChangeSelectedGrenade.performed -= ChangeSelectedGrenade_performed;
         MoveAction.Disable();
         LookAction.Disable();
+        InteractAction.Disable();
+        GrenadeAction.Disable();
         JumpAction.Disable();
+        ChangeSelectedGrenade.Disable();
         AttackPrimaryAction.Disable();
         AttackSecondaryAction.Disable();
         ChangeSelfGravityAction.Disable();
@@ -188,6 +229,7 @@ public class PlayerCharacter : CharacterBase
     {
         base.Update();
         HandleInteract();
+        HandleGrenadeInHand();
     }
 
     public void FixedUpdate()
@@ -248,9 +290,9 @@ public class PlayerCharacter : CharacterBase
         NearbyInteractables.Remove(other.gameObject);
     }
 
-    public void GetNearestInteractable()
+    public bool GetNearestInteractable()
     {
-        if (!NearbyInteractables.Any()) return;
+        if (!NearbyInteractables.Any()) return false;
         // TODO: MAKE SURE TO USE LAYERS
         InteractableBase closest = null;
         float closestDist = float.MaxValue;
@@ -258,7 +300,7 @@ public class PlayerCharacter : CharacterBase
         foreach (GameObject obj in NearbyInteractables)
         {
             if (obj == null) continue;
-            if (!obj.TryGetComponent<InteractableBase>(out var InteractableComp)) continue;
+            if (!obj.TryGetComponent<InteractableBase>(out var InteractableComp) || !InteractableComp.IsInteractable) continue;
             float dist = Vector3.Distance(position, obj.transform.position);
             if (dist < closestDist)
             {
@@ -266,32 +308,44 @@ public class PlayerCharacter : CharacterBase
                 closest = InteractableComp;
             }
         }
-        if (closest == null) return;
-        InteractablePickable CloseInteractablePickable = null;
-        bool IsPickable = closest.TryGetComponent<InteractablePickable>(out CloseInteractablePickable);
-        if (IsPickable && CloseInteractablePickable != null && CloseInteractablePickable.IsInstantPickup && closestDist > this.PickableInteractablePickupDistance)
+        if (closest == null) return false;
+        InteractablePickable CloseInteractablePickable;
+        bool IsPickable = closest.transform.root.TryGetComponent<InteractablePickable>(out CloseInteractablePickable);
+        if (IsPickable)
         {
-            bool AddedToInventory = InventoryComp.AddItemToInventory(this, CloseInteractablePickable);
+            if (closestDist <= this.PickableInteractablePickupDistance && CloseInteractablePickable.IsInstantPickup)
+            {
+                InteractionComplete(CloseInteractablePickable);
+                //bool AddedToInventory = InventoryComp.AddItemToInventory(this, CloseInteractablePickable);
+                CanInteract = false;
+                InteractionAmount = 0;
+                IsInteracting = false;
+                closest = null;
+                //if (AddedToInventory) return;
+                // After pickup code here.
+            }
+            return false;
+        }
+        if (closest == null) return false;
+        if (ClosestInteractable == null && closestDist <= InteractionDistance)
+        {
+            ClosestInteractable = closest;
+        }
+        if (ClosestInteractable == null) return false;
+            if (!closest.Equals(ClosestInteractable) && closestDist < Vector3.Distance(position, ClosestInteractable.transform.position) && closestDist <= InteractionDistance)
+        {
+            IsInteracting = false;
             CanInteract = false;
             InteractionAmount = 0;
-            IsInteracting = false;
-            if (AddedToInventory) return;
-        }
-        if (ClosestInteractable == null)
-            ClosestInteractable = closest;
-        else if (!closest.Equals(ClosestInteractable) && closestDist < Vector3.Distance(position, ClosestInteractable.transform.position))
-        {
-            IsInteracting = false;
-            CanInteract = false;
-            InteractionAmount = 0;
             ClosestInteractable = closest;
         }
+        return true;
     }
 
     public void HandleInteract()
     {
-        GetNearestInteractable();
-        if (ClosestInteractable && this.IsInteracting && this.CanInteract) {
+        bool ShouldProceed = GetNearestInteractable();
+        if (ClosestInteractable != null && ShouldProceed && this.IsInteracting && this.CanInteract) {
             InteractionAmount = Mathf.MoveTowards(InteractionAmount, 100f, ClosestInteractable.InteractionSpeed * Time.deltaTime);
             if (InteractionAmount >= 100)
             {
@@ -308,16 +362,19 @@ public class PlayerCharacter : CharacterBase
     public void InteractionComplete(InteractableBase Interactable)
     {
         Interactable.Interact(this);
+        ClosestInteractable = null;
         InteractionAmount = 0;
         CanInteract = false;
     }
 
     public void PickupInteractable(InteractablePickable interactablePickable) {
+        interactablePickable.IsInteractable = false;
         InventoryComp.AddItemToInventory(this, interactablePickable);
     }
 
-    public void AimWeapon(bool IsAiming)
+    public override void AimWeapon(bool IsAiming)
     {
+        base.AimWeapon(IsAiming);
         MyPlayerController.TargetCameraDistance = IsAiming ? MyPlayerController.CameraDistanceAiming : MyPlayerController.CameraDistanceInit;
     }
 
@@ -331,16 +388,86 @@ public class PlayerCharacter : CharacterBase
             CurrentWeaponEquipped.StartShooting();
     }
 
-    public void StopShootingWeapon()
+    public override void StopShootingWeapon()
     {
         if (CurrentWeaponEquipped == null) return;
         CurrentWeaponEquipped.StopShoot();
     }
 
-    public void Reload()
+    public override void Reload()
     {
         if (CurrentWeaponEquipped == null) return;
         CurrentWeaponEquipped.Reload();
     }
 
+    public override void ReloadComplete()
+    {
+        if (CurrentWeaponEquipped == null) return;
+        CurrentWeaponEquipped.ReloadCompleted();
+    }
+
+    // ONLY IS CALLED BY WEAPONBASE. Don't call it here. It gets called in Reload()
+    public override void PlayReloadAnimation()
+    {
+        PlayerAnimation.TriggerStartReload();
+    }
+
+    /*
+    public void GiveItemToPlayerFromInventory(int ItemIndex=0)
+    {
+        GameObject PrefabToSpawn = InventoryComp.RemoveItem(this, ItemIndex);
+        if (PrefabToSpawn == null) return;
+
+        Instantiate(PrefabToSpawn,,, this.transform);
+    }
+    */
+
+    public void GiveTimeGrenadeToPlayerFromInventory()
+    {
+        if (CurrentGrenadeInHand) return;
+        GameObject PrefabToSpawn = InventoryComp.RemoveItem(this, "Time Grenade Consumable");
+        if (PrefabToSpawn == null) return;
+        GameObject GrenadeSpawned = Instantiate(PrefabToSpawn, GrenadeAttachPointToHand.position, GrenadeAttachPointToHand.rotation, GrenadeAttachPointToHand);
+        CurrentGrenadeInHand = GrenadeSpawned.GetComponent<FieldBaseGrenade>();
+        Collider GrenadeCollider = GrenadeSpawned.GetComponent<Collider>();
+        Physics.IgnoreCollision(GrenadeCollider, CapsuleCollision);
+        //Physics.IgnoreCollision(GrenadeCollider, SkeletalMesh.GetComponent<Collider>());
+    }
+
+    public void GiveGravityGrenadeToPlayerFromInventory()
+    {
+        if (CurrentGrenadeInHand) return;
+        GameObject PrefabToSpawn = InventoryComp.RemoveItem(this, "Gravity Grenade Consumable");
+        if (PrefabToSpawn == null) return;
+        GameObject GrenadeSpawned = Instantiate(PrefabToSpawn, GrenadeAttachPointToHand.position, GrenadeAttachPointToHand.rotation, GrenadeAttachPointToHand);
+        CurrentGrenadeInHand = GrenadeSpawned.GetComponent<FieldBaseGrenade>();
+        Collider GrenadeCollider = GrenadeSpawned.GetComponent<Collider>();
+        Physics.IgnoreCollision(GrenadeCollider, CapsuleCollision);
+        //Physics.IgnoreCollision(GrenadeCollider, SkeletalMesh.GetComponent<Collider>());
+    }
+
+    public void HandleGrenadeInHand()
+    {
+        // The more it is in-hand, we charge it more.
+        if (this.CurrentGrenadeInHand == null) return;
+        bool IsFullyCharged = this.CurrentGrenadeInHand.ChargeGrenade();
+        // TODO: If fully charged logic here.
+    }
+
+    public bool HasGrenadeInHand() { return this.CurrentGrenadeInHand; }
+
+    public void StartThrowingGrenade()
+    {
+        if (CurrentGrenadeInHand == null) return;
+        PlayerAnimation.TriggerGrenadeThrow();
+    }
+
+    // Is called as an event for the animation.
+    public void ThrowGrenade()
+    {
+        if (CurrentGrenadeInHand == null) return;
+        Vector3 BaseVel = MyPlayerController.PlayerCameraRef.transform.forward * GrenadeThrowPower;
+        CurrentGrenadeInHand.GrenadeThrown(BaseVel);
+        CurrentGrenadeInHand = null;
+    }
 }

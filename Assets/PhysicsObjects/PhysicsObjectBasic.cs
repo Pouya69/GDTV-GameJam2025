@@ -12,7 +12,8 @@ public class PhysicsObjectBasic : MonoBehaviour
     [NonSerialized] public Vector3 GravityBeforeCustomGravity = Vector3.zero;  // For force fields
     public Rigidbody RigidbodyRef;
     public float CustomTimeDilation = 1f;  // Varies from 0f to 1f. 1 -> normal time. 0 -> stopped
-    [NonSerialized] public Vector3 BaseVelocity = Vector3.zero;
+    [NonSerialized] public Vector3 BaseVelocity = Vector3.zero;  // For bullets, set it to Vector3.zero but for grenades for example and throwing objects, set it manually here on this.
+    [NonSerialized] public Vector3 VelocityBeforeTimeDilation = Vector3.zero;
     public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
     [NonSerialized] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
     [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
@@ -37,8 +38,11 @@ public class PhysicsObjectBasic : MonoBehaviour
     {
         if (Mathf.Abs(this.CustomTimeDilation-1) <= 0.001)
             this.BaseVelocity = this.RigidbodyRef.linearVelocity;
-        this.RigidbodyRef.linearVelocity = GetTimeScaledVelocity() + (GetGravityForceTimeScaled() * Time.deltaTime);
-        this.RigidbodyRef.angularVelocity *= CustomTimeDilation;
+        if (!this.RigidbodyRef.isKinematic)
+        {
+            this.RigidbodyRef.linearVelocity = GetTimeScaledVelocity() + (GetGravityForceTimeScaled() * Time.deltaTime);
+            this.RigidbodyRef.angularVelocity *= CustomTimeDilation;
+        }
         if (!IsInterpolatingTimeDilation()) return;
         this.CustomTimeDilation = Mathf.Lerp(this.CustomTimeDilation, this.CustomTimeDilationTarget, 1 - Mathf.Exp(-this.TimeDilationInterpSpeed * Time.deltaTime));
         if (Mathf.Abs(this.CustomTimeDilationTarget - this.CustomTimeDilation) < TimeDilationDifferenceIgnore)
@@ -55,7 +59,8 @@ public class PhysicsObjectBasic : MonoBehaviour
     public Vector3 GetGravityDirection() { return BaseGravity.normalized; }
     public void SetGravityForceAndDirection(Vector3 Final, bool IsDoneByForceField=false)
     {
-        this.BaseGravity = new Vector3(Final.x, Final.y, Final.z) * RigidbodyRef.mass;
+        if (RigidbodyRef)
+            this.BaseGravity = new Vector3(Final.x, Final.y, Final.z) * RigidbodyRef.mass;
         if (!IsDoneByForceField)
             this.GravityBeforeCustomGravity = new Vector3(Final.x, Final.y, Final.z);
     }
@@ -68,6 +73,7 @@ public class PhysicsObjectBasic : MonoBehaviour
         if (BaseGravity.magnitude <= 0)
             SetGravityForceAndDirection(Physics.gravity);
         GravityBeforeCustomGravity = BaseGravity;
+        CheckTimeDilationOnSpawn();
     }
 
     // Update is called once per frame
@@ -78,5 +84,18 @@ public class PhysicsObjectBasic : MonoBehaviour
     public virtual void FixedUpdate()
     {
         UpdatePhysicsObjectBasedOnTimeDilation();
+    }
+
+    public void CheckTimeDilationOnSpawn()
+    {
+        Collider[] Colliders = Physics.OverlapSphere(this.RigidbodyRef.transform.position, 0.05f);
+        foreach (Collider collider in Colliders)
+        {
+            TimeDilationField timeDilationField;
+            bool IsTimeDilationField = collider.transform.root.TryGetComponent<TimeDilationField>(out timeDilationField);
+            if (!IsTimeDilationField) continue;
+            timeDilationField.PhysicsObjectEntered_ONSTART(this);
+            // Debug.LogError("WORKS");
+        }
     }
 }

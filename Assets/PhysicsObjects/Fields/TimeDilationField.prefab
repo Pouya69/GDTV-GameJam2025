@@ -130,10 +130,10 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 375
+    m_Bits: 311
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff77944917722ac45b380df50b614546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FieldAmount: 0.1
-  FieldLifeTime: 15
+  FieldAmount: 0
+  FieldLifeTime: 25
   SphereOverlapArea: {fileID: 6541934610875934695}
   SphereMesh: {fileID: 50425206216477134}
-  FieldRadius: 5
+  FieldRadius: 3

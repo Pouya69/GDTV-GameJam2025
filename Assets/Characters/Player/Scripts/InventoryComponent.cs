@@ -18,23 +18,28 @@ public class InventoryComponent : MonoBehaviour
         {
             WeaponBase ItemWeapon;
             bool IsWeapon = interactablePickable.TryGetComponent<WeaponBase>(out ItemWeapon);
-            if (IsWeapon && ItemWeapon != null)
+            if (IsWeapon)
             {
                 bool AddedWeaponOrAmmo = AddWeapon(CharacterBaseRef, ItemWeapon, interactablePickable.Amount);
-                if (!AddedWeaponOrAmmo)
-                    interactablePickable.Amount = 0;
-                Debug.LogWarning("Picked up wepaon: " + ItemWeapon.InteractableName);
+                //if (AddedWeaponOrAmmo)
+                //Debug.LogWarning("Picked up wepaon: " + ItemWeapon.InteractableName);
                 return true;
             }
         }
         InteractablePickable AlreadyExisitngItem = FindItem(interactablePickable);
         if (AlreadyExisitngItem == null)
+        {
             InventoryItems.Add(interactablePickable);
+            interactablePickable.JustAddedToInventory(CharacterBaseRef);
+            //Debug.LogError("WORKS ADDED.");
+        }
         else
         {
-            bool IsAlreadyFull = !interactablePickable.AddPickable(interactablePickable.Amount);
+            bool IsAlreadyFull = !AlreadyExisitngItem.AddPickable(interactablePickable.Amount);
             if (IsAlreadyFull)
                 return false;
+            //Debug.LogError("WORKS ADDED ALREADY THERE. AMOUNT now: " + AlreadyExisitngItem.Amount);
+            Destroy(interactablePickable.gameObject);
         }
         return true;
     }
@@ -50,6 +55,7 @@ public class InventoryComponent : MonoBehaviour
         }
         else
         {
+            if (WeaponHaveAlready.gameObject.Equals(WeaponToAdd.gameObject)) return false;
             // If we have the weapon already we add bullets
             WeaponHaveAlready.AddBullets(BulletsToAddByDefault);
             Destroy(WeaponToAdd.gameObject);
@@ -58,24 +64,98 @@ public class InventoryComponent : MonoBehaviour
             
     }
 
-    public void RemoveWeapon(CharacterBase CharacterBaseRef, WeaponBase WeaponToRemoveRef)
+    public WeaponBase RemoveWeapon(CharacterBase CharacterBaseRef, WeaponBase WeaponToRemoveRef)
     {
         WeaponBase WeaponToRemove = FindWeapon(WeaponToRemoveRef);
         if (WeaponToRemove == null)
-            return;
+            return null;
         WeaponToRemove.transform.SetParent(null, true);
         WeaponToRemove.RemovedWeaponToCharacter();
         InventoryWeapons.Remove(WeaponToRemove);
+        return WeaponToRemove;
     }
 
-    public void RemoveWeapon(CharacterBase CharacterBaseRef, int WeaponToRemoveIndex)
+    public WeaponBase RemoveWeapon(CharacterBase CharacterBaseRef, int WeaponToRemoveIndex)
     {
-        if (WeaponToRemoveIndex > InventoryWeapons.Count - 1)
-            return;
+        if (WeaponToRemoveIndex > InventoryWeapons.Count - 1 || WeaponToRemoveIndex == -1)
+            return null;
         WeaponBase WeaponToRemove = InventoryWeapons[WeaponToRemoveIndex];
         WeaponToRemove.transform.SetParent(null, true);
         WeaponToRemove.RemovedWeaponToCharacter();
         InventoryWeapons.Remove(WeaponToRemove);
+        return WeaponToRemove;
+    }
+
+    public GameObject RemoveItem(CharacterBase CharacterBaseRef, InteractablePickable ItemToRemoveRef, int AmountToRemove=1)
+    {
+        InteractablePickable ItemToRemove = FindItem(ItemToRemoveRef);
+        if (ItemToRemove == null)
+            return null;
+        if (AmountToRemove > ItemToRemove.Amount)
+            AmountToRemove = ItemToRemove.Amount;
+        bool ShouldDeleteFromInventory = ItemToRemove.ReduceAmount(AmountToRemove);
+        GameObject PrefabToSpawn = ItemToRemove.ObjectToGivePlayer;
+        if (ShouldDeleteFromInventory)
+        {
+            ItemToRemove.DestroyAndRemoveFromInventory();
+            InventoryItems.Remove(ItemToRemove);
+        }
+        else
+        {
+            // Todo: Drop the item
+        }
+        return PrefabToSpawn;
+    }
+
+    public GameObject RemoveItem(CharacterBase CharacterBaseRef, string ItemName, int AmountToRemove = 1)
+    {
+        InteractablePickable ItemToRemove = FindItem(ItemName);
+        if (ItemToRemove == null)
+            return null;
+        if (AmountToRemove > ItemToRemove.Amount)
+            AmountToRemove = ItemToRemove.Amount;
+        bool ShouldDeleteFromInventory = ItemToRemove.ReduceAmount(AmountToRemove);
+        // Debug.Log("Amount after remove: " + ItemToRemove.Amount);
+        GameObject PrefabToSpawn = ItemToRemove.ObjectToGivePlayer;
+        if (ShouldDeleteFromInventory)
+        {
+            ItemToRemove.DestroyAndRemoveFromInventory();
+            InventoryItems.Remove(ItemToRemove);
+        }
+        else
+        {
+            // Todo: Drop the item
+        }
+        return PrefabToSpawn;
+    }
+
+    public GameObject RemoveItem(CharacterBase CharacterBaseRef, int ItemToRemoveIndex, int AmountToRemove = 1)
+    {
+        if (ItemToRemoveIndex > InventoryItems.Count - 1 || ItemToRemoveIndex == -1)
+            return null;
+        InteractablePickable ItemToRemove = InventoryItems[ItemToRemoveIndex];
+        bool ShouldDeleteFromInventory = ItemToRemove.ReduceAmount(AmountToRemove);
+        GameObject PrefabToSpawn = ItemToRemove.ObjectToGivePlayer;
+        if (ShouldDeleteFromInventory)
+        {
+            ItemToRemove.DestroyAndRemoveFromInventory();
+            InventoryItems.Remove(ItemToRemove);
+        }
+        else
+        {
+            // Todo: Drop the item
+        }
+        return PrefabToSpawn;
+    }
+
+    public int FindWeaponIndex(string WeaponName)
+    {
+        for (int i = 0; i < InventoryWeapons.Count; i++)
+        {
+            if (WeaponName.Equals(InventoryWeapons[i].InteractableName))
+                return i;
+        }
+        return -1;
     }
 
     public int FindWeaponIndex(WeaponBase WeaponToCheck)
@@ -109,12 +189,33 @@ public class InventoryComponent : MonoBehaviour
         return -1;
     }
 
+    public int FindItemIndex(string ItemName)
+    {
+        for (int i = 0; i < InventoryItems.Count; i++)
+        {
+            if (ItemName.Equals(InventoryItems[i].InteractableName))
+                return i;
+        }
+        return -1;
+    }
+
     public InteractablePickable FindItem(InteractablePickable InteractableToCheck)
     {
         for (int i = 0; i < InventoryItems.Count; i++)
         {
             InteractablePickable Interactable = InventoryItems[i];
             if (InteractableToCheck.InteractableName.Equals(Interactable.InteractableName))
+                return Interactable;
+        }
+        return null;
+    }
+
+    public InteractablePickable FindItem(string ItemName)
+    {
+        for (int i = 0; i < InventoryItems.Count; i++)
+        {
+            InteractablePickable Interactable = InventoryItems[i];
+            if (ItemName.Equals(Interactable.InteractableName))
                 return Interactable;
         }
         return null;

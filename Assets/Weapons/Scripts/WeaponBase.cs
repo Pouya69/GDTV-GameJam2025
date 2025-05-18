@@ -7,6 +7,7 @@ public class WeaponBase : InteractablePickable
     [Header("Components")]
     public GameObject BulletClass;  // The bullet prefab we shoot/spawn.
     [Header("Weapon")]
+    public int WeaponId = 0;  // This is for the animations.
     public int CurrentBulletsInMagazine;
     public int MaxBulletsInMagazine;
     public int MaxBulletsAllowed = 80;
@@ -59,28 +60,28 @@ public class WeaponBase : InteractablePickable
     public void AddedWeaponToCharacter(CharacterBase CharacterRef)
     {
         InitializeWeapon(CharacterRef);
-        this.RigidbodyRef.freezeRotation = false;
-        this.RigidbodyRef.useGravity = false;
-        this.RigidbodyRef.detectCollisions = false;
-        this.RigidbodyRef.isKinematic = true;
-        this.RigidbodyRef.linearVelocity = Vector3.zero;
-        this.RigidbodyRef.angularVelocity = Vector3.zero;
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
+
+        PhysicsObjectComponent.RigidbodyRef.freezeRotation = false;
+        PhysicsObjectComponent.RigidbodyRef.useGravity = false;
+        PhysicsObjectComponent.RigidbodyRef.detectCollisions = false;
+        PhysicsObjectComponent.RigidbodyRef.linearVelocity = Vector3.zero;
+        PhysicsObjectComponent.RigidbodyRef.angularVelocity = Vector3.zero;
+        PhysicsObjectComponent.RigidbodyRef.isKinematic = true;
+        transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         CharacterRef.CurrentWeaponEquipped = this;
         // Stuff like collision and stuff
     }
 
     public void RemovedWeaponToCharacter()
     {
-        this.RigidbodyRef.freezeRotation = true;
+        PhysicsObjectComponent.RigidbodyRef.freezeRotation = true;
         this.OwnerCharacterRef.CurrentWeaponEquipped = null;
         this.OwnerCharacterRef = null;
-        this.RigidbodyRef.isKinematic = false;
-        this.RigidbodyRef.useGravity = true;
-        this.RigidbodyRef.detectCollisions = true;
-        this.RigidbodyRef.linearVelocity = Vector3.zero;
-        this.RigidbodyRef.angularVelocity = Vector3.zero;
+        PhysicsObjectComponent.RigidbodyRef.isKinematic = false;
+        PhysicsObjectComponent.RigidbodyRef.useGravity = true;
+        PhysicsObjectComponent.RigidbodyRef.detectCollisions = true;
+        PhysicsObjectComponent.RigidbodyRef.linearVelocity = Vector3.zero;
+        PhysicsObjectComponent.RigidbodyRef.angularVelocity = Vector3.zero;
         // Stuff like collision and stuff
     }
 
@@ -102,7 +103,6 @@ public class WeaponBase : InteractablePickable
         IsReloading = true;
         PlayReloadAnimation();
         return true;
-
     }
 
     // For when the reload animation is done we finish it
@@ -123,6 +123,7 @@ public class WeaponBase : InteractablePickable
     public void PlayReloadAnimation()
     {
         // TODO: Implement Reload Animation for owner.
+        this.OwnerCharacterRef.PlayReloadAnimation();
     }
 
     public void PlayEmptySound()

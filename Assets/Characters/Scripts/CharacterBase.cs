@@ -30,6 +30,7 @@ public class CharacterBase : MonoBehaviour
 
     [Header("Weapon")]
     [NonSerialized] public WeaponBase CurrentWeaponEquipped;
+    [NonSerialized] public bool IsAimingWeapon = false;
 
     [Header("Health")]
     float Health;
@@ -44,9 +45,7 @@ public class CharacterBase : MonoBehaviour
 
     public virtual void Awake()
     {
-        // CharacterMesh = SkeletalMesh.GetComponent<SkinnedMeshRenderer>();
-        // CharacterAnimator = SkeletalMesh.GetComponent<Animator>();
-        this.transform.rotation = Quaternion.Euler(0, 0, 0);
+        // this.transform.rotation = Quaternion.Euler(0, 0, 0);
     }
 
     public virtual void Update()
@@ -55,7 +54,31 @@ public class CharacterBase : MonoBehaviour
     }
 
    
+    public virtual void StopShootingWeapon()
+    {
 
+    }
+    public virtual void AimWeapon(bool IsAiming) {
+        IsAimingWeapon = IsAiming;
+    }
+
+
+    public virtual void Reload()
+    {
+
+    }
+
+    public virtual void ReloadComplete()
+    {
+
+    }
+
+    public virtual void PlayReloadAnimation()
+    {
+
+    }
+
+    public virtual int GetCurrentWeaponId() { return CurrentWeaponEquipped == null ? -1 : CurrentWeaponEquipped.WeaponId; }
 
     public float GetCapsuleCollisionRadius() { return this.CapsuleCollision.radius; }
     public float GetCapsuleCollisionHeight() { return this.CapsuleCollision.height; }

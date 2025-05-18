@@ -18,6 +18,11 @@ public class FieldBase : MonoBehaviour
         SetFieldRadius(this.FieldRadius);
     }
 
+    public virtual void SetFieldAmount(float NewAmount)
+    {
+        this.FieldAmount = NewAmount;
+    }
+
     public void SetFieldRadius(float InRadius) {
         this.SphereMesh.localScale *= InRadius / this.SphereOverlapArea.radius;  // MAKE SURE IT
         this.SphereOverlapArea.radius = InRadius;

@@ -13,6 +13,7 @@ public class CustomCharacterController : MonoBehaviour
     public float DownGroundCheckAfterCapsule = 0.4f;
     [NonSerialized] public Vector3 CurrentAcceleration = Vector3.zero;  // Movement Only. Gravity is done using ConstantGravityForce
     [NonSerialized] public Vector3 InputVelocity = Vector3.zero;  // Clears out after doing the actions
+    [NonSerialized] public Vector3 VelocityBeforeTimeDilation = Vector3.zero;
     public float RotationSpeed = 500f;
     public float RotationSpeed_GRAVITYONLY = 5000f;  // For when preventing the player from falling
     [NonSerialized] public Quaternion TargetRotation;
@@ -58,7 +59,7 @@ public class CustomCharacterController : MonoBehaviour
     public virtual void InteroplateCharacterRotation()
     {
         // TODO: When character is boosing himself, does not work still needs work. :(
-        Vector3 FinalDirection = -(transform.rotation * LastMovementDirection);
+        Vector3 FinalDirection = -(Quaternion.identity * LastMovementDirection);
         Vector3 LocalUp = -GetGravityDirection();
         if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
             TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);

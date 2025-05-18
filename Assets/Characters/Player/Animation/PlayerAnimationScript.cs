@@ -26,7 +26,14 @@ public class PlayerAnimationScript : MonoBehaviour
         bool IsPlayerIOnGround = PlayerCharacterRef.MyController.IsOnGround;
         PlayerAnimator.SetBool("IsCharacterOnGround", IsPlayerIOnGround);
         PlayerAnimator.SetFloat("CharacterSpeed", PlayerCharacterRef.MyPlayerController.RigidbodyRef.linearVelocity.magnitude, CharacterSpeedDamping, deltaTime);
-        
+        PlayerAnimator.SetBool("HasGrenadeInHand", PlayerCharacterRef.HasGrenadeInHand());
+        if (PlayerCharacterRef.HasWeaponEquipped())
+        {
+            if (!PlayerCharacterRef.CurrentWeaponEquipped.IsReloading)
+                PlayerAnimator.SetInteger("CurrentWeaponID", PlayerCharacterRef.GetCurrentWeaponId());
+            PlayerAnimator.SetBool("IsAimingWeapon", PlayerCharacterRef.IsAimingWeapon);
+        }
+
         // PlayerAnimator.SetFloat("CharacterRotation", );
     }
 
@@ -34,5 +41,26 @@ public class PlayerAnimationScript : MonoBehaviour
     {
         PlayerAnimator.applyRootMotion = UseRootMotion;
         PlayerAnimator.CrossFade(ClipName, NormalizedBlendTime, MontageLayerIndex, NormalizedTimeOffset);
+    }
+
+    public void GrenadeThrownComplete()
+    {
+        PlayerCharacterRef.ThrowGrenade();
+    }
+
+    public void TriggerGrenadeThrow()
+    {
+        // Debug.LogWarning("Trying to throw grenade STARTANIM.");
+        PlayerAnimator.SetTrigger("ThrowGrenadeTrigger");
+    }
+
+    public void ReloadComplete()
+    {
+        PlayerCharacterRef.ReloadComplete();
+    }
+
+    public void TriggerStartReload()
+    {
+        PlayerAnimator.SetTrigger("ReloadTrigger");
     }
 }

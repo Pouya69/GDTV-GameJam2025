@@ -10,13 +10,20 @@ public class GravityField : FieldBase
     public override void Awake()
     {
         base.Awake();
-        if (!IsSuckingField)
-            FieldGravity = FieldGravity.normalized * FieldAmount;
     }
 
     public override void Start()
     {
         base.Start();
+        Debug.LogWarning("Force in gravityfield: " + this.FieldAmount);
+        if (!IsSuckingField)
+            FieldGravity = FieldGravity.normalized * FieldAmount;
+    }
+
+    public override void SetFieldAmount(float NewAmount)
+    {
+        base.SetFieldAmount(NewAmount);
+        FieldGravity = FieldGravity.normalized * FieldAmount;
     }
 
     public override void UpdateOverlappingObjects()
@@ -41,10 +48,12 @@ public class GravityField : FieldBase
         base.OnDestroy();
         foreach (PhysicsObjectBasic ObjectOverlapping in PhysicsObjectsInsideField)
         {
+            if (ObjectOverlapping == null) continue;
             ResetPhysicsObject(ObjectOverlapping);
         }
         foreach (EnemyBaseCharacter ChaeracterOverlapping in CharactersInsideField)
         {
+            if (ChaeracterOverlapping == null) continue;
             ResetCharacter(ChaeracterOverlapping);
         }
     }
@@ -61,7 +70,6 @@ public class GravityField : FieldBase
 
     protected override void OnTriggerExit(Collider other)
     {
-
         base.OnTriggerExit(other);
     }
 
@@ -69,16 +77,22 @@ public class GravityField : FieldBase
     {
         base.ResetCharacter(Character);
         Character.MyEnemyController.SetGravityForceAndDirection(Character.MyEnemyController.GravityBeforeCustomGravity, true);
-        Character.MyEnemyController.RigidbodyRef.linearVelocity = Vector3.zero;
-        Character.MyEnemyController.RigidbodyRef.angularVelocity = Vector3.zero;
+        if (!Character.MyEnemyController.RigidbodyRef.isKinematic)
+        {
+            Character.MyEnemyController.RigidbodyRef.linearVelocity = Vector3.zero;
+            Character.MyEnemyController.RigidbodyRef.angularVelocity = Vector3.zero;
+        }
     }
 
     protected override void ResetPhysicsObject(PhysicsObjectBasic PhysicsObject)
     {
         base.ResetPhysicsObject(PhysicsObject);
         PhysicsObject.SetGravityForceAndDirection(PhysicsObject.GravityBeforeCustomGravity, true);  // Instant
-        PhysicsObject.RigidbodyRef.linearVelocity = Vector3.zero;
-        PhysicsObject.RigidbodyRef.angularVelocity = Vector3.zero;
+        if (!PhysicsObject.RigidbodyRef.isKinematic)
+        {
+            PhysicsObject.RigidbodyRef.linearVelocity = Vector3.zero;
+            PhysicsObject.RigidbodyRef.angularVelocity = Vector3.zero;
+        }
     }
 
     public override void CharacterEntered(EnemyBaseCharacter Character)

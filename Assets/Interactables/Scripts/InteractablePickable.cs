@@ -7,7 +7,10 @@ public class InteractablePickable : InteractableBase
     public int MaxAmountAllowed = -1;  // If less than equal 0, it will be infinite.
     public bool IsInstantPickup = false;  // If true, player has to walk on it.
     [Header("Components")]
-    public Rigidbody RigidbodyRef;
+    public PhysicsObjectBasic PhysicsObjectComponent = null;
+    public GameObject ObjectToGivePlayer = null;  // Things like grenades.
+    public GameObject ObjectMesh;
+    public Collider ObjectCollider;
 
     public bool CanStockUpInfiniteAmount() { return MaxAmountAllowed <= 0; }
 
@@ -18,7 +21,7 @@ public class InteractablePickable : InteractableBase
         return true;
     }
 
-    public bool AddPickable(int AmountToAdd) {
+    public virtual bool AddPickable(int AmountToAdd) {
         if (!CanStockUpInfiniteAmount() && Amount == MaxAmountAllowed)
             return false;
         Amount += AmountToAdd;
@@ -27,14 +30,26 @@ public class InteractablePickable : InteractableBase
         return true;
     }
 
-    void Start()
+    public virtual bool ReduceAmount(int AmountToReduce)
     {
-        
+        this.Amount -= AmountToReduce;
+        return this.Amount <= 0;
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public virtual void DestroyAndRemoveFromInventory()
     {
-        
+        Destroy(gameObject);
+    }
+
+    public virtual void JustAddedToInventory(CharacterBase CharacterBaseRef)
+    {
+        this.PhysicsObjectComponent.RigidbodyRef.detectCollisions = false;
+        gameObject.layer = 0;
+        Destroy(this.ObjectCollider);
+        Destroy(this.PhysicsObjectComponent.RigidbodyRef);
+        Destroy(this.PhysicsObjectComponent);
+        Destroy(this.ObjectMesh);
+        gameObject.transform.SetParent(CharacterBaseRef.CapsuleCollision.transform, false);
     }
 }

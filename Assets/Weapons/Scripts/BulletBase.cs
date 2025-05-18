@@ -22,16 +22,7 @@ public class BulletBase : PhysicsObjectBasic
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Start()
     {
-        Collider[] Colliders = Physics.OverlapSphere(this.RigidbodyRef.transform.position, 0.05f);
-        foreach (Collider collider in Colliders)
-        {
-            TimeDilationField timeDilationField;
-            bool IsTimeDilationField = collider.transform.root.TryGetComponent<TimeDilationField>(out timeDilationField);
-            if (!IsTimeDilationField) continue;
-            timeDilationField.PhysicsObjectEntered_ONSTART(this);
-            // Debug.LogError("WORKS");
-        }
-        
+        CheckTimeDilationOnSpawn();
     }
 
     // For when time is stopped, we do not give damage
@@ -46,21 +37,21 @@ public class BulletBase : PhysicsObjectBasic
             this.CustomTimeDilation = this.CustomTimeDilationTarget;
     }
 
-    private void OnTriggerEnter(Collider collider)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (!this.CanDamageOrAffect() || collider.transform.root.TryGetComponent<FieldBase>(out _)) return;
+        if (!this.CanDamageOrAffect() || collision.gameObject.transform.root.TryGetComponent<FieldBase>(out _)) return;
         CharacterBase CharacterHit;
-        bool IsCharacter = collider.transform.root.TryGetComponent<CharacterBase>(out CharacterHit);
+        bool IsCharacter = collision.gameObject.transform.root.TryGetComponent<CharacterBase>(out CharacterHit);
         if (!IsCharacter)
         {
             PhysicsObjectBasic PhysicsObjectHit;
-            bool IsCustomPhysicsObject = collider.transform.root.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectHit);
+            bool IsCustomPhysicsObject = collision.gameObject.transform.root.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectHit);
             BulletBase AnotherBulletHit;
-            bool IsAnotherBullet = collider.transform.root.TryGetComponent<BulletBase>(out AnotherBulletHit);  // For when we hit another bullet coincidentally.
+            bool IsAnotherBullet = collision.gameObject.transform.root.TryGetComponent<BulletBase>(out AnotherBulletHit);  // For when we hit another bullet coincidentally.
             if (IsAnotherBullet) return;
             if (!IsCustomPhysicsObject)
             {
-                Debug.Log("CUSTOMPHYSICS Bullet Collided with: " + collider.gameObject.name);
+                Debug.Log("CUSTOMPHYSICS Bullet Collided with: " + collision.gameObject.gameObject.name);
                 Destroy(gameObject);
                 return;
             }
@@ -71,7 +62,7 @@ public class BulletBase : PhysicsObjectBasic
             HandleCharacterHit(CharacterHit);
             return;
         }
-        Debug.Log("DEFAULT Bullet Collided with: " + collider.gameObject.name);
+        Debug.Log("DEFAULT Bullet Collided with: " + collision.gameObject.gameObject.name);
         Destroy(gameObject);
     }
 
