@@ -8,6 +8,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerCharacter : CharacterBase
 {
+
+    public enum EPlayerState
+    {
+        GAMEPLAY_DEFAULT,
+        IN_CINEMATIC,
+        IN_COMBAT,
+    }
+
     //[Header("Weapons")]
 
     [Header("Input Actions")]
@@ -50,6 +58,9 @@ public class PlayerCharacter : CharacterBase
     public float GrenadeThrowPower = 5f;
     [NonSerialized] public bool CurrentGrenadeSelected = true;  // For deciding whether to throw the time or gravity grenade. true => TimeDilationField   false => GravityField
     [NonSerialized] public FieldBaseGrenade CurrentGrenadeInHand = null;
+
+    [Header("Player State")]
+    public EPlayerState CurrentPlayerState = EPlayerState.GAMEPLAY_DEFAULT;  // Can be used to check for combat, and gameplay states.
 
     public override void Awake()
     {

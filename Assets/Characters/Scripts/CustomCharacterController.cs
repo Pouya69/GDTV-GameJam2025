@@ -30,7 +30,7 @@ public class CustomCharacterController : MonoBehaviour
         if (IsAirCharacter) IsOnGround = false;
         if (!IsAirCharacter && BaseGravity.magnitude == 0)
         {
-            BaseGravity = new Vector3(Physics.gravity.x, Physics.gravity.y, Physics.gravity.z) * this.RigidbodyRef.mass;
+            BaseGravity = new Vector3(Physics.gravity.x, Physics.gravity.y, Physics.gravity.z); // * this.RigidbodyRef.mass;
         }
         else
             SetGravityForceAndDirection(this.BaseGravity);
@@ -69,9 +69,11 @@ public class CustomCharacterController : MonoBehaviour
     {
         if (!this.IsAirCharacter)
             CheckIsOnGround();  // Air characters will never check for onGround
-        RigidbodyRef.AddForce(Multiplier * (InputVelocity + this.BaseGravity));
-        // Debug.Log(InputVelocity.magnitude.ToString());
-        // Debug.LogWarning("Mag: " + RigidbodyRef.linearVelocity.magnitude.ToString());
+        this.RigidbodyRef.linearDamping = IsOnGround ? Damping : 0.0f;
+        if (IsOnGround)
+            RigidbodyRef.AddForce(Multiplier * InputVelocity);
+        else
+            RigidbodyRef.AddForce(Multiplier * (InputVelocity + (this.BaseGravity * this.RigidbodyRef.mass)));
         InputVelocity = Vector3.zero;
     }
 
@@ -100,7 +102,7 @@ public class CustomCharacterController : MonoBehaviour
     }
 
     public virtual void SetGravityForceAndDirection(Vector3 Final, bool IsDoneByForceField=false) {
-        this.BaseGravity = new Vector3(Final.x, Final.y, Final.z) * this.RigidbodyRef.mass;
+        this.BaseGravity = new Vector3(Final.x, Final.y, Final.z);// * this.RigidbodyRef.mass;
     }
 
     // Changes EVERY physics objects' gravity that does not have custom gravity and is not simulated by ConstantForce.
