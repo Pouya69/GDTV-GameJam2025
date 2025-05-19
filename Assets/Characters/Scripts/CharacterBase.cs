@@ -29,7 +29,8 @@ public class CharacterBase : MonoBehaviour
     public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
 
     [Header("Weapon")]
-    [NonSerialized] public WeaponBase CurrentWeaponEquipped;
+    public Transform WeaponAttachHandTransform;
+    public WeaponBase CurrentWeaponEquipped;
     [NonSerialized] public bool IsAimingWeapon = false;
 
     [Header("Health")]
@@ -56,7 +57,8 @@ public class CharacterBase : MonoBehaviour
    
     public virtual void StopShootingWeapon()
     {
-
+        if (CurrentWeaponEquipped == null) return;
+        CurrentWeaponEquipped.StopShoot();
     }
     public virtual void AimWeapon(bool IsAiming) {
         IsAimingWeapon = IsAiming;

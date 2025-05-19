@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CustomCharacterController : MonoBehaviour
@@ -22,7 +21,7 @@ public class CustomCharacterController : MonoBehaviour
     public bool IsMovementDisabled = false;  // For disabling Character Movement
     [NonSerialized] public bool IsOnGround = true;
     public bool IsAirCharacter = false;  // For characters that roam in the air
-    [NonSerialized] Vector3 LastMovementDirection = Vector3.zero;  // For interpolating the character
+    [NonSerialized] public Vector3 LastMovementDirection = Vector3.zero;  // For interpolating the character
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
     {
@@ -35,6 +34,11 @@ public class CustomCharacterController : MonoBehaviour
         else
             SetGravityForceAndDirection(this.BaseGravity);
         RigidbodyRef.linearDamping = Damping;
+    }
+
+    protected virtual void Awake()
+    {
+        
     }
 
     // Update is called once per frame

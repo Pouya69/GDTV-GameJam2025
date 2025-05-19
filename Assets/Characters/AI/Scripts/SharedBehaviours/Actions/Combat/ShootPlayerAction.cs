@@ -8,19 +8,15 @@ using Unity.Properties;
 [NodeDescription(name: "Shoot Player", story: "Shoot at Player", category: "Enemy Character Actions", id: "e17816ea6abce3f1eaa135629e4d5646")]
 public partial class ShootPlayerAction : Action
 {
-
+    [SerializeReference] public BlackboardVariable<GameObject> SelfRef;
+    [SerializeReference] public BlackboardVariable<EnemyBaseCharacter> SelfEnemyBaseCharacter;
+    [SerializeReference] public BlackboardVariable<bool> IsShootingRef;  // true => StartShooting(), false => StopShootingWeapon()
     protected override Status OnStart()
     {
-        return Status.Running;
-    }
-
-    protected override Status OnUpdate()
-    {
+        if (IsShootingRef.Value)
+            SelfEnemyBaseCharacter.Value.Attack();
+        else
+            SelfEnemyBaseCharacter.Value.StopShootingWeapon();
         return Status.Success;
     }
-
-    protected override void OnEnd()
-    {
-    }
 }
-

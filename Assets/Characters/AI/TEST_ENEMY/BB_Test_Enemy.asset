@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
+  m_Name: BB_Test_Enemy
+  m_EditorClassIdentifier: 
+  VersionTimestamp: 638832010110372043
+  AssetID:
+    m_Value0: 11842540601700275308
+    m_Value1: 8029662844891497289
+  m_Blackboard:
+    m_Variables:
+    - rid: 1936166735679062274
+    - rid: 1936166735679062497
+    - rid: 1936166735679062680
+    - rid: 1936166738670387310
+    - rid: 1936166738670387743
+    - rid: 1936166738670387947
+    - rid: 1936166738670388142
+    - rid: 1936166742189408933
+    - rid: 1936166742513418277
+    - rid: 1936166742513418503
+    - rid: 1936166742864429243
+    - rid: 1936166743845371966
+  m_SharedBlackboardVariableGuids:
+  - m_Value0: 6501637707912294575
+    m_Value1: 5834522578588499227
+  references:
+    version: 2
+    RefIds:
+    - rid: 1936166735679062274
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 0}
+    - rid: 1936166735679062497
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 6501637707912294575
+          m_Value1: 5834522578588499227
+        Name: CombatRange
+        m_Value: 15
+    - rid: 1936166735679062680
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 6080882329538782756
+          m_Value1: 4082781019370199368
+        Name: NumAttackedPlayer
+        m_Value: 0
+    - rid: 1936166738670387310
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4072742697232943482
+          m_Value1: 9283921238851262235
+        Name: TargetDestination
+        m_Value: {x: 0, y: 0, z: 0}
+    - rid: 1936166738670387743
+      type: {class: 'BlackboardVariable`1[[PlayerCharacter, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4864623292495334139
+          m_Value1: 15364527643785462829
+        Name: PlayerCharacterRef
+        m_Value: {fileID: 0}
+    - rid: 1936166738670387947
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 6219360300721164279
+          m_Value1: 2319760146832035959
+        Name: HasSeenPlayer
+        m_Value: 0
+    - rid: 1936166738670388142
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 10231342962781246139
+          m_Value1: 1541952671036118581
+        Name: IsMovingToDestination
+        m_Value: 0
+    - rid: 1936166742189408933
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 9395140561720866111
+          m_Value1: 18401695108586761983
+        Name: NumTimesLookedForPlayer
+        m_Value: 0
+    - rid: 1936166742513418277
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 15506757031418610222
+          m_Value1: 16445127504162351695
+        Name: LastKnownPlayerLocation
+        m_Value: {x: 0, y: 0, z: 0}
+    - rid: 1936166742513418503
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1088302448565974561
+          m_Value1: 4930851878252892487
+        Name: PlayerCharacterRefTRANSFORM
+        m_Value: {fileID: 0}
+    - rid: 1936166742864429243
+      type: {class: 'BlackboardVariable`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 16007997852890121867
+          m_Value1: 16729711343546576424
+        Name: MyPatrolPoints
+        m_Value: []
+    - rid: 1936166743845371966
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 14792267824828509891
+          m_Value1: 18101309642635610610
+        Name: HasPatrolPoints
+        m_Value: 1

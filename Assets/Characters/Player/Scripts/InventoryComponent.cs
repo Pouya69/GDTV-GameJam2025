@@ -6,7 +6,6 @@ public class InventoryComponent : MonoBehaviour
 {
     [NonSerialized] List<WeaponBase> InventoryWeapons = new List<WeaponBase>();
     [NonSerialized] List<InteractablePickable> InventoryItems = new List<InteractablePickable>();
-    public Transform WeaponAttachHandTransform;
     private void Awake()
     {
         this.enabled = false;
@@ -20,7 +19,7 @@ public class InventoryComponent : MonoBehaviour
             bool IsWeapon = interactablePickable.TryGetComponent<WeaponBase>(out ItemWeapon);
             if (IsWeapon)
             {
-                bool AddedWeaponOrAmmo = AddWeapon(CharacterBaseRef, ItemWeapon, interactablePickable.Amount);
+                bool AddedWeaponOrAmmo = AddWeapon(CharacterBaseRef, CharacterBaseRef.WeaponAttachHandTransform, ItemWeapon, interactablePickable.Amount);
                 //if (AddedWeaponOrAmmo)
                 //Debug.LogWarning("Picked up wepaon: " + ItemWeapon.InteractableName);
                 return true;
@@ -44,12 +43,11 @@ public class InventoryComponent : MonoBehaviour
         return true;
     }
 
-    public bool AddWeapon(CharacterBase CharacterBaseRef, WeaponBase WeaponToAdd, int BulletsToAddByDefault=5) {
+    public bool AddWeapon(CharacterBase CharacterBaseRef, Transform WeaponAttachHandTransform, WeaponBase WeaponToAdd, int BulletsToAddByDefault=5) {
         WeaponBase WeaponHaveAlready = this.FindWeapon(WeaponToAdd);
         if (WeaponHaveAlready == null)
         {
             InventoryWeapons.Add(WeaponToAdd);
-            WeaponToAdd.transform.SetParent(WeaponAttachHandTransform, false);
             WeaponToAdd.AddedWeaponToCharacter(CharacterBaseRef);
             return true;
         }

@@ -393,16 +393,7 @@ public class PlayerCharacter : CharacterBase
     {
         base.Attack();
         if (CurrentWeaponEquipped == null) return;
-        if (CurrentWeaponEquipped.IsWeaponSingleShot())
-            CurrentWeaponEquipped.Shoot();
-        else
-            CurrentWeaponEquipped.StartShooting();
-    }
-
-    public override void StopShootingWeapon()
-    {
-        if (CurrentWeaponEquipped == null) return;
-        CurrentWeaponEquipped.StopShoot();
+        CurrentWeaponEquipped.StartShooting();
     }
 
     public override void Reload()
