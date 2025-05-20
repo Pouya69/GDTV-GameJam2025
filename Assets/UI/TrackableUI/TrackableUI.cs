@@ -7,15 +7,15 @@ public class TrackableUI : MonoBehaviour
     {
         Enemy = 0,
         Objective = 1,
-        PickableGranede = 2,
+        Pickable = 2,
         GravityDevice = 3,
-        BigHumen = 4,
-        ThrownGranede = 5,
+        GravityField = 4,
+        ReTime = 5
     }
     [Header("Tracking Paramters")]
     public Transform target; // The world object to track
     public RectTransform uiIcon; // The UI icon that follows the object
-    public Camera cam;
+    private Camera cam;
     public Vector3 offset = new Vector3(0, 2, 0); // UI offset above the object
 
     [Header("Display UI")]
@@ -27,6 +27,7 @@ public class TrackableUI : MonoBehaviour
     public void Awake()
     {
         Image.sprite = DisplayIcons[(int)ImageType];
+        cam = Camera.main;
     }
     void Update()
     {
