@@ -88,6 +88,7 @@ public class PhysicsObjectBasic : MonoBehaviour
 
     public void CheckTimeDilationOnSpawn()
     {
+        if (this.RigidbodyRef == null) return;
         Collider[] Colliders = Physics.OverlapSphere(this.RigidbodyRef.transform.position, 0.05f);
         foreach (Collider collider in Colliders)
         {

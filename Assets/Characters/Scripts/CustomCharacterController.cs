@@ -9,6 +9,7 @@ public class CustomCharacterController : MonoBehaviour
     public CharacterBase CharacterBaseRef;
     public Rigidbody RigidbodyRef;
     [Header("Movements")]
+    public bool CanMoveInAir = false;
     public float DownGroundCheckAfterCapsule = 0.4f;
     [NonSerialized] public Vector3 CurrentAcceleration = Vector3.zero;  // Movement Only. Gravity is done using ConstantGravityForce
     [NonSerialized] public Vector3 InputVelocity = Vector3.zero;  // Clears out after doing the actions
@@ -56,7 +57,9 @@ public class CustomCharacterController : MonoBehaviour
 
     public virtual void AddMovementInput(Vector3 Direction, float Scale)
     {
-        InputVelocity += Direction.normalized * Scale;
+        // if (!CanMoveInAir && !IsOnGround) return;
+        InputVelocity += Direction.normalized * Scale * (IsOnGround ? 1 : 0.2f);
+        
         LastMovementDirection = InputVelocity.normalized;
     }
 
@@ -94,9 +97,8 @@ public class CustomCharacterController : MonoBehaviour
             IsOnGround = false;
             return;
         }
+        IsOnGround = !HitResult.collider.transform.tag.Equals("GameController");
 
-        // Debug.Log(HitResult.collider.transform.name);
-        IsOnGround = !HitResult.collider.transform.root.tag.Equals("GameController");
     }
 
     public Vector3 GetGravityDirection() { return BaseGravity.normalized; }

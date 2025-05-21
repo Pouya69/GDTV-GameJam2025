@@ -174,12 +174,13 @@ public class PlayerCharacter : CharacterBase
     }
     private void Jump_performed(InputAction.CallbackContext obj)
     {
-        IsJumpBoosting = true;
+        BoostJump();
+        //IsJumpBoosting = true;
     }
 
     private void Jump_canceled(InputAction.CallbackContext obj)
     {
-        IsJumpBoosting = false;
+        //IsJumpBoosting = false;
     }
 
     private void AttackPrimary_performed(InputAction.CallbackContext obj)
@@ -250,15 +251,17 @@ public class PlayerCharacter : CharacterBase
 
     void HandleInputs()
     {
-        if (IsJumpBoosting)
-            BoostJump();
+        //if (IsJumpBoosting)
+            //BoostJump();
         MoveDirectionXYKeyboard = MoveAction.ReadValue<Vector2>();
         Move(MoveDirectionXYKeyboard);
         Look(LookAction.ReadValue<Vector2>());
     }
 
     public void BoostJump() {
-        MyPlayerController.AddMovementInput(-MyPlayerController.GetGravityDirection(), BoostUpForce);
+        if (this.MyPlayerController.IsOnGround)
+            this.MyPlayerController.RigidbodyRef.AddForce(-MyPlayerController.GetGravityDirection() * BoostUpForce);
+       //  MyPlayerController.AddMovementInput(-MyPlayerController.GetGravityDirection(), BoostUpForce);
     }
 
     public void Look(Vector2 Direction) {
