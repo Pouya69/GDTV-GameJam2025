@@ -3,14 +3,14 @@ using Unity.Behavior;
 using UnityEngine;
 using Action = Unity.Behavior.Action;
 using Unity.Properties;
-using UnityEngine.AI;
 using System.Collections.Generic;
+using UnityEngine.AI;
 using Random = UnityEngine.Random;
 using System.Collections;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Find Spot Around Location", story: "Run EQS", category: "Action", id: "8f1bc6a21e09c66b8ebc9d5847e50280")]
-public partial class FindSpotAroundLocationAction : Action
+[NodeDescription(name: "Find Spot Around Transform", story: "Run EQS (Transform)", category: "Enemy Character Actions", id: "b789e1037f08e6db274f56504153e3a4")]
+public partial class FindSpotAroundTransformAction : Action
 {
     public struct FEQS_Result
     {
@@ -63,8 +63,8 @@ public partial class FindSpotAroundLocationAction : Action
     [SerializeReference] public BlackboardVariable<int> ScanLayer;
     [SerializeReference] public BlackboardVariable<GameObject> SelfRef;
     // [SerializeReference] public BlackboardVariable<bool> IsStartPointVector3;
-    // [SerializeReference] public BlackboardVariable<Transform> StartPointTransform;  // Usually the Self itself suffices. But sometime you want to hide from player and need to use PlayerRef instead.
-    [SerializeReference] public BlackboardVariable<Vector3> StartPointVector3;  // Usually the Self itself suffices. But sometime you want to hide from player and need to use PlayerRef instead.
+    [SerializeReference] public BlackboardVariable<Transform> StartPointTransform;  // Usually the Self itself suffices. But sometime you want to hide from player and need to use PlayerRef instead.
+    // [SerializeReference] public BlackboardVariable<Vector3> StartPointVector3;  // Usually the Self itself suffices. But sometime you want to hide from player and need to use PlayerRef instead.
     [SerializeReference] public BlackboardVariable<Vector3> OutResult;  // This is where the result of the EQS is stored.
 
     [SerializeReference] public BlackboardVariable<EnemyBaseCharacter> SelfEnemyBaseCharacter;
@@ -111,7 +111,7 @@ public partial class FindSpotAroundLocationAction : Action
         float spacing = sphereRad;
         float minDistAcceptable = MinDistanceFromStartPoint.Value;
 
-        Vector3 startPos = StartPointVector3.Value;
+        Vector3 startPos = StartPointTransform.Value.position;
         Quaternion rotation = SelfEnemyBaseCharacter.Value.CapsuleCollision.transform.rotation;
 
         EQS_Results.Clear();
@@ -205,7 +205,7 @@ public partial class FindSpotAroundLocationAction : Action
         int stepsZ = Mathf.FloorToInt(AreaBoxValue.z / SphereRad);
         float spacing = SphereRad;
         float minDistAcceptable = MinDistanceFromStartPoint.Value;
-        Vector3 StartLocation = StartPointVector3.Value;
+        Vector3 StartLocation = StartPointTransform.Value.position;
         Vector3 halfSize = AreaBoxValue * 0.5f;
 
         for (int x = 0; x <= stepsX; x++)
@@ -301,5 +301,4 @@ public partial class FindSpotAroundLocationAction : Action
     {
         this.OutResult.Value = EQS_ResultSelected.Location;
     }
-
 }

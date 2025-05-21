@@ -73,7 +73,7 @@ public class CustomCharacterController : MonoBehaviour
     {
         if (!this.IsAirCharacter)
             CheckIsOnGround();  // Air characters will never check for onGround
-        this.RigidbodyRef.linearDamping = IsOnGround ? Damping : 0.0f;
+        this.RigidbodyRef.linearDamping = IsOnGround ? Damping : 0.5f;
         if (IsOnGround)
             RigidbodyRef.AddForce(Multiplier * InputVelocity);
         else
@@ -87,8 +87,16 @@ public class CustomCharacterController : MonoBehaviour
         Vector3 Start = CharacterBaseRef.CapsuleCollision.transform.position;
         Vector3 GravityDirection = GetGravityDirection();
         RaycastHit HitResult;
+        Debug.DrawLine(Start, Start + (GravityDirection * (DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()))), Color.cyan);
         bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), 1);
-        IsOnGround = didHitGround;
+        if (!didHitGround)
+        {
+            IsOnGround = false;
+            return;
+        }
+
+        // Debug.Log(HitResult.collider.transform.name);
+        IsOnGround = !HitResult.collider.transform.root.tag.Equals("GameController");
     }
 
     public Vector3 GetGravityDirection() { return BaseGravity.normalized; }

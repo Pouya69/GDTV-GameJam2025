@@ -11,11 +11,18 @@ public class EnemyBaseController : CustomCharacterController
     [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
     [NonSerialized] public Vector3 GravityBeforeCustomGravity = Vector3.zero;  // For force fields
     [Header("Base Enemy")]
+    public EnemyBaseCharacter EnemyBaseCharacterRef;
+    public float StoppingDistanceFromDestination = 0.2f;  // If less than equal this, that means we have arrived.
     [SerializeField] private BehaviorGraphAgent MyBehaviourTreeAgent;
-    [SerializeField] private NavMeshAgent MyNavAgent;
+    [SerializeField] public NavMeshAgent MyNavAgent;
     [NonSerialized] private BlackboardReference MyBlackBoardRef;
-    [NonSerialized] public EnemyBaseCharacter EnemyBaseCharacterRef;
+    public AISenseHandler MySenseHandler;
+    // [NonSerialized] private int CurrentCornerIndex = 0;
 
+    public Vector3 GetEnemyForward()
+    {
+        return -this.MyNavAgent.velocity.normalized;
+    }
 
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
     {
@@ -61,11 +68,12 @@ public class EnemyBaseController : CustomCharacterController
         // The movement input is update from CustomMoveToAction node.
         if (!this.IsAirCharacter)
             CheckIsOnGround();  // Air characters will never check for onGround
+        this.ManualMovementThroughNavAgent();
         this.RigidbodyRef.linearDamping = IsOnGround ? Damping : 0.0f;
         if (IsOnGround)
-            RigidbodyRef.AddForce(Multiplier * InputVelocity);
+            RigidbodyRef.AddForce(this.CustomTimeDilation * InputVelocity);
         else
-            RigidbodyRef.AddForce(Multiplier * (InputVelocity + (this.BaseGravity * this.RigidbodyRef.mass)));
+            RigidbodyRef.AddForce(this.CustomTimeDilation * (InputVelocity + (this.BaseGravity * this.RigidbodyRef.mass)));
         InputVelocity = Vector3.zero;
         
         
@@ -74,11 +82,34 @@ public class EnemyBaseController : CustomCharacterController
 
     public override void InteroplateCharacterRotation()
     {
-        // TODO: When character is boosing himself, does not work still needs work. :(
-        Vector3 FinalDirection = -(Quaternion.identity * LastMovementDirection);
-        Vector3 LocalUp = -GetGravityDirection();
-        if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
-            TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
+        // Vector3 FinalDirection = -(Quaternion.identity * LastMovementDirection);
+        Vector3 FinalDirection = GetEnemyForward();
+        if (FinalDirection.magnitude >= 0.01)
+        {
+            FinalDirection.Normalize();
+            Vector3 LocalUp = -GetGravityDirection();
+            if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
+                TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
+        }
+        EnemyBaseCharacterRef.CapsuleCollision.transform.rotation = Quaternion.RotateTowards(EnemyBaseCharacterRef.CapsuleCollision.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
+        
+    }
+
+    public void ManualMovementThroughNavAgent()
+    {
+        if (this.MyNavAgent.pathPending) return;
+        if (this.MyNavAgent.path.corners == null || this.MyNavAgent.path.corners.Length == 0)
+        {
+            // CurrentCornerIndex = 0;
+            return;
+        }
+        //if (CurrentCornerIndex > this.MyNavAgent.path.corners.Length-1)
+            //return;
+        Vector3 MyPosition = EnemyBaseCharacterRef.CapsuleCollision.transform.position;
+        Vector3 CurrentTargetInPath = this.MyNavAgent.nextPosition; //this.MyNavAgent.path.corners[CurrentCornerIndex];
+        this.AddMovementInput((CurrentTargetInPath - MyPosition).normalized, EnemyBaseCharacterRef.CurrentMovementSpeed);
+        //if (Vector3.Distance(MyPosition, CurrentTargetInPath) < StoppingDistanceFromDestination)
+            //CurrentCornerIndex++;
     }
 
 
@@ -104,12 +135,19 @@ public class EnemyBaseController : CustomCharacterController
         this.MyNavAgent.updateRotation = false;  // This is done by the custom movements that we have already.
         this.MyNavAgent.updateUpAxis = false;  // Done by custom gravity
         this.MyNavAgent.updatePosition = false;
-
     }
 
     // For the blackboard.
-    public void UpdatePlayerCharacterRef(PlayerCharacter playerCharacterRef = null)
+    public void UpdatePlayerCharacterRef(PlayerCharacter playerCharacterRef = null, Vector3 LastPlayerLocation = new Vector3())
     {
         this.MyBlackBoardRef.SetVariableValue<PlayerCharacter>("PlayerCharacterRef", playerCharacterRef);
+        this.MyBlackBoardRef.SetVariableValue<Transform>("PlayerCharacterRefTRANSFORM", playerCharacterRef == null ? null : playerCharacterRef.CapsuleCollision.transform);
+        if (playerCharacterRef == null)
+        {
+            NavMeshPath p = new();
+            // Checking if player was on my surface/reachable.
+            this.MyBlackBoardRef.SetVariableValue<Vector3>("LastKnownPlayerLocation", LastPlayerLocation);
+            this.MyBlackBoardRef.SetVariableValue<bool>("WasLastPlayerLocationInMySurface", this.MyNavAgent.CalculatePath(LastPlayerLocation, p));
+        }
     }
 }

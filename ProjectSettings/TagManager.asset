@@ -14,7 +14,7 @@ TagManager:
   - Interactable
   - CustomPhysicsObject
   - Damagable
-  - 
+  - PlayerLayer
   - 
   - 
   - 

@@ -6,12 +6,13 @@ using Unity.Properties;
 using UnityEngine.AI;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Custom Move To Location", story: "Custom Navigate [Agent] to [Location]", category: "Action/Navigation", id: "e541b98d294dd641f024286df964853a")]
-public partial class CustomMoveToAction : Action
+[NodeDescription(name: "Custom Move To Target", story: "Custom Move To [Target]", category: "Action/Navigation", id: "09d403b129a0096e130bc44caacfe92e")]
+public partial class CustomMoveToTarget : Action
 {
+
     [SerializeReference] public BlackboardVariable<GameObject> Agent;
     [SerializeReference] public BlackboardVariable<EnemyBaseCharacter> SelfEnemyBaseRef;
-    [SerializeReference] public BlackboardVariable<Vector3> Location;
+    [SerializeReference] public BlackboardVariable<Transform> Target;
     [SerializeReference] public BlackboardVariable<float> Speed = new BlackboardVariable<float>(1.0f);  // This is CustomTimeDilation.
     [SerializeReference] public BlackboardVariable<float> DistanceThreshold = new BlackboardVariable<float>(0.2f);
     [SerializeReference] public BlackboardVariable<string> AnimatorSpeedParam = new BlackboardVariable<string>("SpeedMagnitude");
@@ -25,7 +26,7 @@ public partial class CustomMoveToAction : Action
 
     protected override Status OnStart()
     {
-        if (Agent.Value == null || Location.Value == null)
+        if (Agent.Value == null || Target.Value == null)
         {
             return Status.Failure;
         }
@@ -35,7 +36,7 @@ public partial class CustomMoveToAction : Action
 
     protected override Status OnUpdate()
     {
-        if (Agent.Value == null || Location.Value == null)
+        if (Agent.Value == null || Target.Value == null)
         {
             return Status.Failure;
         }
@@ -56,12 +57,12 @@ public partial class CustomMoveToAction : Action
                 float ratio = distance / SlowDownDistance;
                 speed = Mathf.Max(0.05f, Speed * ratio);
             }
-            
+
             Vector3 MovementDirection = locationPosition - agentPosition;
             // toDestination.y = 0.0f;  // TODO: This needs attention. Default y would be 0 but now we need to see in what direction the localY is 0. MAYBE...?
             MovementDirection.Normalize();
-            
-            //agentPosition += MovementDirection * (speed * Time.deltaTime);MySenseHandler
+
+            //agentPosition += MovementDirection * (speed * Time.deltaTime);
             //Agent.Value.transform.position = agentPosition;
 
             // Look at the target.
@@ -134,7 +135,7 @@ public partial class CustomMoveToAction : Action
     private float GetDistanceToLocation(out Vector3 agentPosition, out Vector3 locationPosition)
     {
         agentPosition = SelfEnemyBaseRef.Value.CapsuleCollision.transform.position;
-        locationPosition = Location.Value;
+        locationPosition = Target.Value.position;
         return Vector3.Distance(new Vector3(agentPosition.x, agentPosition.y, agentPosition.z), locationPosition);
     }
 

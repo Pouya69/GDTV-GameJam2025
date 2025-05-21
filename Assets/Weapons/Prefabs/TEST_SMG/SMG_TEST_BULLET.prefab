@@ -52,7 +52,7 @@ MonoBehaviour:
   CustomTimeDilation: 1
   TimeDilationDifferenceIgnore: 0.01
   BaseDamage: 20
-  DestroyBulletAfterSeconds: 30
+  DestroyBulletAfterSeconds: 10
 --- !u!65 &3911613576057799988
 BoxCollider:
   m_ObjectHideFlags: 0
