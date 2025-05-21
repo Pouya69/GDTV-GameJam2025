@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{3cdbf368-f880-4ae8-b722-679aaa5f8d62}">
+		<property name="assetPath">
+			<value>SFX/Footsteps/Carpet/Land Step Rug A.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.31435374149659862</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{0b75d310-c42a-49f9-88ef-1592d05eabf2}</destination>
+		</relationship>
+	</object>
+</objects>
