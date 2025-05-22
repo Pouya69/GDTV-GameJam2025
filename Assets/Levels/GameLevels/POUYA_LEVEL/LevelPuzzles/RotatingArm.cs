@@ -29,5 +29,17 @@ public class RotatingArm : PhysicsObjectBasic
         
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("GameController")) return;
+        //other.transform.root.SetParent(this.transform, true);
+
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("GameController")) return;
+        //other.transform.root.SetParent(null, true);
+    }
 
 }

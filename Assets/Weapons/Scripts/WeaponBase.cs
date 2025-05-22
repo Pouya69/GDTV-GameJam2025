@@ -14,6 +14,7 @@ public class WeaponBase : InteractablePickable
     public int BulletsLeft;  // Max bullets left (does not include CurrentBulletsInMagazine)
     public int BulletsShootingOneShot = 1;  // Things like double barrel shotgun or burst rifles and etc.
     public float BulletVelocityBase = 800f;  // When spawning a bullet, how fast it should go.
+    public Transform WeaponGrabTransform;
     [NonSerialized] private CharacterBase OwnerCharacterRef;
     [NonSerialized] private bool IsInfiniteAmmo = false;  // For enemies it is infinite
     [NonSerialized] public bool IsReloading;
@@ -60,7 +61,7 @@ public class WeaponBase : InteractablePickable
 
     public void AddedWeaponToCharacter(CharacterBase CharacterRef)
     {
-        this.transform.SetParent(CharacterRef.WeaponAttachHandTransform, false);
+        this.WeaponGrabTransform.transform.SetParent(CharacterRef.WeaponAttachHandTransform, false);
         InitializeWeapon(CharacterRef);
         IsInfiniteAmmo = CharacterRef.TryGetComponent<EnemyBaseCharacter>(out _);  // Enemies can shoot infinitely.
         PhysicsObjectComponent.RigidbodyRef.freezeRotation = false;
@@ -69,7 +70,7 @@ public class WeaponBase : InteractablePickable
         PhysicsObjectComponent.RigidbodyRef.linearVelocity = Vector3.zero;
         PhysicsObjectComponent.RigidbodyRef.angularVelocity = Vector3.zero;
         PhysicsObjectComponent.RigidbodyRef.isKinematic = true;
-        transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        this.WeaponGrabTransform.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         CharacterRef.CurrentWeaponEquipped = this;
         // Stuff like collision and stuff
     }

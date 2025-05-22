@@ -21,7 +21,9 @@ public class CharacterBase : MonoBehaviour
     [NonSerialized] public float CurrentMovementSpeed;
     public float MovementSpeed = 10f;
     public float MovementSpeedSprint = 50f;
+    public float MovementSpeedChangeSpeed = 30f;
     [NonSerialized] public bool IsSprinting = false;
+
     public float GravityForce = 981f;  // For when we are changing gravity. It's the strength that can be changed through code/inspector.
 
     [Header("Time Dilation")]
@@ -51,9 +53,21 @@ public class CharacterBase : MonoBehaviour
 
     public virtual void Update()
     {
+        //CurrentMovementSpeed = Mathf.MoveTowards(CurrentMovementSpeed, IsSprinting ? MovementSpeedSprint : MovementSpeed, Time.deltaTime * MovementSpeedChangeSpeed);
         // Debug.Log(CurrentMovementSpeed.ToString());
     }
 
+    public virtual void StartSprint()
+    {
+        IsSprinting = true;
+        CurrentMovementSpeed = this.MovementSpeedSprint;
+    }
+
+    public virtual void StopSprint()
+    {
+        IsSprinting = false;
+        CurrentMovementSpeed = this.MovementSpeed;
+    }
    
     public virtual void StopShootingWeapon()
     {

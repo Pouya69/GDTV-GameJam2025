@@ -27,11 +27,14 @@ public class PlayerAnimationScript : MonoBehaviour
         PlayerAnimator.SetBool("IsCharacterOnGround", IsPlayerIOnGround);
         PlayerAnimator.SetFloat("CharacterSpeed", PlayerCharacterRef.MyPlayerController.RigidbodyRef.linearVelocity.magnitude, CharacterSpeedDamping, deltaTime);
         PlayerAnimator.SetBool("HasGrenadeInHand", PlayerCharacterRef.HasGrenadeInHand());
+       //  Debug.Log(PlayerCharacterRef.GetCurrentWeaponId());
+        PlayerAnimator.SetInteger("CurrentWeaponID", PlayerCharacterRef.GetCurrentWeaponId());
+        PlayerAnimator.SetBool("IsAimingWeapon", PlayerCharacterRef.IsAimingWeapon);
         if (PlayerCharacterRef.HasWeaponEquipped())
         {
-            if (!PlayerCharacterRef.CurrentWeaponEquipped.IsReloading)
-                PlayerAnimator.SetInteger("CurrentWeaponID", PlayerCharacterRef.GetCurrentWeaponId());
-            PlayerAnimator.SetBool("IsAimingWeapon", PlayerCharacterRef.IsAimingWeapon);
+            //if (!PlayerCharacterRef.CurrentWeaponEquipped.IsReloading)
+                
+            
         }
 
         // PlayerAnimator.SetFloat("CharacterRotation", );

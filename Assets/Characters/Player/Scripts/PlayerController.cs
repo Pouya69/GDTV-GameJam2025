@@ -54,6 +54,7 @@ public class PlayerController : CustomCharacterController
 
     public override void AddMovementInput(Vector3 Direction, float Scale)
     {
+        Debug.Log(Scale);
         base.AddMovementInput(Direction, Scale);
     }
 

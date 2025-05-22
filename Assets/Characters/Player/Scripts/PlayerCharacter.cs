@@ -22,6 +22,7 @@ public class PlayerCharacter : CharacterBase
     InputAction MoveAction;
     InputAction LookAction;
     InputAction JumpAction;
+    InputAction SprintAction;
     InputAction InteractAction;
     InputAction AttackPrimaryAction;
     InputAction AttackSecondaryAction;
@@ -68,6 +69,8 @@ public class PlayerCharacter : CharacterBase
     }
 
     public void SetupPlayerActions() {
+        SprintAction = InputSystem.actions.FindAction("Sprint");
+        SprintAction.Enable();
         ChangeSelectedGrenade = InputSystem.actions.FindAction("Change Selected Grenade");
         ChangeSelectedGrenade.Enable();
         GrenadeAction = InputSystem.actions.FindAction("Grenade");
@@ -94,6 +97,8 @@ public class PlayerCharacter : CharacterBase
         AttackPrimaryAction.Enable();
         AttackSecondaryAction = InputSystem.actions.FindAction("AttackSecondary");
         AttackSecondaryAction.Enable();
+        SprintAction.performed += SprintAction_performed;
+        SprintAction.canceled += SprintAction_canceled;
         ChangeSelectedGrenade.performed += ChangeSelectedGrenade_performed;
         GrenadeAction.performed += GrenadeAction_performed;
         GrenadeAction.canceled += GrenadeAction_canceled;
@@ -108,6 +113,16 @@ public class PlayerCharacter : CharacterBase
         JumpAction.canceled += Jump_canceled;
         ChangeSelfGravityAction.performed += ChangeSelfGravityAction_performed;
         ChangeWorldGravityAction.performed += ChangeWorldGravityAction_performed;
+    }
+
+    private void SprintAction_canceled(InputAction.CallbackContext obj)
+    {
+        this.StopSprint();
+    }
+
+    private void SprintAction_performed(InputAction.CallbackContext obj)
+    {
+        this.StartSprint();
     }
 
     private void ChangeSelectedGrenade_performed(InputAction.CallbackContext obj)
@@ -208,6 +223,8 @@ public class PlayerCharacter : CharacterBase
         GrenadeAction.performed -= GrenadeAction_performed;
         GrenadeAction.canceled -= GrenadeAction_canceled;
         ChangeSelectedGrenade.performed -= ChangeSelectedGrenade_performed;
+        SprintAction.performed -= SprintAction_performed;
+        SprintAction.canceled -= SprintAction_canceled;
         MoveAction.Disable();
         LookAction.Disable();
         InteractAction.Disable();
@@ -220,8 +237,9 @@ public class PlayerCharacter : CharacterBase
         ChangeWorldGravityAction.Disable();
         ChangeSelfGravityAction_DIRECTION.Disable();
         ChangeWorldGravityAction_DIRECTION.Disable();
+        SprintAction.Disable();
 
-        
+
     }
 
     public void OnDisable()
