@@ -37,6 +37,7 @@ public class PlayerCharacter : CharacterBase
     [Header("Movements")]
     public float BoostUpForce = 100f;
     [NonSerialized] public Vector2 MoveDirectionXYKeyboard;  // Just the keyboard WASD in the form of Vector2. For Gravity Change.
+    public float AimingMovementSpeed = 1000f;
     [Header("Components")]
     public CinemachineCamera CameraComp;
     public PlayerController MyPlayerController;
@@ -117,11 +118,13 @@ public class PlayerCharacter : CharacterBase
 
     private void SprintAction_canceled(InputAction.CallbackContext obj)
     {
+        if (IsAimingWeapon) return;
         this.StopSprint();
     }
 
     private void SprintAction_performed(InputAction.CallbackContext obj)
     {
+        if (IsAimingWeapon) return;
         this.StartSprint();
     }
 
@@ -284,7 +287,8 @@ public class PlayerCharacter : CharacterBase
 
     public void Look(Vector2 Direction) {
         Vector3 capsuleUp = -MyPlayerController.GetGravityDirection();
-        MyPlayerController.CameraRotation.x += Direction.y * MyPlayerController.LookSensivityY * (capsuleUp.y < 0 ? -1f : 1f) * (MyPlayerController.InvertLookY ? -1f : 1f) * Time.deltaTime;
+        float XAmount = Direction.y * MyPlayerController.LookSensivityY * (capsuleUp.y < 0 ? -1f : 1f) * (MyPlayerController.InvertLookY ? -1f : 1f) * Time.deltaTime;
+        MyPlayerController.CameraRotation.x += XAmount;
         MyPlayerController.CameraRotation.x = Mathf.Clamp(MyPlayerController.CameraRotation.x, MyPlayerController.MinVerticalRotation, MyPlayerController.MaxVerticalRotation);
         MyPlayerController.CameraRotation.y += Direction.x * MyPlayerController.LookSensivityX * (MyPlayerController.InvertLookX ? -1f : 1f) * Time.deltaTime;
         // Vector3 capsuleUp = -MyPlayerController.GetGravityDirection();   
@@ -292,11 +296,14 @@ public class PlayerCharacter : CharacterBase
         if (capsuleUp == Vector3.zero)
             capsuleUp = CapsuleCollision.transform.up;
         Vector3 capsuleRight = MyPlayerController.GetRightBasedOnGravity();
-        Quaternion TargetCameraRotation = Quaternion.AngleAxis(MyPlayerController.CameraRotation.y, capsuleUp) * Quaternion.AngleAxis(MyPlayerController.CameraRotation.x, capsuleRight);
-        Vector3 FocusPosition = MyPlayerController.CameraFocusTarget.transform.position;// + new Vector3(MyPlayerController.FramingOffset.x, MyPlayerController.FramingOffset.y, 0);
+        Quaternion TargetCameraRotation = Quaternion.AngleAxis(MyPlayerController.CameraRotation.y, capsuleUp) *
+            Quaternion.AngleAxis(MyPlayerController.CameraRotation.x + (capsuleUp.Equals(Vector3.forward) ? 90 : (capsuleUp.Equals(Vector3.back) ? -90 : 0)), capsuleRight);
+        Vector3 FocusPosition = MyPlayerController.CameraFocusTarget.transform.position + new Vector3(MyPlayerController.FramingOffset.x, MyPlayerController.FramingOffset.y, MyPlayerController.FramingOffset.z);
         Vector3 CameraDistance = TargetCameraRotation * new Vector3(0, 0, MyPlayerController.CameraDistance);
         CameraComp.transform.position = FocusPosition - CameraDistance;
         CameraComp.transform.rotation = Quaternion.LookRotation((CapsuleCollision.transform.position - CameraComp.transform.position).normalized, capsuleUp);
+        // CameraComp.transform.rotation = TargetCameraRotation;
+
     }
 
     public override void Move(Vector2 Direction)
@@ -406,7 +413,10 @@ public class PlayerCharacter : CharacterBase
 
     public override void AimWeapon(bool IsAiming)
     {
+        if (IsSprinting && IsAiming)
+            this.StopSprint();
         base.AimWeapon(IsAiming);
+        this.CurrentMovementSpeed = IsAiming ? AimingMovementSpeed : MovementSpeed;
         MyPlayerController.TargetCameraDistance = IsAiming ? MyPlayerController.CameraDistanceAiming : MyPlayerController.CameraDistanceInit;
     }
 

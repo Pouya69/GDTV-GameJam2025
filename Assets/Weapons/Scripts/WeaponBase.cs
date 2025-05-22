@@ -24,6 +24,8 @@ public class WeaponBase : InteractablePickable
     [NonSerialized] private float TimePassedSinceLastShot = 0f;
     public Transform ShootLocation_TEST_ONLY;  // Hopefully we will have a skeleton with a reload animation...
     [NonSerialized] public bool IsShooting = false;
+    public Vector3 AttachmentOffset = Vector3.zero;
+    public Vector3 AttachmentOffsetRotation = Vector3.zero;
 
     public void InitializeWeapon(CharacterBase InOwnerCharacterRef)
     {
@@ -70,8 +72,9 @@ public class WeaponBase : InteractablePickable
         PhysicsObjectComponent.RigidbodyRef.linearVelocity = Vector3.zero;
         PhysicsObjectComponent.RigidbodyRef.angularVelocity = Vector3.zero;
         PhysicsObjectComponent.RigidbodyRef.isKinematic = true;
-        this.WeaponGrabTransform.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-        CharacterRef.CurrentWeaponEquipped = this;
+        this.WeaponGrabTransform.transform.SetLocalPositionAndRotation(AttachmentOffset, Quaternion.Euler(AttachmentOffsetRotation));
+        if (!CharacterRef.HasWeaponEquipped())
+            CharacterRef.CurrentWeaponEquipped = this;
         // Stuff like collision and stuff
     }
 

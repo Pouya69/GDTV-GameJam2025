@@ -1,6 +1,7 @@
 using System;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class PlayerController : CustomCharacterController
 {
@@ -15,13 +16,15 @@ public class PlayerController : CustomCharacterController
     public float LookSensivityY = 1f;
     public float MinVerticalRotation = -45f;
     public float MaxVerticalRotation = 45f;
-    public bool ShouldCharacterUseZRotation = false;  // For aiming and etc.
-    public Vector2 FramingOffset;
+    // public bool ShouldCharacterUseZRotation = false;  // For aiming and etc.
+    public Vector3 FramingOffset;
     public Vector3 CameraRotation;
     public float CameraDistance = 3f;
     [NonSerialized] public float TargetCameraDistance;
     public float CameraDistanceInterpSpeed = 0.5f;
     public float CameraDistanceAiming = 1f;
+    public float AimingYawRotationDifference = 20;
+    public float CapsuleAimingTransitionSpeed = 50;
     [NonSerialized] public float CameraDistanceInit;
     public GameObject CameraFocusTarget;
 
@@ -60,6 +63,16 @@ public class PlayerController : CustomCharacterController
 
     public override void InteroplateCharacterRotation()
     {
+        if (PlayerCharacterRef.IsAimingWeapon)
+        {
+            Vector3 LocalUp = -GetGravityDirection();
+            if (LocalUp.Equals(Vector3.zero))
+                LocalUp = Vector3.up;
+            CameraFocusTarget.transform.rotation = Quaternion.RotateTowards(CameraFocusTarget.transform.rotation,
+                Quaternion.AngleAxis(CameraRotation.y - (LocalUp.y < 0 ? AimingYawRotationDifference : 180 + AimingYawRotationDifference), LocalUp) * Quaternion.LookRotation(GetForwardBasedOnGravity(), LocalUp),
+                CapsuleAimingTransitionSpeed * Time.deltaTime);
+            return;
+        }
         base.InteroplateCharacterRotation();
         CameraFocusTarget.transform.rotation = Quaternion.RotateTowards(CameraFocusTarget.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
         //if (InputVelocity.magnitude > 0)

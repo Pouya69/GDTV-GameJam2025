@@ -59,7 +59,6 @@ public class CustomCharacterController : MonoBehaviour
     {
         // if (!CanMoveInAir && !IsOnGround) return;
         InputVelocity += Direction.normalized * Scale * (IsOnGround ? 1 : 0.2f);
-        
         LastMovementDirection = InputVelocity.normalized;
     }
 
