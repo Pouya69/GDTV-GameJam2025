@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{fbc93812-0148-41eb-862b-f401d0bb3e24}">
+		<property name="name">
+			<value>inGrav</value>
+		</property>
+		<relationship name="folder">
+			<destination>{95790add-abc1-4b43-9deb-da5c85789a59}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{ae3722e1-a847-464b-afec-17fe98829e37}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{ae3722e1-a847-464b-afec-17fe98829e37}">
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

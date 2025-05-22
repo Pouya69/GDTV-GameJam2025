@@ -34,6 +34,9 @@
 		<relationship name="timeline">
 			<destination>{e7f817f2-cbdc-4af3-8d9c-d5ab174bf518}</destination>
 		</relationship>
+		<relationship name="parameters">
+			<destination>{418d31a4-239e-4db4-82c5-20c53350ed12}</destination>
+		</relationship>
 		<relationship name="banks">
 			<destination>{a06510f6-269a-4c18-a1b9-afb27a97d731}</destination>
 		</relationship>
@@ -95,6 +98,11 @@
 		<relationship name="markers">
 			<destination>{71e21081-e6a6-4a13-94ba-9bf74dca6c05}</destination>
 			<destination>{66493053-2ca5-4cf2-9c1b-bac289662823}</destination>
+		</relationship>
+	</object>
+	<object class="ParameterProxy" id="{418d31a4-239e-4db4-82c5-20c53350ed12}">
+		<relationship name="preset">
+			<destination>{ae45583b-ce8b-4f53-9ac6-e36e127f0eed}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{b8979825-56aa-4c62-a5bc-20288f166686}">
@@ -231,6 +239,7 @@
 	</object>
 	<object class="MixerBusEffectChain" id="{091f42d8-5519-4d58-9a75-39dca7e4c0a3}">
 		<relationship name="effects">
+			<destination>{17bf8a76-86db-4695-9153-726bbc0fd92a}</destination>
 			<destination>{1c47417e-9e57-49db-9286-a278b0893948}</destination>
 			<destination>{0ebf9bfe-470d-426e-9e12-01f6424354b3}</destination>
 		</relationship>
@@ -276,6 +285,7 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{89b4cac5-6fc3-42b7-8372-770247aa22de}" />
+	<object class="ThreeEQEffect" id="{17bf8a76-86db-4695-9153-726bbc0fd92a}" />
 	<object class="MixerBusFader" id="{1c47417e-9e57-49db-9286-a278b0893948}" />
 	<object class="SpatialiserEffect" id="{0ebf9bfe-470d-426e-9e12-01f6424354b3}" />
 	<object class="MixerBusFader" id="{bea83dc8-1c2f-4f09-9be7-11c1762757fb}" />
