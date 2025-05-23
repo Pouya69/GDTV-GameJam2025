@@ -26,6 +26,11 @@ public class WeaponBase : InteractablePickable
     [NonSerialized] public bool IsShooting = false;
     public Vector3 AttachmentOffset = Vector3.zero;
     public Vector3 AttachmentOffsetRotation = Vector3.zero;
+    [Header("Reload")]
+    public GameObject MagazineAttachmentTo;
+    public GameObject WeaponMagazine;
+    public Vector3 MagazineAttachmentOffsetRotation;
+    public Vector3 MagazineAttachmentOffsetPosition;
 
     public void InitializeWeapon(CharacterBase InOwnerCharacterRef)
     {
@@ -36,6 +41,8 @@ public class WeaponBase : InteractablePickable
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        MagazineAttachmentOffsetRotation = WeaponMagazine.transform.localRotation.eulerAngles;
+        MagazineAttachmentOffsetPosition = WeaponMagazine.transform.localPosition;
         // CurrentBulletsInMagazine = MaxBulletsInMagazine;
     }
 

@@ -70,4 +70,30 @@ public class PlayerAnimationScript : MonoBehaviour
     {
         PlayerAnimator.SetTrigger("ReloadTrigger");
     }
+
+    public void Magazine_InsideWeapon()
+    {
+        PlayerCharacterRef.MagazineInHand.transform.SetParent(PlayerCharacterRef.CurrentWeaponEquipped.MagazineAttachmentTo.transform, false);
+        PlayerCharacterRef.MagazineInHand.transform.SetLocalPositionAndRotation(PlayerCharacterRef.CurrentWeaponEquipped.MagazineAttachmentOffsetPosition,
+            Quaternion.Euler(PlayerCharacterRef.CurrentWeaponEquipped.MagazineAttachmentOffsetRotation));
+        PlayerCharacterRef.MagazineInHand = null;
+    }
+
+    public void AttachMagazineToHand_Eject()
+    {
+        PlayerCharacterRef.CurrentWeaponEquipped.WeaponMagazine.transform.SetParent(PlayerCharacterRef.MagazineHoldTransform, false);
+        PlayerCharacterRef.MagazineInHand = PlayerCharacterRef.CurrentWeaponEquipped.WeaponMagazine;
+        PlayerCharacterRef.MagazineInHand.transform.SetLocalPositionAndRotation(PlayerCharacterRef.MagazineHandAttachmentOffsetPosition,
+            Quaternion.Euler(PlayerCharacterRef.MagazineHandAttachmentOffsetRotation));
+    }
+
+    public void DetachMagazineFromHand()
+    {
+        PlayerCharacterRef.MagazineInHand.SetActive(false);
+    }
+
+    public void AttachMagazineToHand()
+    {
+        PlayerCharacterRef.MagazineInHand.SetActive(true);
+    }
 }

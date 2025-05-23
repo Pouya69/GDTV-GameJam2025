@@ -37,7 +37,6 @@ public class PlayerCharacter : CharacterBase
     [Header("Movements")]
     public float BoostUpForce = 100f;
     [NonSerialized] public Vector2 MoveDirectionXYKeyboard;  // Just the keyboard WASD in the form of Vector2. For Gravity Change.
-    public float AimingMovementSpeed = 1000f;
     [Header("Components")]
     public CinemachineCamera CameraComp;
     public PlayerController MyPlayerController;
@@ -60,6 +59,11 @@ public class PlayerCharacter : CharacterBase
     public float GrenadeThrowPower = 5f;
     [NonSerialized] public bool CurrentGrenadeSelected = true;  // For deciding whether to throw the time or gravity grenade. true => TimeDilationField   false => GravityField
     [NonSerialized] public FieldBaseGrenade CurrentGrenadeInHand = null;
+    [Header("Weapon Reloads")]
+    public Vector3 MagazineHandAttachmentOffsetRotation;
+    public Vector3 MagazineHandAttachmentOffsetPosition;
+    public Transform MagazineHoldTransform;
+    [NonSerialized] public GameObject MagazineInHand = null;
 
     [Header("Player State")]
     public EPlayerState CurrentPlayerState = EPlayerState.GAMEPLAY_DEFAULT;  // Can be used to check for combat, and gameplay states.
@@ -149,7 +153,7 @@ public class PlayerCharacter : CharacterBase
 
     private void ReloadAction_performed(InputAction.CallbackContext obj)
     {
-        
+        Reload();
     }
 
     private void InteractAction_canceled(InputAction.CallbackContext obj)

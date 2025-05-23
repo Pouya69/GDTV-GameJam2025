@@ -24,6 +24,32 @@ public class EnemyBaseController : CustomCharacterController
         return -this.MyNavAgent.velocity.normalized;
     }
 
+    public void LookAtPlayer(bool ShouldLookAtPlayer) {
+        CharacterBaseRef.IsAimingWeapon = ShouldLookAtPlayer;
+        IK_Aim.weight = ShouldLookAtPlayer ? 1f : 0f;
+        IK_Aim_Rig.weight = ShouldLookAtPlayer ? 1f : 0f;
+        IK_Aim_RigBuilder.layers[0].active = ShouldLookAtPlayer;
+        IK_Aim_RigAnimation.enabled = ShouldLookAtPlayer;
+        IK_Aim.data.sourceObjects.SetTransform(0, ShouldLookAtPlayer ? MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform : null);
+        CharacterBaseRef.CurrentMovementSpeed = ShouldLookAtPlayer ? CharacterBaseRef.AimingMovementSpeed : CharacterBaseRef.MovementSpeed;
+    }
+
+    public void RotateTowards(Vector3 targetPosition)
+    {
+        Vector3 gravityUp = -GetGravityDirection(); // character's up
+        Vector3 toTarget = (targetPosition - transform.position).normalized;
+
+        // Project direction onto the gravity plane
+        Vector3 projected = Vector3.ProjectOnPlane(toTarget, gravityUp).normalized;
+
+        // Prevent NaN if projected is zero (e.g., target directly above/below)
+        if (projected.sqrMagnitude > 0.0001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(projected, gravityUp);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        }
+    }
+
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
     {
         if (NewTimeDilationInterpSpeed > 0f)  // By default we don't change the speed but we can have custom interpolation speed for time.
@@ -84,13 +110,20 @@ public class EnemyBaseController : CustomCharacterController
     {
         // Vector3 FinalDirection = -(Quaternion.identity * LastMovementDirection);
         Vector3 FinalDirection = GetEnemyForward();
+        Vector3 LocalUp = -GetGravityDirection();
+        //if (MySenseHandler.CanSeePlayer)
+        //{
+        //    TargetRotation = Quaternion.LookRotation((MySenseHandler.PlayerCharacterRef_CHECK_ONLY.transform.position - CharacterBaseRef.CapsuleCollision.transform.position).normalized, LocalUp);
+        //}
         if (FinalDirection.magnitude >= 0.01)
         {
             FinalDirection.Normalize();
-            Vector3 LocalUp = -GetGravityDirection();
+            
             if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
                 TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
         }
+
+
         EnemyBaseCharacterRef.CapsuleCollision.transform.rotation = Quaternion.RotateTowards(EnemyBaseCharacterRef.CapsuleCollision.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
         
     }
@@ -117,6 +150,8 @@ public class EnemyBaseController : CustomCharacterController
     public override void Start()
     {
         base.Start();
+        // IK_Aim.data.sourceObjects.Add(new UnityEngine.Animations.Rigging.WeightedTransform(MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform, 1f));
+        LookAtPlayer(false);
         this.MyBlackBoardRef = this.MyBehaviourTreeAgent.BlackboardReference;
         // this.MyBlackBoardRef.SetVariableValue<EnemyBaseCharacter>("SelfEnemyRef", this.EnemyBaseCharacterRef);
     }
@@ -142,11 +177,14 @@ public class EnemyBaseController : CustomCharacterController
     {
         if (playerCharacterRef == null)
         {
+            LookAtPlayer(false);
             NavMeshPath p = new();
             // Checking if player was on my surface/reachable.
             this.MyBlackBoardRef.SetVariableValue<Vector3>("LastKnownPlayerLocation", LastPlayerLocation);
             this.MyBlackBoardRef.SetVariableValue<bool>("WasLastPlayerLocationInMySurface", this.MyNavAgent.CalculatePath(LastPlayerLocation, p));
         }
+        else
+            LookAtPlayer(true);
         this.MyBlackBoardRef.SetVariableValue<PlayerCharacter>("PlayerCharacterRef", playerCharacterRef);
         this.MyBlackBoardRef.SetVariableValue<Transform>("PlayerCharacterRefTRANSFORM", playerCharacterRef == null ? null : playerCharacterRef.CapsuleCollision.transform);
     }

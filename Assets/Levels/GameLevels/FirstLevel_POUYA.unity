@@ -3810,33 +3810,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 68458773095703299, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
-      propertyPath: FramingOffset.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 68458773095703299, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
       propertyPath: TransformAimPoint
       value: 
       objectReference: {fileID: 1572958278}
-    - target: {fileID: 68458773095703299, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
-      propertyPath: MaxVerticalRotation
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 68458773095703299, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
-      propertyPath: MinVerticalRotation
-      value: -80
-      objectReference: {fileID: 0}
-    - target: {fileID: 68458773095703299, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
-      propertyPath: CameraPositionInterpSpeed
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 68458773095703299, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
-      propertyPath: CameraRotationInterpSpeed
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 68458773095703299, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
-      propertyPath: CameraClippingLayerMask.m_Bits
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3887827175547232978, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
@@ -3883,18 +3859,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5319121311838748760, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7500766881577441109, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7500766881577441109, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7500766881577441109, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
-      propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

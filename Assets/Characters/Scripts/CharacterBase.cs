@@ -22,6 +22,7 @@ public class CharacterBase : MonoBehaviour
     public float MovementSpeed = 10f;
     public float MovementSpeedSprint = 50f;
     public float MovementSpeedChangeSpeed = 30f;
+    public float AimingMovementSpeed = 1000f;
     [NonSerialized] public bool IsSprinting = false;
 
     public float GravityForce = 981f;  // For when we are changing gravity. It's the strength that can be changed through code/inspector.
@@ -91,7 +92,7 @@ public class CharacterBase : MonoBehaviour
 
     public virtual void PlayReloadAnimation()
     {
-
+        
     }
 
     public virtual int GetCurrentWeaponId() { return CurrentWeaponEquipped == null ? -1 : CurrentWeaponEquipped.WeaponId; }

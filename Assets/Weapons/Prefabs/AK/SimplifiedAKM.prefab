@@ -563,6 +563,10 @@ MonoBehaviour:
   ShootLocation_TEST_ONLY: {fileID: 8998513896407920676}
   AttachmentOffset: {x: -0.052, y: 0.336, z: 0.026}
   AttachmentOffsetRotation: {x: 0.0000033958638, y: 180, z: 270}
+  MagazineAttachmentTo: {fileID: 7320362896627032296}
+  WeaponMagazine: {fileID: 5290894575675026021}
+  MagazineAttachmentOffsetRotation: {x: 0, y: 0, z: 0}
+  MagazineAttachmentOffsetPosition: {x: 0, y: 0, z: 0}
 --- !u!54 &4335811946621512167
 Rigidbody:
   m_ObjectHideFlags: 0

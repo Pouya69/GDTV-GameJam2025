@@ -426,6 +426,7 @@ MonoBehaviour:
   MovementSpeed: 2000
   MovementSpeedSprint: 3500
   MovementSpeedChangeSpeed: 1000
+  AimingMovementSpeed: 1000
   GravityForce: 9.81
   CustomTimeDilation: 1
   TimeDilationDifferenceIgnore: 0.01
@@ -433,7 +434,6 @@ MonoBehaviour:
   CurrentWeaponEquipped: {fileID: 0}
   MaxHealth: 100
   BoostUpForce: 25000
-  AimingMovementSpeed: 1000
   CameraComp: {fileID: 8082841036154253311}
   MyPlayerController: {fileID: 68458773095703299}
   InteractionOverlapZone: {fileID: 6167923302890781064}
@@ -443,6 +443,9 @@ MonoBehaviour:
   PickableInteractablePickupDistance: 2.5
   GrenadeAttachPointToHand: {fileID: 1690330632370816301}
   GrenadeThrowPower: 20
+  MagazineHandAttachmentOffsetRotation: {x: 0.094, y: 0.125, z: 0.023}
+  MagazineHandAttachmentOffsetPosition: {x: 51.36937, y: 105.70433, z: 192.38803}
+  MagazineHoldTransform: {fileID: 6342990037967106896}
   CurrentPlayerState: 0
 --- !u!114 &68458773095703299
 MonoBehaviour:
@@ -474,13 +477,16 @@ MonoBehaviour:
   IK_Aim_Weight: 1
   PlayerCharacterRef: {fileID: 4829410219625231076}
   PlayerCameraRef: {fileID: 8082841036154253311}
+  CameraClippingLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
   InvertLookX: 0
   InvertLookY: 1
   LookSensivityX: 30
   LookSensivityY: 30
-  MinVerticalRotation: -70
-  MaxVerticalRotation: 70
-  FramingOffset: {x: 0, y: 0, z: 0}
+  MinVerticalRotation: -80
+  MaxVerticalRotation: 80
+  FramingOffset: {x: 0, y: -0.5, z: 0}
   CameraRotation: {x: 0, y: 0, z: 0}
   CameraDistance: 4
   CameraDistanceInterpSpeed: 3
@@ -570,7 +576,7 @@ Transform:
   m_GameObject: {fileID: 5175022874877880778}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.68, y: 3.35, z: 0.535373}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1027,7 +1033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 80d18dad01384534f8955d8cc0cc62cc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.87
+      value: -1.99
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 80d18dad01384534f8955d8cc0cc62cc, type: 3}
       propertyPath: m_LocalPosition.z

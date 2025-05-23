@@ -9,11 +9,11 @@ public class AISenseHandler : MonoBehaviour
     public Transform RaycastStartPoint;
     public EnemyBaseController EnemyBaseControllerRef;
     public float RaycastDistanceCheck = 20f;  // This basically detects how far away the player is detected from.
-    public int PlayerScanLayerMask = 0;  // Just in case we add our own layer for player.
-    public int ObstructionLayerMask = 0;  // Just in case we add our own layer for player.
+    public LayerMask PlayerScanLayerMask = new LayerMask();  // Just in case we add our own layer for player.
+    public LayerMask ObstructionLayerMask = new LayerMask();  // Just in case we add our own layer for player.
     public float ScanRadius = 30f;
     public int TimesToCheckPerSecond = 5;
-    [SerializeReference] private PlayerCharacter PlayerCharacterRef_CHECK_ONLY;  // This is for checking whether he is blocked or not. Has to be set for every enemy.
+    [SerializeReference] public PlayerCharacter PlayerCharacterRef_CHECK_ONLY;  // This is for checking whether he is blocked or not. Has to be set for every enemy.
     // ONLY pre-defined enemies.
     [NonSerialized] bool HasBeenPreviouslyBlocked = false;  // For optimizied checking and less Blackboard value setting.
     [Range(0, 360)]
