@@ -7,6 +7,7 @@ public class PlayerAnimationScript : MonoBehaviour
     public Animator PlayerAnimator;
     [Header("Parameters")]
     public float CharacterSpeedDamping = 0.2f;
+    public float CharacterAimingSpeedDamping = 0.2f;
     public float CharacterAimDamping = 0.2f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,13 +31,13 @@ public class PlayerAnimationScript : MonoBehaviour
         PlayerAnimator.SetBool("HasGrenadeInHand", PlayerCharacterRef.HasGrenadeInHand());
         //  Debug.Log(PlayerCharacterRef.GetCurrentWeaponId());
         PlayerAnimator.SetInteger("CurrentWeaponID", PlayerCharacterRef.GetCurrentWeaponId());
-        PlayerAnimator.SetBool("IsAimingWeapon", true);
-        //PlayerAnimator.SetBool("IsAimingWeapon", PlayerCharacterRef.IsAimingWeapon);
-        if (PlayerCharacterRef.HasWeaponEquipped() && PlayerCharacterRef.IsAimingWeapon)
+        // PlayerAnimator.SetBool("IsAimingWeapon", true);
+        PlayerAnimator.SetBool("IsAimingWeapon", PlayerCharacterRef.IsAimingWeapon);
+        PlayerAnimator.SetFloat("MovementDirection_LR", PlayerCharacterRef.MoveDirectionXYKeyboard.x, 0.2f, deltaTime);
+        PlayerAnimator.SetFloat("MovementDirection_FB", PlayerCharacterRef.MoveDirectionXYKeyboard.y, 0.2f, deltaTime);
+        if (PlayerCharacterRef.IsAimingWeapon)
         {
-            PlayerAnimator.SetFloat("MovementDirection_LR", PlayerCharacterRef.MoveDirectionXYKeyboard.x);
-            float PitchAngle = Vector3.SignedAngle(-PlayerCharacterRef.CapsuleCollision.transform.forward, PlayerCharacterRef.CameraComp.transform.forward, PlayerCharacterRef.MyPlayerController.GetForwardBasedOnGravity());
-            Debug.LogWarning("Pitch: " + PitchAngle);
+            
             // PlayerAnimator.SetFloat("CharacterRotationPitch", , CharacterAimDamping, deltaTime);
         }
 

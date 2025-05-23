@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class CustomCharacterController : MonoBehaviour
 {
@@ -23,6 +24,12 @@ public class CustomCharacterController : MonoBehaviour
     [NonSerialized] public bool IsOnGround = true;
     public bool IsAirCharacter = false;  // For characters that roam in the air
     [NonSerialized] public Vector3 LastMovementDirection = Vector3.zero;  // For interpolating the character
+    public MultiAimConstraint IK_Aim;
+    public Rig IK_Aim_Rig;
+    public RigBuilder IK_Aim_RigBuilder;
+    public Animator IK_Aim_RigAnimation;
+    [Range(0f, 1f)]
+    public float IK_Aim_Weight = 0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
     {
@@ -140,6 +147,13 @@ public class CustomCharacterController : MonoBehaviour
         }
         return new Vector3();
     }
+
+    public virtual void CheckRaycastFromViewPoint()
+    {
+
+    }
+
+    public virtual Vector3 GetForwardShootingVector() { return Vector3.zero; }
 
     public Quaternion CharacterPlanarRotation => Quaternion.AngleAxis(CharacterBaseRef.CapsuleCollision.transform.rotation.y, -GetGravityDirection());  // TODO
 }

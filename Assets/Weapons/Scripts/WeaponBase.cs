@@ -46,8 +46,7 @@ public class WeaponBase : InteractablePickable
         TimePassedSinceLastShot += Time.deltaTime;
         if (TimePassedSinceLastShot >= 1/WeaponFireRate)
         {
-            if (IsShooting)
-                Shoot();
+            Shoot(OwnerCharacterRef.MyController.GetForwardShootingVector());
             TimePassedSinceLastShot = 0f;
         }
     }
@@ -64,7 +63,6 @@ public class WeaponBase : InteractablePickable
     public void AddedWeaponToCharacter(CharacterBase CharacterRef)
     {
         this.WeaponGrabTransform.transform.SetParent(CharacterRef.WeaponAttachHandTransform, false);
-        InitializeWeapon(CharacterRef);
         IsInfiniteAmmo = CharacterRef.TryGetComponent<EnemyBaseCharacter>(out _);  // Enemies can shoot infinitely.
         PhysicsObjectComponent.RigidbodyRef.freezeRotation = false;
         PhysicsObjectComponent.RigidbodyRef.useGravity = false;
@@ -73,8 +71,8 @@ public class WeaponBase : InteractablePickable
         PhysicsObjectComponent.RigidbodyRef.angularVelocity = Vector3.zero;
         PhysicsObjectComponent.RigidbodyRef.isKinematic = true;
         this.WeaponGrabTransform.transform.SetLocalPositionAndRotation(AttachmentOffset, Quaternion.Euler(AttachmentOffsetRotation));
-        if (!CharacterRef.HasWeaponEquipped())
-            CharacterRef.CurrentWeaponEquipped = this;
+        CharacterRef.CurrentWeaponEquipped = this;
+        InitializeWeapon(CharacterRef);
         // Stuff like collision and stuff
     }
 
@@ -91,7 +89,7 @@ public class WeaponBase : InteractablePickable
         // Stuff like collision and stuff
     }
 
-    public bool IsCurrentMagazineEmpty() { return !IsInfiniteAmmo || CurrentBulletsInMagazine <= 0; }
+    public bool IsCurrentMagazineEmpty() { return !IsInfiniteAmmo && CurrentBulletsInMagazine <= 0; }
 
     public bool Reload()
     {
@@ -139,7 +137,7 @@ public class WeaponBase : InteractablePickable
 
     public void StartShooting() {
         if (this.IsWeaponSingleShot())
-            Shoot();
+            Shoot(OwnerCharacterRef.MyController.GetForwardShootingVector());
         else
             IsShooting = true;
     }
@@ -147,7 +145,7 @@ public class WeaponBase : InteractablePickable
     public void StopShoot() { IsShooting = false; }
 
     // ONLY CALL FROM THE FIRERATE UNLESS SINGLE SHOT
-    public void Shoot()
+    public void Shoot(Vector3 ForwardVector)
     {
         if (IsCurrentMagazineEmpty())
         {
@@ -170,9 +168,10 @@ public class WeaponBase : InteractablePickable
                 Debug.LogError("Bullet did not spawn.");
                 return;
             }
+            // ShootLocation_TEST_ONLY.right
             BulletBase BulletComponentOnObject = BulletSpawned.GetComponent<BulletBase>();
-            BulletComponentOnObject.InitializeBullet(OwnerCharacterRef, default, ShootLocation_TEST_ONLY.right * BulletVelocityBase, 1f);
-            Debug.DrawLine(ShootLocation_TEST_ONLY.position, ShootLocation_TEST_ONLY.position + (ShootLocation_TEST_ONLY.right * BulletVelocityBase), Color.red);
+            BulletComponentOnObject.InitializeBullet(OwnerCharacterRef, default, ForwardVector * BulletVelocityBase, 1f);
+            Debug.DrawLine(ShootLocation_TEST_ONLY.position, ShootLocation_TEST_ONLY.position + (ForwardVector * BulletVelocityBase), Color.red);
             if (!IsInfiniteAmmo)
                 CurrentBulletsInMagazine--;
         }

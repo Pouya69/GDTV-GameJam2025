@@ -1,7 +1,7 @@
 using System;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerController : CustomCharacterController
 {
@@ -10,6 +10,7 @@ public class PlayerController : CustomCharacterController
     public CinemachineCamera PlayerCameraRef;
 
     [Header("Movements")]
+    public LayerMask CameraClippingLayerMask = new LayerMask();
     public bool InvertLookX = false;
     public bool InvertLookY = false;
     public float LookSensivityX = 1f;
@@ -27,6 +28,10 @@ public class PlayerController : CustomCharacterController
     public float CapsuleAimingTransitionSpeed = 50;
     [NonSerialized] public float CameraDistanceInit;
     public GameObject CameraFocusTarget;
+    public LayerMask AimColliderLayerMask = new LayerMask();
+    [SerializeField] private Transform TransformAimPoint;
+    [SerializeField] private float AimTransitionSpeed = 50f;
+    public GameObject AimFocusPoint;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Start()
@@ -42,6 +47,7 @@ public class PlayerController : CustomCharacterController
     public override void Update()
     {
         base.Update();
+        CheckRaycastFromViewPoint();
     }
 
     public override void FixedUpdate()
@@ -68,17 +74,36 @@ public class PlayerController : CustomCharacterController
             Vector3 LocalUp = -GetGravityDirection();
             if (LocalUp.Equals(Vector3.zero))
                 LocalUp = Vector3.up;
-            CameraFocusTarget.transform.rotation = Quaternion.RotateTowards(CameraFocusTarget.transform.rotation,
-                Quaternion.AngleAxis(CameraRotation.y - (LocalUp.y < 0 ? AimingYawRotationDifference : 180 + AimingYawRotationDifference), LocalUp) * Quaternion.LookRotation(GetForwardBasedOnGravity(), LocalUp),
-                CapsuleAimingTransitionSpeed * Time.deltaTime);
+            TargetRotation = Quaternion.AngleAxis(CameraRotation.y - (LocalUp.y < 0 ? AimingYawRotationDifference : 180 + AimingYawRotationDifference), LocalUp) * Quaternion.LookRotation(GetForwardBasedOnGravity(), LocalUp);
+            CameraFocusTarget.transform.rotation = Quaternion.RotateTowards(CameraFocusTarget.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
             return;
         }
-        base.InteroplateCharacterRotation();
+        else
+            base.InteroplateCharacterRotation();
         CameraFocusTarget.transform.rotation = Quaternion.RotateTowards(CameraFocusTarget.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
         //if (InputVelocity.magnitude > 0)
         //{
         //   CameraFocusTarget.transform.rotation = Quaternion.RotateTowards(CameraFocusTarget.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
         //}
+    }
+
+    public override void CheckRaycastFromViewPoint()
+    {
+        Vector3 Start = PlayerCharacterRef.CapsuleCollision.transform.position;
+        Vector3 Direction = GetForwardShootingVector();
+
+        if (Physics.Raycast(Start, Direction, out RaycastHit HitResult, 999f, AimColliderLayerMask))
+        {
+            TransformAimPoint.position = Vector3.Lerp(TransformAimPoint.position, HitResult.point, Time.deltaTime * AimTransitionSpeed);
+        }
+        else
+        {
+            TransformAimPoint.position = Vector3.Lerp(TransformAimPoint.position, Start + Direction * 5, Time.deltaTime * AimTransitionSpeed);
+        }
+    }
+
+    public override Vector3 GetForwardShootingVector() {
+        return PlayerCameraRef.transform.forward;
     }
 
     public override void UpdateCharacterMovement(float Multiplier = 1f)

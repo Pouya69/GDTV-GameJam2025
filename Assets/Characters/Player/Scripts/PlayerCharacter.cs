@@ -254,6 +254,7 @@ public class PlayerCharacter : CharacterBase
     public override void Start()
     {
         base.Start();
+        AimWeapon(false);
         SetupPlayerActions();
     }
 
@@ -298,10 +299,19 @@ public class PlayerCharacter : CharacterBase
         Vector3 capsuleRight = MyPlayerController.GetRightBasedOnGravity();
         Quaternion TargetCameraRotation = Quaternion.AngleAxis(MyPlayerController.CameraRotation.y, capsuleUp) *
             Quaternion.AngleAxis(MyPlayerController.CameraRotation.x + (capsuleUp.Equals(Vector3.forward) ? 90 : (capsuleUp.Equals(Vector3.back) ? -90 : 0)), capsuleRight);
-        Vector3 FocusPosition = MyPlayerController.CameraFocusTarget.transform.position + new Vector3(MyPlayerController.FramingOffset.x, MyPlayerController.FramingOffset.y, MyPlayerController.FramingOffset.z);
+        Vector3 FocusPosition = IsAimingWeapon ? MyPlayerController.AimFocusPoint.transform.position : MyPlayerController.CameraFocusTarget.transform.position + new Vector3(MyPlayerController.FramingOffset.x, MyPlayerController.FramingOffset.y, MyPlayerController.FramingOffset.z);
         Vector3 CameraDistance = TargetCameraRotation * new Vector3(0, 0, MyPlayerController.CameraDistance);
-        CameraComp.transform.position = FocusPosition - CameraDistance;
-        CameraComp.transform.rotation = Quaternion.LookRotation((CapsuleCollision.transform.position - CameraComp.transform.position).normalized, capsuleUp);
+        bool IsCameraBlocked = Physics.Raycast(FocusPosition, (FocusPosition - CameraDistance).normalized, out RaycastHit HitResult, MyPlayerController.CameraDistance, MyPlayerController.CameraClippingLayerMask);
+        if (IsCameraBlocked)
+        {
+            CameraDistance = TargetCameraRotation * new Vector3(0, 0, HitResult.distance - 1f);
+            // Debug.LogWarning(HitResult.collider.gameObject.name);
+            
+        }
+        Debug.DrawLine(FocusPosition, FocusPosition - CameraDistance, Color.green);
+
+        CameraComp.transform.position = Vector3.Lerp(CameraComp.transform.position, FocusPosition - CameraDistance, Time.deltaTime * 10);
+        CameraComp.transform.rotation = Quaternion.LookRotation((FocusPosition - CameraComp.transform.position).normalized, capsuleUp);
         // CameraComp.transform.rotation = TargetCameraRotation;
 
     }
@@ -413,6 +423,11 @@ public class PlayerCharacter : CharacterBase
 
     public override void AimWeapon(bool IsAiming)
     {
+        IsAimingWeapon = IsAiming;
+        MyPlayerController.IK_Aim.weight = IsAiming ? 1f : 0f;
+        MyPlayerController.IK_Aim_Rig.weight = IsAiming ? 1f : 0f;
+        MyPlayerController.IK_Aim_RigBuilder.layers[0].active = IsAiming;
+        MyPlayerController.IK_Aim_RigAnimation.enabled = IsAiming;
         if (IsSprinting && IsAiming)
             this.StopSprint();
         base.AimWeapon(IsAiming);
