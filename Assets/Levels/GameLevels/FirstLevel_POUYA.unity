@@ -3622,6 +3622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f0c45a81c41a95438efc7fa4649664b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 980321231}
   FollowPath:
     serializedVersion: 2
     m_Curve:
@@ -3651,6 +3652,7 @@ MonoBehaviour:
   EndPoint: {x: 60, y: -255}
   FillBar: {fileID: 917271332}
   TxtFollow: {fileID: 671557623}
+  HealthText: {fileID: 671557624}
 --- !u!1 &194279958
 GameObject:
   m_ObjectHideFlags: 0
@@ -18986,6 +18988,17 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!114 &980321231 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4829410219625231076, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
+  m_PrefabInstance: {fileID: 195108921}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4535ba1215bb57d49bf2b3fe299f2c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &984367163
 GameObject:
   m_ObjectHideFlags: 0

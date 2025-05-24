@@ -20,6 +20,14 @@ public class AfterEffects : MonoBehaviour
     [SerializeField] private Volume HitEffect;
     private float HitTransition;
     [SerializeField] private float HitSpeed;
+
+    [Header("Specific Position Freeze Time")]
+    public Transform SpawnPoint;
+
+    public void SpecificSpawnFreeze()
+    {
+        StartCoroutine(SpecificFreezeTime());
+    }
     public void FreezeTime(bool State)
     {
         if (State) StartCoroutine(FreezeTime());
@@ -56,7 +64,22 @@ public class AfterEffects : MonoBehaviour
     }
 
     #endregion
+    #region Specific Time Freeze Effect
+    private IEnumerator SpecificFreezeTime()
+    {
+        StartCoroutine(BluringEffect());
+        TimeTransition = 0;
+        GameObject Scanner = Instantiate(WorldScanner, SpawnPoint);
+        Destroy(Scanner, ScannerDuration);
+        while (TimeTransition < 1)
+        {
+            TimeTransition += FreezeTransitionSpeed * Time.deltaTime;
+            FreezeTimeEffect.weight = Mathf.Lerp(FreezeTimeEffect.weight, 1, TimeTransition);
+            yield return 0.05f;
+        }
+    }
 
+    #endregion
     #region BlurEffect
     public IEnumerator BluringEffect()
     {
