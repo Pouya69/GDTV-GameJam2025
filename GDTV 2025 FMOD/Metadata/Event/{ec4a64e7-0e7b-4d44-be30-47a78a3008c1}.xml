@@ -5,7 +5,7 @@
 			<value>SFX_Footsteps</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{742ff7a2-31c8-406b-a582-33041e14ae62}</destination>
@@ -257,6 +257,7 @@
 	<object class="MixerBusEffectChain" id="{e1410d3e-724b-4cb0-a33f-d5c7184d1415}">
 		<relationship name="effects">
 			<destination>{5d3bdc47-69ee-4476-ab8d-1f58a99bc4b3}</destination>
+			<destination>{42f91b71-d04e-4dd6-b818-47c6cad77853}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{7fd2e5f2-f39c-4c36-aaf0-34c41ea2f04d}" />
@@ -379,6 +380,7 @@
 	</object>
 	<object class="MixerBusPanner" id="{d12aad3a-92cf-44f0-a82c-4be47482d800}" />
 	<object class="MixerBusFader" id="{5d3bdc47-69ee-4476-ab8d-1f58a99bc4b3}" />
+	<object class="SpatialiserEffect" id="{42f91b71-d04e-4dd6-b818-47c6cad77853}" />
 	<object class="AutomationCurve" id="{a48385fc-2e7c-4880-b52a-a8861e9030ec}">
 		<relationship name="parameter">
 			<destination>{5e5d9f0e-4b8a-436a-a94f-a0a0c21d7c9d}</destination>

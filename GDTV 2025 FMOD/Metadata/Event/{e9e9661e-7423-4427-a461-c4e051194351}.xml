@@ -5,7 +5,7 @@
 			<value>SFX_Lands</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{742ff7a2-31c8-406b-a582-33041e14ae62}</destination>
@@ -239,6 +239,7 @@
 	<object class="MixerBusEffectChain" id="{49521682-8e20-4663-801f-dd38cf96d117}">
 		<relationship name="effects">
 			<destination>{4035fddc-efbd-48a1-b7e8-bacfe4f430cb}</destination>
+			<destination>{8005468f-2690-461f-8b03-9613517378a3}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{97977f1f-24ed-4f15-babe-ad93bbf3dbfb}" />
@@ -316,6 +317,7 @@
 	</object>
 	<object class="MixerBusPanner" id="{418c4432-3d1c-4485-ac8b-ba2ff830632a}" />
 	<object class="MixerBusFader" id="{4035fddc-efbd-48a1-b7e8-bacfe4f430cb}" />
+	<object class="SpatialiserEffect" id="{8005468f-2690-461f-8b03-9613517378a3}" />
 	<object class="AutomationCurve" id="{2331aff6-6415-4af3-8490-ae5f9e109ddb}">
 		<relationship name="parameter">
 			<destination>{5e5d9f0e-4b8a-436a-a94f-a0a0c21d7c9d}</destination>
