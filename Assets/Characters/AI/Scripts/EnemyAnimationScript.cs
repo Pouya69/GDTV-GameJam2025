@@ -1,6 +1,7 @@
 using UnityEngine;
 using static UnityEditor.Rendering.CameraUI;
 using UnityEngine.Windows;
+using GLTFast.Schema;
 
 public class EnemyAnimationScript : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class EnemyAnimationScript : MonoBehaviour
     public float CharacterSpeedDamping = 0.2f;
     public float CharacterAimingSpeedDamping = 0.2f;
     public float CharacterAimDamping = 0.2f;
+    public bool IsRagdolling = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,6 +30,7 @@ public class EnemyAnimationScript : MonoBehaviour
     {
         float deltaTime = Time.deltaTime;
         bool IsEnemyOnGround = EnemyCharacterRef.MyController.IsOnGround;
+        EnemyAnimator.SetFloat("TimeDIlation", EnemyCharacterRef.MyEnemyController.CustomTimeDilation);
         EnemyAnimator.SetBool("IsCharacterOnGround", IsEnemyOnGround);
         Vector3 Vel = EnemyCharacterRef.MyEnemyController.RigidbodyRef.linearVelocity;
         Vector3 EnemyRight = EnemyCharacterRef.CapsuleCollision.transform.right;
@@ -52,5 +55,38 @@ public class EnemyAnimationScript : MonoBehaviour
         }
 
         // EnemyAnimator.SetFloat("CharacterRotation", );
+    }
+
+    public void StartRagdolling()
+    {
+        Debug.LogWarning("Trying to ragdoll...");
+        this.IsRagdolling = true;
+        EnemyAnimator.SetBool("IsRagdolling", true);
+        this.EnemyAnimator.enabled = false;
+        //EnemyCharacterRef.MyEnemyController.IK_Aim_RigAnimation.enabled = false;
+    }
+
+    public void StopRagdolling(bool IsFront)
+    {
+        Debug.LogWarning("Stopping Ragdoll. Front: " + IsFront);
+
+        EnemyCharacterRef.MyEnemyController.CacheRagdollPose();
+        EnemyAnimator.Play(IsFront ? "GetUpFront" : "GetUpBack", 0);
+        EnemyAnimator.Play(IsFront ? "GetUpFront" : "GetUpBack", 1);
+        EnemyAnimator.Update(0f); // force update to apply pose
+        EnemyAnimator.enabled = true;
+        StartCoroutine(EnemyCharacterRef.MyEnemyController.BlendToAnimatorPose(0.5f));
+        EnemyCharacterRef.MyEnemyController.IsTryingToRecoverFromRagdoll = false;
+        this.IsRagdolling = false;
+        // this.EnemyAnimator.enabled = true;
+        //EnemyCharacterRef.MyEnemyController.IK_Aim_RigAnimation.enabled = true;
+
+        // EnemyAnimator.SetBool("IsGettingUpFromFront", IsFront);
+        // EnemyAnimator.SetBool("IsRagdolling", false);
+    }
+
+    public void RagdollRecoverCompleted()
+    {
+        EnemyCharacterRef.RagdollRecoverComplete();
     }
 }

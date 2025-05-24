@@ -26,11 +26,6 @@ public class CharacterBase : MonoBehaviour
     [NonSerialized] public bool IsSprinting = false;
 
     public float GravityForce = 981f;  // For when we are changing gravity. It's the strength that can be changed through code/inspector.
-
-    [Header("Time Dilation")]
-    public float CustomTimeDilation = 1f;  // Varies from 0f to 1f. 1 -> normal time. 0 -> stopped
-    public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
-
     [Header("Weapon")]
     public Transform WeaponAttachHandTransform;
     public WeaponBase CurrentWeaponEquipped;

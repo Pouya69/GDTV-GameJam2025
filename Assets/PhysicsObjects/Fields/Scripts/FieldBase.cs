@@ -43,6 +43,7 @@ public class FieldBase : MonoBehaviour
         bool IsCharacter = RootPrefab.TryGetComponent<EnemyBaseCharacter>(out CharacterOverlapping);
         if (IsCharacter)
         {
+            // Debug.LogWarning(other.gameObject.name);
             CharacterEntered(CharacterOverlapping);
         }
         // * MAKE SURE all the physics objects in scene has PhysicsObjectBasic or a child class *
@@ -66,10 +67,12 @@ public class FieldBase : MonoBehaviour
         EnemyBaseCharacter CharacterOverlapping;
         GameObject RootPrefab = other.transform.root.gameObject;
         if (RootPrefab.TryGetComponent<FieldBase>(out _)) return;
+        
         // if (RootPrefab.Equals(this.gameObject)) return;
         bool IsCharacter = RootPrefab.TryGetComponent<EnemyBaseCharacter>(out CharacterOverlapping);
         if (IsCharacter)
         {
+            Debug.LogWarning("Exited: " + other.gameObject.name);
             ResetCharacter(CharacterOverlapping);
             CharactersInsideField.Remove(CharacterOverlapping);
             return;

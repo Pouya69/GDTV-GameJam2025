@@ -427,6 +427,7 @@ public class PlayerCharacter : CharacterBase
 
     public override void AimWeapon(bool IsAiming)
     {
+        MyPlayerController.CrosshairObject.SetActive(IsAiming);
         IsAimingWeapon = IsAiming;
         MyPlayerController.IK_Aim.weight = IsAiming ? 1f : 0f;
         MyPlayerController.IK_Aim_Rig.weight = IsAiming ? 1f : 0f;

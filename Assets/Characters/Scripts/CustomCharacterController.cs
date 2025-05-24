@@ -10,6 +10,7 @@ public class CustomCharacterController : MonoBehaviour
     public CharacterBase CharacterBaseRef;
     public Rigidbody RigidbodyRef;
     [Header("Movements")]
+    public LayerMask GroundCheckLayerMask = new LayerMask();
     public bool CanMoveInAir = false;
     public float DownGroundCheckAfterCapsule = 0.4f;
     [NonSerialized] public Vector3 CurrentAcceleration = Vector3.zero;  // Movement Only. Gravity is done using ConstantGravityForce
@@ -97,13 +98,13 @@ public class CustomCharacterController : MonoBehaviour
         Vector3 GravityDirection = GetGravityDirection();
         RaycastHit HitResult;
         Debug.DrawLine(Start, Start + (GravityDirection * (DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()))), Color.cyan);
-        bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), 1);
+        bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), GroundCheckLayerMask);
         if (!didHitGround)
         {
             IsOnGround = false;
             return;
         }
-        IsOnGround = !HitResult.collider.transform.tag.Equals("GameController");
+        IsOnGround = !HitResult.collider.transform.CompareTag("GameController");
 
     }
 

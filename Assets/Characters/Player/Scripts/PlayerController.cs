@@ -32,6 +32,7 @@ public class PlayerController : CustomCharacterController
     [SerializeField] private Transform TransformAimPoint;
     [SerializeField] private float AimTransitionSpeed = 50f;
     public GameObject AimFocusPoint;
+    public GameObject CrosshairObject;  // The UI object
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Start()
@@ -89,8 +90,9 @@ public class PlayerController : CustomCharacterController
 
     public override void CheckRaycastFromViewPoint()
     {
-        Vector3 Start = PlayerCharacterRef.CapsuleCollision.transform.position;
-        Vector3 Direction = GetForwardShootingVector();
+        Vector3 Start = PlayerCameraRef.transform.position;
+        // Vector3 Direction = GetForwardShootingVector();
+        Vector3 Direction = PlayerCameraRef.transform.forward;
 
         if (Physics.Raycast(Start, Direction, out RaycastHit HitResult, 999f, AimColliderLayerMask))
         {
@@ -103,7 +105,8 @@ public class PlayerController : CustomCharacterController
     }
 
     public override Vector3 GetForwardShootingVector() {
-        return PlayerCameraRef.transform.forward;
+        return (TransformAimPoint.position - PlayerCharacterRef.CurrentWeaponEquipped.ShootLocation_TEST_ONLY.transform.position).normalized;
+        // return PlayerCameraRef.transform.forward;
     }
 
     public override void UpdateCharacterMovement(float Multiplier = 1f)

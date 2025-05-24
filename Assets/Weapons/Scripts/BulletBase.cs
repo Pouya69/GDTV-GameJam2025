@@ -31,6 +31,7 @@ public class BulletBase : PhysicsObjectBasic
     public override void UpdatePhysicsObjectBasedOnTimeDilation()
     {
         this.RigidbodyRef.linearVelocity = GetTimeScaledVelocity();// + (GetGravityForceTimeScaled() * Time.deltaTime);
+        RigidbodyRef.AddForce(GetGravityForceTimeScaled());
         if (!IsInterpolatingTimeDilation()) return;
         this.CustomTimeDilation = Mathf.Lerp(this.CustomTimeDilation, this.CustomTimeDilationTarget, 1 - Mathf.Exp(-this.TimeDilationInterpSpeed * Time.deltaTime));
         if (Mathf.Abs(this.CustomTimeDilationTarget - this.CustomTimeDilation) < TimeDilationDifferenceIgnore)
