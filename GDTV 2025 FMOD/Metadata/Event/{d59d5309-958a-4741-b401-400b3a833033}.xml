@@ -124,6 +124,9 @@
 		<property name="length">
 			<value>1.4000000000000001</value>
 		</property>
+		<relationship name="modulators">
+			<destination>{a1cfb2a0-bbe8-44bb-90e0-7894af1be656}</destination>
+		</relationship>
 		<relationship name="sounds">
 			<destination>{d83171c7-2b47-473b-bd80-110a26754793}</destination>
 			<destination>{e4367153-9980-44ca-ac11-5fd52aedeefa}</destination>
@@ -188,6 +191,14 @@
 	</object>
 	<object class="MixerBusPanner" id="{362051a8-fa43-49a1-9a04-4487a13dcfa2}" />
 	<object class="MixerBusFader" id="{03a92f7e-6495-4133-b9f8-47c2c1300a57}" />
+	<object class="RandomizerModulator" id="{a1cfb2a0-bbe8-44bb-90e0-7894af1be656}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>pitch</value>
+		</property>
+		<property name="amount">
+			<value>1.5</value>
+		</property>
+	</object>
 	<object class="SingleSound" id="{d83171c7-2b47-473b-bd80-110a26754793}">
 		<property name="startOffset">
 			<value>10</value>
@@ -316,10 +327,13 @@
 	</object>
 	<object class="AutomationPoint" id="{ce8b8f48-e6f9-4b5c-92e0-87a9a46080aa}">
 		<property name="position">
-			<value>5</value>
+			<value>3</value>
 		</property>
 		<property name="value">
 			<value>0</value>
+		</property>
+		<property name="curveShape">
+			<value>0.498774648</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{8ff9d2e9-8a09-433e-a3a8-8d4894fadef1}">
