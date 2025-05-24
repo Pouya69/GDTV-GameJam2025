@@ -63,7 +63,7 @@ public class BulletBase : PhysicsObjectBasic
             HandleCharacterHit(CharacterHit);
             return;
         }
-        Debug.Log("DEFAULT Bullet Collided with: " + collision.gameObject.gameObject.name);
+        Debug.Log("DEFAULT Bullet Collided with: " + collision.gameObject.name);
         Destroy(gameObject);
     }
 
@@ -91,6 +91,7 @@ public class BulletBase : PhysicsObjectBasic
     public override void FixedUpdate()
     {
         base.FixedUpdate();
+        // TODO: Rotate bullet towards movement direction.
     }
 
     public CharacterBase GetOwnerCharacter() { return this.OwnerCharacterRef; }

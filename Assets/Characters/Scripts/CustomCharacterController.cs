@@ -31,6 +31,7 @@ public class CustomCharacterController : MonoBehaviour
     public Animator IK_Aim_RigAnimation;
     [Range(0f, 1f)]
     public float IK_Aim_Weight = 0f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
     {

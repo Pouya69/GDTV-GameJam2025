@@ -8,6 +8,7 @@ public class CharacterBase : MonoBehaviour
     public enum EDamageType
     {
         DEFAULT,  // For when just want to do it.
+        FALL_DAMAGE,
         BULLET,
     }
 
@@ -97,8 +98,9 @@ public class CharacterBase : MonoBehaviour
 
     public float GetCurrentHealth() { return this.Health; }
 
-    public void Die()
+    public virtual void Die()
     {
+        Debug.LogWarning("Dying...");
         this.Health = 0;
     }
 
@@ -115,6 +117,7 @@ public class CharacterBase : MonoBehaviour
                 break;
         }
         this.Health -= Amount;
+        Debug.LogWarning("New Health: " +  this.Health);
         if (this.Health < 0) Die();
     }
     

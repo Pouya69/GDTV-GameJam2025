@@ -9,6 +9,7 @@ public class FieldBaseGrenade : PhysicsObjectBasic
     [NonSerialized] public float GrenadeCharge = 0f;
     public float MaxGrenadeCharge = 300f;  // Maximum charge
     public float GrenadeChargingSpeed = 20f;
+    public bool IsInstantCharge = true;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public override void Start()
@@ -82,5 +83,7 @@ public class FieldBaseGrenade : PhysicsObjectBasic
     {
         this.RigidbodyRef.isKinematic = true;
         this.RigidbodyRef.detectCollisions = false;
+        if (IsInstantCharge)
+            GrenadeCharge = MaxGrenadeCharge;
     }
 }
