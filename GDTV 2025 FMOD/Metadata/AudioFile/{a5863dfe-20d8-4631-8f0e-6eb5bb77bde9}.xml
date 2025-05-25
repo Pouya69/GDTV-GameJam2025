@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{a5863dfe-20d8-4631-8f0e-6eb5bb77bde9}">
+		<property name="assetPath">
+			<value>Creatures, Humanoid, Goblin, Designed, Male, High Pitched, Death, Hurt SND115872.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>96</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>2.5609375000000001</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{0b75d310-c42a-49f9-88ef-1592d05eabf2}</destination>
+		</relationship>
+	</object>
+</objects>
