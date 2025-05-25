@@ -7,6 +7,7 @@ public class RotatingArm : PhysicsObjectBasic
 
     private void Awake()
     {
+        CanBeIncluded = false;
         RotationAxis.Normalize();
     }
 
@@ -23,23 +24,27 @@ public class RotatingArm : PhysicsObjectBasic
         base.FixedUpdate();
         this.transform.Rotate(RotationAxis, this.CustomTimeDilation * RotatingSpeed * Time.deltaTime);
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public override void Start()
+
+    private void OnCollisionEnter(Collision other)
     {
-        
+        if (other.transform.root.gameObject.TryGetComponent<FieldBaseGrenade>(out _)) return;
+        other.transform.root.gameObject.TryGetComponent<PlayerCharacter>(out PlayerCharacter PlayerRef);
+        other.transform.root.gameObject.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectBasic PhysRef);
+        if (PlayerRef != null)
+            PlayerRef.transform.SetParent(this.transform, true);
+        else if (PhysRef != null && PhysRef.CanBeIncluded)
+            PhysRef.transform.SetParent(this.transform, true);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionExit(Collision other)
     {
-        if (!other.CompareTag("GameController")) return;
-        //other.transform.root.SetParent(this.transform, true);
-
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag("GameController")) return;
-        //other.transform.root.SetParent(null, true);
+        if (other.transform.root.gameObject.TryGetComponent<FieldBaseGrenade>(out _)) return;
+        other.transform.gameObject.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectBasic PhysRef);
+        other.transform.gameObject.TryGetComponent<PlayerCharacter>(out PlayerCharacter PlayerRef);
+        if (PlayerRef != null)
+            PlayerRef.transform.SetParent(null, true);
+        else if (PhysRef != null && PhysRef.CanBeIncluded)
+            PhysRef.transform.SetParent(null, true);
     }
 
 }

@@ -496,6 +496,9 @@ MonoBehaviour:
   GroundCheckLayerMask:
     serializedVersion: 2
     m_Bits: 1
+  PhysicsObjectsLayerMaskGroundCheck:
+    serializedVersion: 2
+    m_Bits: 128
   CanMoveInAir: 0
   DownGroundCheckAfterCapsule: 0.25
   RotationSpeed: 400

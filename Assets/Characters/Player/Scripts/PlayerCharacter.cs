@@ -404,6 +404,8 @@ public class PlayerCharacter : CharacterBase
 
     public void HandleInteract()
     {
+        if (ClosestInteractable)
+            Debug.Log(ClosestInteractable.name);
         bool ShouldProceed = GetNearestInteractable();
         if (ClosestInteractable != null && ShouldProceed && this.IsInteracting && this.CanInteract) {
             InteractionAmount = Mathf.MoveTowards(InteractionAmount, 100f, ClosestInteractable.InteractionSpeed * Time.deltaTime);

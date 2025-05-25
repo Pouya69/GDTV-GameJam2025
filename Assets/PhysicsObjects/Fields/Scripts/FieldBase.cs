@@ -46,6 +46,7 @@ public class FieldBase : MonoBehaviour
             CharacterEntered(CharacterOverlapping);
         }
         // * MAKE SURE all the physics objects in scene has PhysicsObjectBasic or a child class *
+        // if (!RootPrefab.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectBasic PhysicsObject)) return;
         PhysicsObjectEntered(RootPrefab.GetComponent<PhysicsObjectBasic>());
     }
 
@@ -77,6 +78,7 @@ public class FieldBase : MonoBehaviour
             return;
         }
         // * MAKE SURE all the physics objects in scene has PhysicsObjectBasic or a child class *
+        // if (!RootPrefab.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectBasic PhysicsObject)) return;
         PhysicsObjectBasic PhysicsObject = RootPrefab.GetComponent<PhysicsObjectBasic>();
         ResetPhysicsObject(PhysicsObject);
         PhysicsObjectsInsideField.Remove(PhysicsObject);

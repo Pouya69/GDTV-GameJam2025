@@ -18,6 +18,7 @@ public class PhysicsObjectBasic : MonoBehaviour
     [NonSerialized] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
     [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
     [NonSerialized] public bool IsInGravityField = false;
+    [NonSerialized] public bool CanBeIncluded = true;
 
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
     {

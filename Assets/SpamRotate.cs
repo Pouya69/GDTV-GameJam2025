@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SpamRotator : MonoBehaviour
+public class SpamRotator : PhysicsObjectBasic
 {
     public enum RotationState
     {
@@ -16,15 +16,16 @@ public class SpamRotator : MonoBehaviour
     public float RotationSpeed;
 
     [Header("Loop Between")]
-    public Vector3 Start;
+    public Vector3 StartPos;
     public Vector3 End;
     public AnimationCurve LoopCurve;
     public float LoopDuration = 2f;
-
+    public float RotationSpeed_Mult = 1f;
     private float loopTimer;
 
-    void Update()
+    public override void FixedUpdate()
     {
+        base.FixedUpdate();
         switch (State)
         {
             case RotationState.ConstantRotate:
@@ -32,12 +33,12 @@ public class SpamRotator : MonoBehaviour
                 break;
 
             case RotationState.LoopBetwen:
-                loopTimer += Time.deltaTime;
+                loopTimer += Time.deltaTime * this.CustomTimeDilation * RotationSpeed_Mult;
 
                 float pingPongT = Mathf.PingPong(loopTimer / (LoopDuration * 0.5f), 1f);
                 float curveT = LoopCurve.Evaluate(pingPongT);
                 transform.rotation = Quaternion.Lerp(
-                    Quaternion.Euler(Start),
+                    Quaternion.Euler(StartPos),
                     Quaternion.Euler(End),
                     curveT
                 );

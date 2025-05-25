@@ -11,6 +11,7 @@ public class CustomCharacterController : MonoBehaviour
     public Rigidbody RigidbodyRef;
     [Header("Movements")]
     public LayerMask GroundCheckLayerMask = new LayerMask();
+    public LayerMask PhysicsObjectsLayerMaskGroundCheck = new LayerMask();
     public bool CanMoveInAir = false;
     public float DownGroundCheckAfterCapsule = 0.4f;
     [NonSerialized] public Vector3 CurrentAcceleration = Vector3.zero;  // Movement Only. Gravity is done using ConstantGravityForce
@@ -99,7 +100,8 @@ public class CustomCharacterController : MonoBehaviour
         Vector3 GravityDirection = GetGravityDirection();
         RaycastHit HitResult;
         Debug.DrawLine(Start, Start + (GravityDirection * (DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()))), Color.cyan);
-        bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), GroundCheckLayerMask);
+        bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), GroundCheckLayerMask)
+            || Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), PhysicsObjectsLayerMaskGroundCheck);
         if (!didHitGround)
         {
             IsOnGround = false;

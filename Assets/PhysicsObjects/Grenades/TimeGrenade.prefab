@@ -52,8 +52,9 @@ MonoBehaviour:
   CustomTimeDilation: 1
   TimeDilationDifferenceIgnore: 0.01
   FieldToSpawn: {fileID: 7683257081953782796, guid: e0db9dd631c16d64293448ffcb4a95a8, type: 3}
-  MaxGrenadeCharge: 5
+  MaxGrenadeCharge: 0.05
   GrenadeChargingSpeed: 0.1
+  IsInstantCharge: 1
 --- !u!54 &8812570267719626429
 Rigidbody:
   m_ObjectHideFlags: 0
