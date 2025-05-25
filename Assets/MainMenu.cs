@@ -4,9 +4,12 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     public Animator MainMenuUI;
-
+    public GameObject ContiButton;
+    public GameObject ContLine;
     public void DisplayMainMenu()
     {
+        ContiButton.SetActive(PlayerPrefs.GetInt("Lvl",0) > 0);
+        ContLine.SetActive(PlayerPrefs.GetInt("Lvl", 0) > 0);
         MainMenuUI.SetBool("Start", true);
     }
     public void NewGame()

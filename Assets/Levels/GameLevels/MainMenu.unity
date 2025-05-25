@@ -1104,6 +1104,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MainMenuUI: {fileID: 1529174198}
+  ContiButton: {fileID: 1866354180}
+  ContLine: {fileID: 208267606}
 --- !u!1 &420701669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1362,6 +1364,7 @@ GameObject:
   - component: {fileID: 743830284}
   - component: {fileID: 743830287}
   - component: {fileID: 743830289}
+  - component: {fileID: 743830290}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1509,6 +1512,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &743830290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 743830283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e140e8d7d1c0a044cbc8c5703dd72e37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &766134429
 GameObject:
   m_ObjectHideFlags: 0
