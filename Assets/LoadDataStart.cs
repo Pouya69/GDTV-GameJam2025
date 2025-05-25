@@ -8,5 +8,6 @@ public class LoadDataStart : MonoBehaviour
         //controller.PlayerCharacterRef PlayerPrefs.GetFloat("HP", 100);
         controller.PlayerCharacterRef.CurrentWeaponEquipped.CurrentBulletsInMagazine = PlayerPrefs.GetInt("Bullets", controller.PlayerCharacterRef.CurrentWeaponEquipped.MaxBulletsInMagazine);
         controller.PlayerCharacterRef.CurrentWeaponEquipped.BulletsLeft = PlayerPrefs.GetInt("LeftBullet",0);
+
     }
 }
