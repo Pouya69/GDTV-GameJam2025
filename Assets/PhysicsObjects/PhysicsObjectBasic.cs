@@ -17,6 +17,7 @@ public class PhysicsObjectBasic : MonoBehaviour
     public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
     [NonSerialized] public float CustomTimeDilationTarget = 1f;  // We interpolate the Time Dilation to get the slow effect of transition
     [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
+    [NonSerialized] public bool IsInGravityField = false;
 
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
     {
@@ -61,7 +62,7 @@ public class PhysicsObjectBasic : MonoBehaviour
     {
         if (RigidbodyRef)
             this.BaseGravity = new Vector3(Final.x, Final.y, Final.z) * RigidbodyRef.mass;
-        if (!IsDoneByForceField)
+        if (!IsDoneByForceField && !IsInGravityField)
             this.GravityBeforeCustomGravity = new Vector3(Final.x, Final.y, Final.z);
     }
 
@@ -88,6 +89,7 @@ public class PhysicsObjectBasic : MonoBehaviour
 
     public void CheckTimeDilationOnSpawn()
     {
+        if (this.RigidbodyRef == null) return;
         Collider[] Colliders = Physics.OverlapSphere(this.RigidbodyRef.transform.position, 0.05f);
         foreach (Collider collider in Colliders)
         {

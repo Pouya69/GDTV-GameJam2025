@@ -21,13 +21,11 @@ public class CharacterBase : MonoBehaviour
     [NonSerialized] public float CurrentMovementSpeed;
     public float MovementSpeed = 10f;
     public float MovementSpeedSprint = 50f;
+    public float MovementSpeedChangeSpeed = 30f;
+    public float AimingMovementSpeed = 1000f;
     [NonSerialized] public bool IsSprinting = false;
+
     public float GravityForce = 981f;  // For when we are changing gravity. It's the strength that can be changed through code/inspector.
-
-    [Header("Time Dilation")]
-    public float CustomTimeDilation = 1f;  // Varies from 0f to 1f. 1 -> normal time. 0 -> stopped
-    public float TimeDilationDifferenceIgnore = 0.01f;  // When reaching this threshold, make it equal to target.
-
     [Header("Weapon")]
     public Transform WeaponAttachHandTransform;
     public WeaponBase CurrentWeaponEquipped;
@@ -51,9 +49,21 @@ public class CharacterBase : MonoBehaviour
 
     public virtual void Update()
     {
+        //CurrentMovementSpeed = Mathf.MoveTowards(CurrentMovementSpeed, IsSprinting ? MovementSpeedSprint : MovementSpeed, Time.deltaTime * MovementSpeedChangeSpeed);
         // Debug.Log(CurrentMovementSpeed.ToString());
     }
 
+    public virtual void StartSprint()
+    {
+        IsSprinting = true;
+        CurrentMovementSpeed = this.MovementSpeedSprint;
+    }
+
+    public virtual void StopSprint()
+    {
+        IsSprinting = false;
+        CurrentMovementSpeed = this.MovementSpeed;
+    }
    
     public virtual void StopShootingWeapon()
     {
@@ -77,7 +87,7 @@ public class CharacterBase : MonoBehaviour
 
     public virtual void PlayReloadAnimation()
     {
-
+        
     }
 
     public virtual int GetCurrentWeaponId() { return CurrentWeaponEquipped == null ? -1 : CurrentWeaponEquipped.WeaponId; }

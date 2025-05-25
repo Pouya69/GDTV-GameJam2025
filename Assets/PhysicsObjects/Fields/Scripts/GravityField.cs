@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class GravityField : FieldBase
 {
@@ -39,7 +40,7 @@ public class GravityField : FieldBase
         {
             if (ChaeracterOverlapping == null) continue;
             // ChaeracterOverlapping.MyEnemyController.BaseGravity = this.IsSuckingField ? GetObjectForceTowardsMe(ChaeracterOverlapping) : this.FieldGravity;
-            ChaeracterOverlapping.MyEnemyController.SetGravityForceAndDirection(this.IsSuckingField ? GetObjectForceTowardsMe(ChaeracterOverlapping) : this.FieldGravity, !IsGravityPermanent);
+            ChaeracterOverlapping.MyEnemyController.SetGravityForceAndDirection(this.IsSuckingField ? GetCharacterForceTowardsMe(ChaeracterOverlapping) : this.FieldGravity, !IsGravityPermanent);
         }
     }
 
@@ -63,6 +64,11 @@ public class GravityField : FieldBase
         return (this.transform.position - Obj.transform.position).normalized * this.FieldAmount;
     }
 
+    public Vector3 GetCharacterForceTowardsMe(EnemyBaseCharacter Obj)
+    {
+        return (this.transform.position - Obj.MyEnemyController.PelvisTransform.transform.position).normalized * this.FieldAmount;
+    }
+
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
@@ -75,8 +81,11 @@ public class GravityField : FieldBase
 
     protected override void ResetCharacter(EnemyBaseCharacter Character)
     {
+        if (Character == null) return;
         base.ResetCharacter(Character);
         Character.MyEnemyController.SetGravityForceAndDirection(Character.MyEnemyController.GravityBeforeCustomGravity, true);
+        Character.MyEnemyController.IsInGravityField = false;
+        // Character.StopRagdolling(!Character.MyEnemyController.RagdollShouldGetUpFromBack());
         if (!Character.MyEnemyController.RigidbodyRef.isKinematic)
         {
             Character.MyEnemyController.RigidbodyRef.linearVelocity = Vector3.zero;
@@ -86,7 +95,9 @@ public class GravityField : FieldBase
 
     protected override void ResetPhysicsObject(PhysicsObjectBasic PhysicsObject)
     {
+        if (PhysicsObject == null) return;
         base.ResetPhysicsObject(PhysicsObject);
+        PhysicsObject.IsInGravityField = false;
         PhysicsObject.SetGravityForceAndDirection(PhysicsObject.GravityBeforeCustomGravity, true);  // Instant
         if (!PhysicsObject.RigidbodyRef.isKinematic)
         {
@@ -97,13 +108,23 @@ public class GravityField : FieldBase
 
     public override void CharacterEntered(EnemyBaseCharacter Character)
     {
-        Character.MyEnemyController.GravityBeforeCustomGravity = Character.MyEnemyController.BaseGravity;
+        if (Character == null) return;
+        Character.MyEnemyController.IsOnGround = false;
+        if (!Character.MyEnemyController.IsInGravityField)
+            Character.MyEnemyController.GravityBeforeCustomGravity = Character.MyEnemyController.BaseGravity;
+        Character.StartRagdolling();
+        Character.MyEnemyController.BaseGravity = GetCharacterForceTowardsMe(Character);
+        Character.MyEnemyController.IsInGravityField = true;
+        // Character.MyEnemyController.FixedUpdate();
         base.CharacterEntered(Character);
     }
 
     public override void PhysicsObjectEntered(PhysicsObjectBasic PhysicsObject)
     {
-        PhysicsObject.GravityBeforeCustomGravity = PhysicsObject.BaseGravity;
+        if (PhysicsObject == null) return;
+        if (!PhysicsObject.IsInGravityField)
+            PhysicsObject.GravityBeforeCustomGravity = PhysicsObject.BaseGravity;
+        PhysicsObject.IsInGravityField = true;
         base.PhysicsObjectEntered(PhysicsObject);
     }
 

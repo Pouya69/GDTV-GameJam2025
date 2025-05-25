@@ -6,7 +6,7 @@ using Unity.Properties;
 using UnityEngine.AI;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Custom Move To", story: "Custom Navigate [Agent] to [Location]", category: "Action/Navigation", id: "e541b98d294dd641f024286df964853a")]
+[NodeDescription(name: "Custom Move To Location", story: "Custom Navigate [Agent] to [Location]", category: "Action/Navigation", id: "e541b98d294dd641f024286df964853a")]
 public partial class CustomMoveToAction : Action
 {
     [SerializeReference] public BlackboardVariable<GameObject> Agent;
@@ -61,7 +61,7 @@ public partial class CustomMoveToAction : Action
             // toDestination.y = 0.0f;  // TODO: This needs attention. Default y would be 0 but now we need to see in what direction the localY is 0. MAYBE...?
             MovementDirection.Normalize();
             
-            //agentPosition += MovementDirection * (speed * Time.deltaTime);
+            //agentPosition += MovementDirection * (speed * Time.deltaTime);MySenseHandler
             //Agent.Value.transform.position = agentPosition;
 
             // Look at the target.
@@ -133,9 +133,9 @@ public partial class CustomMoveToAction : Action
 
     private float GetDistanceToLocation(out Vector3 agentPosition, out Vector3 locationPosition)
     {
-        agentPosition = Agent.Value.transform.position;
+        agentPosition = SelfEnemyBaseRef.Value.CapsuleCollision.transform.position;
         locationPosition = Location.Value;
-        return Vector3.Distance(new Vector3(agentPosition.x, locationPosition.y, agentPosition.z), locationPosition);
+        return Vector3.Distance(new Vector3(agentPosition.x, agentPosition.y, agentPosition.z), locationPosition);
     }
 
 

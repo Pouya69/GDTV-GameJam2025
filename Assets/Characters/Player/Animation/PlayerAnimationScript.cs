@@ -7,6 +7,8 @@ public class PlayerAnimationScript : MonoBehaviour
     public Animator PlayerAnimator;
     [Header("Parameters")]
     public float CharacterSpeedDamping = 0.2f;
+    public float CharacterAimingSpeedDamping = 0.2f;
+    public float CharacterAimDamping = 0.2f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -27,11 +29,16 @@ public class PlayerAnimationScript : MonoBehaviour
         PlayerAnimator.SetBool("IsCharacterOnGround", IsPlayerIOnGround);
         PlayerAnimator.SetFloat("CharacterSpeed", PlayerCharacterRef.MyPlayerController.RigidbodyRef.linearVelocity.magnitude, CharacterSpeedDamping, deltaTime);
         PlayerAnimator.SetBool("HasGrenadeInHand", PlayerCharacterRef.HasGrenadeInHand());
-        if (PlayerCharacterRef.HasWeaponEquipped())
+        //  Debug.Log(PlayerCharacterRef.GetCurrentWeaponId());
+        PlayerAnimator.SetInteger("CurrentWeaponID", PlayerCharacterRef.GetCurrentWeaponId());
+        // PlayerAnimator.SetBool("IsAimingWeapon", true);
+        PlayerAnimator.SetBool("IsAimingWeapon", PlayerCharacterRef.IsAimingWeapon);
+        PlayerAnimator.SetFloat("MovementDirection_LR", PlayerCharacterRef.MoveDirectionXYKeyboard.x, 0.2f, deltaTime);
+        PlayerAnimator.SetFloat("MovementDirection_FB", PlayerCharacterRef.MoveDirectionXYKeyboard.y, 0.2f, deltaTime);
+        if (PlayerCharacterRef.IsAimingWeapon)
         {
-            if (!PlayerCharacterRef.CurrentWeaponEquipped.IsReloading)
-                PlayerAnimator.SetInteger("CurrentWeaponID", PlayerCharacterRef.GetCurrentWeaponId());
-            PlayerAnimator.SetBool("IsAimingWeapon", PlayerCharacterRef.IsAimingWeapon);
+            
+            // PlayerAnimator.SetFloat("CharacterRotationPitch", , CharacterAimDamping, deltaTime);
         }
 
         // PlayerAnimator.SetFloat("CharacterRotation", );
@@ -62,5 +69,31 @@ public class PlayerAnimationScript : MonoBehaviour
     public void TriggerStartReload()
     {
         PlayerAnimator.SetTrigger("ReloadTrigger");
+    }
+
+    public void Magazine_InsideWeapon()
+    {
+        PlayerCharacterRef.MagazineInHand.transform.SetParent(PlayerCharacterRef.CurrentWeaponEquipped.MagazineAttachmentTo.transform, false);
+        PlayerCharacterRef.MagazineInHand.transform.SetLocalPositionAndRotation(PlayerCharacterRef.CurrentWeaponEquipped.MagazineAttachmentOffsetPosition,
+            Quaternion.Euler(PlayerCharacterRef.CurrentWeaponEquipped.MagazineAttachmentOffsetRotation));
+        PlayerCharacterRef.MagazineInHand = null;
+    }
+
+    public void AttachMagazineToHand_Eject()
+    {
+        PlayerCharacterRef.CurrentWeaponEquipped.WeaponMagazine.transform.SetParent(PlayerCharacterRef.MagazineHoldTransform, false);
+        PlayerCharacterRef.MagazineInHand = PlayerCharacterRef.CurrentWeaponEquipped.WeaponMagazine;
+        PlayerCharacterRef.MagazineInHand.transform.SetLocalPositionAndRotation(PlayerCharacterRef.MagazineHandAttachmentOffsetPosition,
+            Quaternion.Euler(PlayerCharacterRef.MagazineHandAttachmentOffsetRotation));
+    }
+
+    public void DetachMagazineFromHand()
+    {
+        PlayerCharacterRef.MagazineInHand.SetActive(false);
+    }
+
+    public void AttachMagazineToHand()
+    {
+        PlayerCharacterRef.MagazineInHand.SetActive(true);
     }
 }

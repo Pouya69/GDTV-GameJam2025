@@ -1,57 +1,87 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class AISenseHandler : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [Header("Sight Sense")]
-    public MeshCollider SightSense_Collider;
+    public Transform RaycastStartPoint;
     public EnemyBaseController EnemyBaseControllerRef;
-    public float RaycastDistanceCheck = 15f;  // This basically detects how far away the player is detected from.
-    public int ScanLayerMask = 0;  // Just in case we add our own layer for player.
-    [NonSerialized] private PlayerCharacter PlayerCharacterRef_InCollisionArea;  // This is for checking whether he is blocked or not.
+    public float RaycastDistanceCheck = 20f;  // This basically detects how far away the player is detected from.
+    public LayerMask PlayerScanLayerMask = new LayerMask();  // Just in case we add our own layer for player.
+    public LayerMask ObstructionLayerMask = new LayerMask();  // Just in case we add our own layer for player.
+    public float ScanRadius = 30f;
+    public int TimesToCheckPerSecond = 5;
+    [SerializeReference] public PlayerCharacter PlayerCharacterRef_CHECK_ONLY;  // This is for checking whether he is blocked or not. Has to be set for every enemy.
+    // ONLY pre-defined enemies.
     [NonSerialized] bool HasBeenPreviouslyBlocked = false;  // For optimizied checking and less Blackboard value setting.
+    [Range(0, 360)]
+    public float FOV_Angle = 120f;
+    [NonSerialized] public bool CanSeePlayer = false;
 
-    private void OnTriggerEnter(Collider other)
+    // For spawners.
+    public void InitializeEnemy(PlayerCharacter PlayerCharacterRef_FromLevel)
     {
-        if (PlayerCharacterRef_InCollisionArea != null) return;
-        Transform ColliderRootTransform = other.transform.root;
-        if (ColliderRootTransform.Equals(this.transform.root)) return;
-        ColliderRootTransform.TryGetComponent<PlayerCharacter>(out PlayerCharacterRef_InCollisionArea);
+        this.PlayerCharacterRef_CHECK_ONLY = PlayerCharacterRef_FromLevel;
     }
 
-    private void OnTriggerExit(Collider other)
+    private void Awake()
     {
-        if (PlayerCharacterRef_InCollisionArea == null) return;
-        EnemyBaseControllerRef.UpdatePlayerCharacterRef();  // Setting it to null.
-        PlayerCharacterRef_InCollisionArea = null;
-        HasBeenPreviouslyBlocked = false;
+        if (this.TimesToCheckPerSecond < 1)
+            this.TimesToCheckPerSecond = 1;
+        if (ScanRadius < 1)
+            ScanRadius = 1;
     }
 
-    public bool IsPlayerBlocked()
+    public void CheckForPlayer_SIGHT()
     {
-        Vector3 MySightLocation = transform.position;
-        RaycastHit HitResult;
-        bool Blocked = Physics.Raycast(MySightLocation, (PlayerCharacterRef_InCollisionArea.CapsuleCollision.transform.position - MySightLocation).normalized, out HitResult, RaycastDistanceCheck, ScanLayerMask);
-        if (!Blocked) return false;
-        return !HitResult.collider.transform.root.Equals(PlayerCharacterRef_InCollisionArea);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (PlayerCharacterRef_InCollisionArea == null) return;
-        bool IsBlockedResult = IsPlayerBlocked();
-        if (IsBlockedResult && !HasBeenPreviouslyBlocked)
-        {
-            HasBeenPreviouslyBlocked = true;
-            EnemyBaseControllerRef.UpdatePlayerCharacterRef(null);
+        Vector3 MyLocation = this.RaycastStartPoint.position;
+        Collider[] RangeChecks = Physics.OverlapSphere(MyLocation, ScanRadius, PlayerScanLayerMask);
+        if (RangeChecks.Length == 0) {
+            if (CanSeePlayer)
+                EnemyBaseControllerRef.UpdatePlayerCharacterRef(null, PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform.position);
+            CanSeePlayer = false;
             return;
-        } else if (!IsBlockedResult && HasBeenPreviouslyBlocked)
-        {
-            EnemyBaseControllerRef.UpdatePlayerCharacterRef(PlayerCharacterRef_InCollisionArea);
-            HasBeenPreviouslyBlocked = false;
         }
-        
+        Transform Target = PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform;
+        Vector3 DirectionToTarget = (Target.position - MyLocation).normalized;
+        float Angle = Vector3.Angle(this.RaycastStartPoint.forward, DirectionToTarget);
+        //Debug.Log("Angle to player from forward: " + Angle);
+        //Debug.DrawLine(MyLocation, MyLocation + this.RaycastStartPoint.forward * 5, Color.red);
+        if (Angle >= FOV_Angle / 2)
+        {
+            if (CanSeePlayer)
+                EnemyBaseControllerRef.UpdatePlayerCharacterRef(null, Target.position);
+            CanSeePlayer = false;
+            return;
+        }
+        float DistanceToTarget = Vector3.Distance(Target.position, MyLocation);
+        RaycastHit HitResult;
+
+        bool CanSeePlayerNow = !Physics.Raycast(MyLocation, DirectionToTarget, out HitResult, DistanceToTarget, ObstructionLayerMask); //|| HitResult.collider.transform.root.TryGetComponent<PlayerCharacter>(out _);
+        if (CanSeePlayerNow)
+        {
+            if (!CanSeePlayer)
+                EnemyBaseControllerRef.UpdatePlayerCharacterRef(PlayerCharacterRef_CHECK_ONLY);
+            CanSeePlayer = true;
+        }
+    }
+
+    private void Start()
+    {
+        StartCoroutine(FOV_Routine());
+    }
+
+    private IEnumerator FOV_Routine()
+    {
+        WaitForSeconds WaitTime = new WaitForSeconds((float) 1 / TimesToCheckPerSecond);
+
+        while (true)
+        {
+            CheckForPlayer_SIGHT();
+
+            yield return WaitTime;
+        }
     }
 }

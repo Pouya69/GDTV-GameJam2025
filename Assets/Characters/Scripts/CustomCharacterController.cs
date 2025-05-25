@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class CustomCharacterController : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class CustomCharacterController : MonoBehaviour
     public CharacterBase CharacterBaseRef;
     public Rigidbody RigidbodyRef;
     [Header("Movements")]
+    public LayerMask GroundCheckLayerMask = new LayerMask();
+    public bool CanMoveInAir = false;
     public float DownGroundCheckAfterCapsule = 0.4f;
     [NonSerialized] public Vector3 CurrentAcceleration = Vector3.zero;  // Movement Only. Gravity is done using ConstantGravityForce
     [NonSerialized] public Vector3 InputVelocity = Vector3.zero;  // Clears out after doing the actions
@@ -22,6 +25,12 @@ public class CustomCharacterController : MonoBehaviour
     [NonSerialized] public bool IsOnGround = true;
     public bool IsAirCharacter = false;  // For characters that roam in the air
     [NonSerialized] public Vector3 LastMovementDirection = Vector3.zero;  // For interpolating the character
+    public MultiAimConstraint IK_Aim;
+    public Rig IK_Aim_Rig;
+    public RigBuilder IK_Aim_RigBuilder;
+    public Animator IK_Aim_RigAnimation;
+    [Range(0f, 1f)]
+    public float IK_Aim_Weight = 0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
     {
@@ -56,7 +65,8 @@ public class CustomCharacterController : MonoBehaviour
 
     public virtual void AddMovementInput(Vector3 Direction, float Scale)
     {
-        InputVelocity += Direction.normalized * Scale;
+        // if (!CanMoveInAir && !IsOnGround) return;
+        InputVelocity += Direction.normalized * Scale * (IsOnGround ? 1 : 0.2f);
         LastMovementDirection = InputVelocity.normalized;
     }
 
@@ -73,7 +83,7 @@ public class CustomCharacterController : MonoBehaviour
     {
         if (!this.IsAirCharacter)
             CheckIsOnGround();  // Air characters will never check for onGround
-        this.RigidbodyRef.linearDamping = IsOnGround ? Damping : 0.0f;
+        this.RigidbodyRef.linearDamping = IsOnGround ? Damping : 0.5f;
         if (IsOnGround)
             RigidbodyRef.AddForce(Multiplier * InputVelocity);
         else
@@ -87,8 +97,15 @@ public class CustomCharacterController : MonoBehaviour
         Vector3 Start = CharacterBaseRef.CapsuleCollision.transform.position;
         Vector3 GravityDirection = GetGravityDirection();
         RaycastHit HitResult;
-        bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), 1);
-        IsOnGround = didHitGround;
+        Debug.DrawLine(Start, Start + (GravityDirection * (DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()))), Color.cyan);
+        bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), GroundCheckLayerMask);
+        if (!didHitGround)
+        {
+            IsOnGround = false;
+            return;
+        }
+        IsOnGround = !HitResult.collider.transform.CompareTag("GameController");
+
     }
 
     public Vector3 GetGravityDirection() { return BaseGravity.normalized; }
@@ -131,6 +148,13 @@ public class CustomCharacterController : MonoBehaviour
         }
         return new Vector3();
     }
+
+    public virtual void CheckRaycastFromViewPoint()
+    {
+
+    }
+
+    public virtual Vector3 GetForwardShootingVector() { return Vector3.zero; }
 
     public Quaternion CharacterPlanarRotation => Quaternion.AngleAxis(CharacterBaseRef.CapsuleCollision.transform.rotation.y, -GetGravityDirection());  // TODO
 }

@@ -14,6 +14,7 @@ public class WeaponBase : InteractablePickable
     public int BulletsLeft;  // Max bullets left (does not include CurrentBulletsInMagazine)
     public int BulletsShootingOneShot = 1;  // Things like double barrel shotgun or burst rifles and etc.
     public float BulletVelocityBase = 800f;  // When spawning a bullet, how fast it should go.
+    public Transform WeaponGrabTransform;
     [NonSerialized] private CharacterBase OwnerCharacterRef;
     [NonSerialized] private bool IsInfiniteAmmo = false;  // For enemies it is infinite
     [NonSerialized] public bool IsReloading;
@@ -23,6 +24,13 @@ public class WeaponBase : InteractablePickable
     [NonSerialized] private float TimePassedSinceLastShot = 0f;
     public Transform ShootLocation_TEST_ONLY;  // Hopefully we will have a skeleton with a reload animation...
     [NonSerialized] public bool IsShooting = false;
+    public Vector3 AttachmentOffset = Vector3.zero;
+    public Vector3 AttachmentOffsetRotation = Vector3.zero;
+    [Header("Reload")]
+    public GameObject MagazineAttachmentTo;
+    public GameObject WeaponMagazine;
+    public Vector3 MagazineAttachmentOffsetRotation;
+    public Vector3 MagazineAttachmentOffsetPosition;
 
     public void InitializeWeapon(CharacterBase InOwnerCharacterRef)
     {
@@ -33,6 +41,8 @@ public class WeaponBase : InteractablePickable
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        MagazineAttachmentOffsetRotation = WeaponMagazine.transform.localRotation.eulerAngles;
+        MagazineAttachmentOffsetPosition = WeaponMagazine.transform.localPosition;
         // CurrentBulletsInMagazine = MaxBulletsInMagazine;
     }
 
@@ -43,8 +53,7 @@ public class WeaponBase : InteractablePickable
         TimePassedSinceLastShot += Time.deltaTime;
         if (TimePassedSinceLastShot >= 1/WeaponFireRate)
         {
-            if (IsShooting)
-                Shoot();
+            Shoot(OwnerCharacterRef.MyController.GetForwardShootingVector());
             TimePassedSinceLastShot = 0f;
         }
     }
@@ -60,8 +69,7 @@ public class WeaponBase : InteractablePickable
 
     public void AddedWeaponToCharacter(CharacterBase CharacterRef)
     {
-        this.transform.SetParent(CharacterRef.WeaponAttachHandTransform, false);
-        InitializeWeapon(CharacterRef);
+        this.WeaponGrabTransform.transform.SetParent(CharacterRef.WeaponAttachHandTransform, false);
         IsInfiniteAmmo = CharacterRef.TryGetComponent<EnemyBaseCharacter>(out _);  // Enemies can shoot infinitely.
         PhysicsObjectComponent.RigidbodyRef.freezeRotation = false;
         PhysicsObjectComponent.RigidbodyRef.useGravity = false;
@@ -69,8 +77,9 @@ public class WeaponBase : InteractablePickable
         PhysicsObjectComponent.RigidbodyRef.linearVelocity = Vector3.zero;
         PhysicsObjectComponent.RigidbodyRef.angularVelocity = Vector3.zero;
         PhysicsObjectComponent.RigidbodyRef.isKinematic = true;
-        transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        this.WeaponGrabTransform.transform.SetLocalPositionAndRotation(AttachmentOffset, Quaternion.Euler(AttachmentOffsetRotation));
         CharacterRef.CurrentWeaponEquipped = this;
+        InitializeWeapon(CharacterRef);
         // Stuff like collision and stuff
     }
 
@@ -87,7 +96,7 @@ public class WeaponBase : InteractablePickable
         // Stuff like collision and stuff
     }
 
-    public bool IsCurrentMagazineEmpty() { return !IsInfiniteAmmo || CurrentBulletsInMagazine <= 0; }
+    public bool IsCurrentMagazineEmpty() { return !IsInfiniteAmmo && CurrentBulletsInMagazine <= 0; }
 
     public bool Reload()
     {
@@ -135,7 +144,7 @@ public class WeaponBase : InteractablePickable
 
     public void StartShooting() {
         if (this.IsWeaponSingleShot())
-            Shoot();
+            Shoot(OwnerCharacterRef.MyController.GetForwardShootingVector());
         else
             IsShooting = true;
     }
@@ -143,7 +152,7 @@ public class WeaponBase : InteractablePickable
     public void StopShoot() { IsShooting = false; }
 
     // ONLY CALL FROM THE FIRERATE UNLESS SINGLE SHOT
-    public void Shoot()
+    public void Shoot(Vector3 ForwardVector)
     {
         if (IsCurrentMagazineEmpty())
         {
@@ -166,9 +175,10 @@ public class WeaponBase : InteractablePickable
                 Debug.LogError("Bullet did not spawn.");
                 return;
             }
+            // ShootLocation_TEST_ONLY.right
             BulletBase BulletComponentOnObject = BulletSpawned.GetComponent<BulletBase>();
-            BulletComponentOnObject.InitializeBullet(OwnerCharacterRef, default, ShootLocation_TEST_ONLY.right * BulletVelocityBase, 1f);
-            Debug.DrawLine(ShootLocation_TEST_ONLY.position, ShootLocation_TEST_ONLY.position + (ShootLocation_TEST_ONLY.right * BulletVelocityBase), Color.red);
+            BulletComponentOnObject.InitializeBullet(OwnerCharacterRef, default, ForwardVector * BulletVelocityBase, 1f);
+            Debug.DrawLine(ShootLocation_TEST_ONLY.position, ShootLocation_TEST_ONLY.position + (ForwardVector * BulletVelocityBase), Color.red);
             if (!IsInfiniteAmmo)
                 CurrentBulletsInMagazine--;
         }

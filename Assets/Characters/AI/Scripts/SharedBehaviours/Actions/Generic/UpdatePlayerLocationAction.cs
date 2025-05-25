@@ -9,9 +9,7 @@ using Unity.Properties;
 public partial class UpdatePlayerLocationAction : Action
 {
     public BlackboardVariable<PlayerCharacter> PlayerRef;
-    public BlackboardVariable<Transform> OutLocationResult;
     public BlackboardVariable<Vector3> OutVectorResult;
-    public BlackboardVariable<bool> HasSeenPlayerResult;
 
     protected override Status OnStart()
     {
@@ -20,14 +18,11 @@ public partial class UpdatePlayerLocationAction : Action
 
     protected override Status OnUpdate()
     {
-        if (PlayerRef == null)
+        if (PlayerRef.Value == null)
         {
-            OutLocationResult.Value = null;
             return Status.Success;
         }
-        OutLocationResult.Value = PlayerRef.Value.CapsuleCollision.transform;
-        HasSeenPlayerResult.Value = true;
-        OutVectorResult.Value = OutLocationResult.Value.position;
+        OutVectorResult.Value = PlayerRef.Value.CapsuleCollision.transform.position;
         return Status.Success;
     }
 

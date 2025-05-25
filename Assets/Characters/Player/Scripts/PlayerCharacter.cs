@@ -22,6 +22,7 @@ public class PlayerCharacter : CharacterBase
     InputAction MoveAction;
     InputAction LookAction;
     InputAction JumpAction;
+    InputAction SprintAction;
     InputAction InteractAction;
     InputAction AttackPrimaryAction;
     InputAction AttackSecondaryAction;
@@ -58,6 +59,11 @@ public class PlayerCharacter : CharacterBase
     public float GrenadeThrowPower = 5f;
     [NonSerialized] public bool CurrentGrenadeSelected = true;  // For deciding whether to throw the time or gravity grenade. true => TimeDilationField   false => GravityField
     [NonSerialized] public FieldBaseGrenade CurrentGrenadeInHand = null;
+    [Header("Weapon Reloads")]
+    public Vector3 MagazineHandAttachmentOffsetRotation;
+    public Vector3 MagazineHandAttachmentOffsetPosition;
+    public Transform MagazineHoldTransform;
+    [NonSerialized] public GameObject MagazineInHand = null;
 
     [Header("Player State")]
     public EPlayerState CurrentPlayerState = EPlayerState.GAMEPLAY_DEFAULT;  // Can be used to check for combat, and gameplay states.
@@ -68,6 +74,8 @@ public class PlayerCharacter : CharacterBase
     }
 
     public void SetupPlayerActions() {
+        SprintAction = InputSystem.actions.FindAction("Sprint");
+        SprintAction.Enable();
         ChangeSelectedGrenade = InputSystem.actions.FindAction("Change Selected Grenade");
         ChangeSelectedGrenade.Enable();
         GrenadeAction = InputSystem.actions.FindAction("Grenade");
@@ -94,6 +102,8 @@ public class PlayerCharacter : CharacterBase
         AttackPrimaryAction.Enable();
         AttackSecondaryAction = InputSystem.actions.FindAction("AttackSecondary");
         AttackSecondaryAction.Enable();
+        SprintAction.performed += SprintAction_performed;
+        SprintAction.canceled += SprintAction_canceled;
         ChangeSelectedGrenade.performed += ChangeSelectedGrenade_performed;
         GrenadeAction.performed += GrenadeAction_performed;
         GrenadeAction.canceled += GrenadeAction_canceled;
@@ -108,6 +118,18 @@ public class PlayerCharacter : CharacterBase
         JumpAction.canceled += Jump_canceled;
         ChangeSelfGravityAction.performed += ChangeSelfGravityAction_performed;
         ChangeWorldGravityAction.performed += ChangeWorldGravityAction_performed;
+    }
+
+    private void SprintAction_canceled(InputAction.CallbackContext obj)
+    {
+        if (IsAimingWeapon) return;
+        this.StopSprint();
+    }
+
+    private void SprintAction_performed(InputAction.CallbackContext obj)
+    {
+        if (IsAimingWeapon) return;
+        this.StartSprint();
     }
 
     private void ChangeSelectedGrenade_performed(InputAction.CallbackContext obj)
@@ -131,7 +153,7 @@ public class PlayerCharacter : CharacterBase
 
     private void ReloadAction_performed(InputAction.CallbackContext obj)
     {
-        
+        Reload();
     }
 
     private void InteractAction_canceled(InputAction.CallbackContext obj)
@@ -174,12 +196,13 @@ public class PlayerCharacter : CharacterBase
     }
     private void Jump_performed(InputAction.CallbackContext obj)
     {
-        IsJumpBoosting = true;
+        BoostJump();
+        //IsJumpBoosting = true;
     }
 
     private void Jump_canceled(InputAction.CallbackContext obj)
     {
-        IsJumpBoosting = false;
+        //IsJumpBoosting = false;
     }
 
     private void AttackPrimary_performed(InputAction.CallbackContext obj)
@@ -207,6 +230,8 @@ public class PlayerCharacter : CharacterBase
         GrenadeAction.performed -= GrenadeAction_performed;
         GrenadeAction.canceled -= GrenadeAction_canceled;
         ChangeSelectedGrenade.performed -= ChangeSelectedGrenade_performed;
+        SprintAction.performed -= SprintAction_performed;
+        SprintAction.canceled -= SprintAction_canceled;
         MoveAction.Disable();
         LookAction.Disable();
         InteractAction.Disable();
@@ -219,8 +244,9 @@ public class PlayerCharacter : CharacterBase
         ChangeWorldGravityAction.Disable();
         ChangeSelfGravityAction_DIRECTION.Disable();
         ChangeWorldGravityAction_DIRECTION.Disable();
+        SprintAction.Disable();
 
-        
+
     }
 
     public void OnDisable()
@@ -232,6 +258,7 @@ public class PlayerCharacter : CharacterBase
     public override void Start()
     {
         base.Start();
+        AimWeapon(false);
         SetupPlayerActions();
     }
 
@@ -250,20 +277,23 @@ public class PlayerCharacter : CharacterBase
 
     void HandleInputs()
     {
-        if (IsJumpBoosting)
-            BoostJump();
+        //if (IsJumpBoosting)
+            //BoostJump();
         MoveDirectionXYKeyboard = MoveAction.ReadValue<Vector2>();
         Move(MoveDirectionXYKeyboard);
         Look(LookAction.ReadValue<Vector2>());
     }
 
     public void BoostJump() {
-        MyPlayerController.AddMovementInput(-MyPlayerController.GetGravityDirection(), BoostUpForce);
+        if (this.MyPlayerController.IsOnGround)
+            this.MyPlayerController.RigidbodyRef.AddForce(-MyPlayerController.GetGravityDirection() * BoostUpForce);
+       //  MyPlayerController.AddMovementInput(-MyPlayerController.GetGravityDirection(), BoostUpForce);
     }
 
     public void Look(Vector2 Direction) {
         Vector3 capsuleUp = -MyPlayerController.GetGravityDirection();
-        MyPlayerController.CameraRotation.x += Direction.y * MyPlayerController.LookSensivityY * (capsuleUp.y < 0 ? -1f : 1f) * (MyPlayerController.InvertLookY ? -1f : 1f) * Time.deltaTime;
+        float XAmount = Direction.y * MyPlayerController.LookSensivityY * (capsuleUp.y < 0 ? -1f : 1f) * (MyPlayerController.InvertLookY ? -1f : 1f) * Time.deltaTime;
+        MyPlayerController.CameraRotation.x += XAmount;
         MyPlayerController.CameraRotation.x = Mathf.Clamp(MyPlayerController.CameraRotation.x, MyPlayerController.MinVerticalRotation, MyPlayerController.MaxVerticalRotation);
         MyPlayerController.CameraRotation.y += Direction.x * MyPlayerController.LookSensivityX * (MyPlayerController.InvertLookX ? -1f : 1f) * Time.deltaTime;
         // Vector3 capsuleUp = -MyPlayerController.GetGravityDirection();   
@@ -271,11 +301,23 @@ public class PlayerCharacter : CharacterBase
         if (capsuleUp == Vector3.zero)
             capsuleUp = CapsuleCollision.transform.up;
         Vector3 capsuleRight = MyPlayerController.GetRightBasedOnGravity();
-        Quaternion TargetCameraRotation = Quaternion.AngleAxis(MyPlayerController.CameraRotation.y, capsuleUp) * Quaternion.AngleAxis(MyPlayerController.CameraRotation.x, capsuleRight);
-        Vector3 FocusPosition = MyPlayerController.CameraFocusTarget.transform.position;// + new Vector3(MyPlayerController.FramingOffset.x, MyPlayerController.FramingOffset.y, 0);
+        Quaternion TargetCameraRotation = Quaternion.AngleAxis(MyPlayerController.CameraRotation.y, capsuleUp) *
+            Quaternion.AngleAxis(MyPlayerController.CameraRotation.x + (capsuleUp.Equals(Vector3.forward) ? 90 : (capsuleUp.Equals(Vector3.back) ? -90 : 0)), capsuleRight);
+        Vector3 FocusPosition = IsAimingWeapon ? MyPlayerController.AimFocusPoint.transform.position : MyPlayerController.CameraFocusTarget.transform.position + new Vector3(MyPlayerController.FramingOffset.x, MyPlayerController.FramingOffset.y, MyPlayerController.FramingOffset.z);
         Vector3 CameraDistance = TargetCameraRotation * new Vector3(0, 0, MyPlayerController.CameraDistance);
-        CameraComp.transform.position = FocusPosition - CameraDistance;
-        CameraComp.transform.rotation = Quaternion.LookRotation((CapsuleCollision.transform.position - CameraComp.transform.position).normalized, capsuleUp);
+        bool IsCameraBlocked = Physics.Raycast(FocusPosition, (FocusPosition - CameraDistance).normalized, out RaycastHit HitResult, MyPlayerController.CameraDistance, MyPlayerController.CameraClippingLayerMask);
+        if (IsCameraBlocked)
+        {
+            CameraDistance = TargetCameraRotation * new Vector3(0, 0, HitResult.distance - 1f);
+            // Debug.LogWarning(HitResult.collider.gameObject.name);
+            
+        }
+        Debug.DrawLine(FocusPosition, FocusPosition - CameraDistance, Color.green);
+
+        CameraComp.transform.position = Vector3.Lerp(CameraComp.transform.position, FocusPosition - CameraDistance, Time.deltaTime * 10);
+        CameraComp.transform.rotation = Quaternion.LookRotation((FocusPosition - CameraComp.transform.position).normalized, capsuleUp);
+        // CameraComp.transform.rotation = TargetCameraRotation;
+
     }
 
     public override void Move(Vector2 Direction)
@@ -385,7 +427,16 @@ public class PlayerCharacter : CharacterBase
 
     public override void AimWeapon(bool IsAiming)
     {
+        MyPlayerController.CrosshairObject.SetActive(IsAiming);
+        IsAimingWeapon = IsAiming;
+        MyPlayerController.IK_Aim.weight = IsAiming ? 1f : 0f;
+        MyPlayerController.IK_Aim_Rig.weight = IsAiming ? 1f : 0f;
+        MyPlayerController.IK_Aim_RigBuilder.layers[0].active = IsAiming;
+        MyPlayerController.IK_Aim_RigAnimation.enabled = IsAiming;
+        if (IsSprinting && IsAiming)
+            this.StopSprint();
         base.AimWeapon(IsAiming);
+        this.CurrentMovementSpeed = IsAiming ? AimingMovementSpeed : MovementSpeed;
         MyPlayerController.TargetCameraDistance = IsAiming ? MyPlayerController.CameraDistanceAiming : MyPlayerController.CameraDistanceInit;
     }
 

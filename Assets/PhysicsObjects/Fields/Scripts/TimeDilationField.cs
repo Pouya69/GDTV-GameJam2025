@@ -59,7 +59,9 @@ public class TimeDilationField : FieldBase
 
     public override void PhysicsObjectEntered(PhysicsObjectBasic PhysicsObject)
     {
-        PhysicsObject.VelocityBeforeTimeDilation = PhysicsObject.RigidbodyRef.linearVelocity;
+        if (PhysicsObject == null) return;
+        if (!PhysicsObject.RigidbodyRef.isKinematic)
+            PhysicsObject.VelocityBeforeTimeDilation = PhysicsObject.RigidbodyRef.linearVelocity;
         //PhysicsObject.RigidbodyRef.angularVelocity = Vector3.zero;
         base.PhysicsObjectEntered(PhysicsObject);
         PhysicsObject.SetTimeDilation(FieldAmount);
@@ -85,7 +87,8 @@ public class TimeDilationField : FieldBase
         base.ResetPhysicsObject(PhysicsObject);
         PhysicsObject.SetTimeDilation(1f);
         // We can add conditions to whether affect it or not after.
-        PhysicsObject.RigidbodyRef.linearVelocity = PhysicsObject.VelocityBeforeTimeDilation;
+        if(!PhysicsObject.RigidbodyRef.isKinematic)
+            PhysicsObject.RigidbodyRef.linearVelocity = PhysicsObject.VelocityBeforeTimeDilation;
     }
 
 }

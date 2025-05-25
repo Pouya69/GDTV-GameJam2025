@@ -1,4 +1,7 @@
+using GLTFast.Schema;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.AI;
@@ -11,11 +14,91 @@ public class EnemyBaseController : CustomCharacterController
     [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
     [NonSerialized] public Vector3 GravityBeforeCustomGravity = Vector3.zero;  // For force fields
     [Header("Base Enemy")]
-    [SerializeField] private BehaviorGraphAgent MyBehaviourTreeAgent;
-    [SerializeField] private NavMeshAgent MyNavAgent;
-    [NonSerialized] private BlackboardReference MyBlackBoardRef;
-    [NonSerialized] public EnemyBaseCharacter EnemyBaseCharacterRef;
+    public EnemyBaseCharacter EnemyBaseCharacterRef;
+    public float StoppingDistanceFromDestination = 0.2f;  // If less than equal this, that means we have arrived.
+    [SerializeField] public BehaviorGraphAgent MyBehaviourTreeAgent;
+    [SerializeField] public NavMeshAgent MyNavAgent;
+    [NonSerialized] public BlackboardReference MyBlackBoardRef;
+    public AISenseHandler MySenseHandler;
+    [Header("Ragdoll")]
+    [NonSerialized] public bool IsInGravityField = false;
+    public Rigidbody PelvisRigidBody;
+    public Collider PelvisCollider;
+    public Transform PelvisTransform;
+    public LayerMask RagdollRecoverLayerMask = new LayerMask();
+    public float RagdollRecoverGetUpDistanceCheck = 0.3f;
+    [NonSerialized] public Vector3 PelvisCapsuleOffset;
+    [NonSerialized] public Vector3 PelvisCharacterOffset;
+    [NonSerialized] public Vector3 SkeletalMeshCapsuleOffset;
+    public List<Transform> BonesListAll = new List<Transform>();  // All the bones in the skeleton Excluding weapons and extra. For ragdoll recovery.
+    Dictionary<Transform, Pose> ragdollPose = new Dictionary<Transform, Pose>();
+    [NonSerialized] public bool IsTryingToRecoverFromRagdoll = false;
+    public float CheckRagdollRecoveryEverySeconds = 1f;
 
+    public void CacheRagdollPose()
+    {
+        ragdollPose.Clear();
+        foreach (Transform bone in BonesListAll)
+            ragdollPose[bone] = new Pose(bone.localPosition, bone.localRotation);
+    }
+
+    void CollectBones(Transform current)
+    {
+        BonesListAll.Add(current);
+        foreach (Transform child in current)
+        {
+            CollectBones(child);
+        }
+    }
+
+
+    public IEnumerator BlendToAnimatorPose(float duration)
+    {
+        float time = 0f;
+        while (time < duration)
+        {
+            float t = time / duration;
+            foreach (Transform bone in BonesListAll)
+            {
+                Pose cached = ragdollPose[bone];
+                bone.SetLocalPositionAndRotation(Vector3.Lerp(cached.position, bone.localPosition, t), Quaternion.Slerp(cached.rotation, bone.localRotation, t));
+            }
+            time += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+
+    public Vector3 GetEnemyForward()
+    {
+        return -this.MyNavAgent.velocity.normalized;
+    }
+
+    public void LookAtPlayer(bool ShouldLookAtPlayer) {
+        CharacterBaseRef.IsAimingWeapon = ShouldLookAtPlayer;
+        IK_Aim.weight = ShouldLookAtPlayer ? 1f : 0f;
+        IK_Aim_Rig.weight = ShouldLookAtPlayer ? 1f : 0f;
+        IK_Aim_RigBuilder.layers[0].active = ShouldLookAtPlayer;
+        IK_Aim_RigAnimation.enabled = ShouldLookAtPlayer;
+        IK_Aim.data.sourceObjects.SetTransform(0, ShouldLookAtPlayer ? MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform : null);
+        CharacterBaseRef.CurrentMovementSpeed = ShouldLookAtPlayer ? CharacterBaseRef.AimingMovementSpeed : CharacterBaseRef.MovementSpeed;
+    }
+
+    public void RotateTowards(Vector3 targetPosition)
+    {
+        Vector3 gravityUp = -GetGravityDirection(); // character's up
+        Vector3 toTarget = (targetPosition - transform.position).normalized;
+
+        // Project direction onto the gravity plane
+        Vector3 projected = Vector3.ProjectOnPlane(toTarget, gravityUp).normalized;
+
+        // Prevent NaN if projected is zero (e.g., target directly above/below)
+        if (projected.sqrMagnitude > 0.0001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(projected, gravityUp);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        }
+    }
 
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
     {
@@ -61,11 +144,12 @@ public class EnemyBaseController : CustomCharacterController
         // The movement input is update from CustomMoveToAction node.
         if (!this.IsAirCharacter)
             CheckIsOnGround();  // Air characters will never check for onGround
+        this.ManualMovementThroughNavAgent();
         this.RigidbodyRef.linearDamping = IsOnGround ? Damping : 0.0f;
         if (IsOnGround)
-            RigidbodyRef.AddForce(Multiplier * InputVelocity);
+            RigidbodyRef.AddForce(this.CustomTimeDilation * InputVelocity);
         else
-            RigidbodyRef.AddForce(Multiplier * (InputVelocity + (this.BaseGravity * this.RigidbodyRef.mass)));
+            RigidbodyRef.AddForce(this.CustomTimeDilation * (InputVelocity + (this.BaseGravity * this.RigidbodyRef.mass)));
         InputVelocity = Vector3.zero;
         
         
@@ -74,11 +158,46 @@ public class EnemyBaseController : CustomCharacterController
 
     public override void InteroplateCharacterRotation()
     {
-        // TODO: When character is boosing himself, does not work still needs work. :(
-        Vector3 FinalDirection = -(Quaternion.identity * LastMovementDirection);
+        // Vector3 FinalDirection = -(Quaternion.identity * LastMovementDirection);
+        
+        //if (MySenseHandler.CanSeePlayer)
+        //{
+        //    TargetRotation = Quaternion.LookRotation((MySenseHandler.PlayerCharacterRef_CHECK_ONLY.transform.position - CharacterBaseRef.CapsuleCollision.transform.position).normalized, LocalUp);
+        //}
+        if (EnemyBaseCharacterRef.IsRagdolling())
+        {
+            return;
+        }
+        Vector3 FinalDirection = GetEnemyForward();
         Vector3 LocalUp = -GetGravityDirection();
-        if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
-            TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
+        if (FinalDirection.magnitude >= 0.01)
+        {
+            FinalDirection.Normalize();
+            
+            if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
+                TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
+        }
+
+
+        EnemyBaseCharacterRef.CapsuleCollision.transform.rotation = Quaternion.RotateTowards(EnemyBaseCharacterRef.CapsuleCollision.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
+        
+    }
+
+    public void ManualMovementThroughNavAgent()
+    {
+        if (this.MyNavAgent.pathPending) return;
+        if (this.MyNavAgent.path.corners == null || this.MyNavAgent.path.corners.Length == 0)
+        {
+            // CurrentCornerIndex = 0;
+            return;
+        }
+        //if (CurrentCornerIndex > this.MyNavAgent.path.corners.Length-1)
+            //return;
+        Vector3 MyPosition = EnemyBaseCharacterRef.CapsuleCollision.transform.position;
+        Vector3 CurrentTargetInPath = this.MyNavAgent.nextPosition; //this.MyNavAgent.path.corners[CurrentCornerIndex];
+        this.AddMovementInput((CurrentTargetInPath - MyPosition).normalized, EnemyBaseCharacterRef.CurrentMovementSpeed);
+        //if (Vector3.Distance(MyPosition, CurrentTargetInPath) < StoppingDistanceFromDestination)
+            //CurrentCornerIndex++;
     }
 
 
@@ -86,6 +205,8 @@ public class EnemyBaseController : CustomCharacterController
     public override void Start()
     {
         base.Start();
+        // IK_Aim.data.sourceObjects.Add(new UnityEngine.Animations.Rigging.WeightedTransform(MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform, 1f));
+        LookAtPlayer(false);
         this.MyBlackBoardRef = this.MyBehaviourTreeAgent.BlackboardReference;
         // this.MyBlackBoardRef.SetVariableValue<EnemyBaseCharacter>("SelfEnemyRef", this.EnemyBaseCharacterRef);
     }
@@ -96,20 +217,141 @@ public class EnemyBaseController : CustomCharacterController
     public override void Update()
     {
         base.Update();
+        /*if (EnemyBaseCharacterRef.IsRagdolling() || !EnemyBaseCharacterRef.CapsuleCollision.enabled)
+        {
+            MyNavAgent.nextPosition = transform.position;
+            transform.position = PelvisTransform.position + PelvisCharacterOffset;
+        }*/
+    }
+
+    public override void FixedUpdate()
+    {
+        // EnemyBaseCharacterRef.CapsuleCollision.transform.position = PelvisTransform.position + PelvisCapsuleOffset;
+
+        if (EnemyBaseCharacterRef.IsRagdolling())
+        {
+            // EnemyBaseCharacterRef.CapsuleCollision.transform.position = PelvisTransform.position + PelvisCapsuleOffset;
+            if (!EnemyBaseCharacterRef.EnemyAnimator.enabled && !IsTryingToRecoverFromRagdoll)
+            {
+                Vector3 GroundLoc = CheckIsOnGround_RAGDOLL();
+                if (ShouldStopRagdolling())
+                {
+                    IsTryingToRecoverFromRagdoll = true;
+                    StartCoroutine(RagdollRecoveryTimer(GroundLoc));
+                    return;
+                }
+                if (!IsOnGround)
+                {
+                    PelvisRigidBody.AddForce(RigidbodyRef.mass * GetGravityForceTimeScaled());
+                    // RigidbodyRef.AddForce(ForceApplied);
+                }
+                
+                InputVelocity = Vector3.zero;
+                // CheckIsOnGround_RAGDOLL();
+
+                // InteroplateCharacterRotation();
+            }
+            //MyNavAgent.nextPosition = transform.position;
+            //transform.position = PelvisTransform.position + PelvisCharacterOffset;
+            return;
+        }
+        //else if (!EnemyBaseCharacterRef.CapsuleCollision.enabled)
+        //{
+        //    transform.position = PelvisTransform.position + PelvisCharacterOffset;
+        //    MyNavAgent.nextPosition = transform.position;
+        //}
+        
+        // Debug.Log("Normal movement");
+        //if (EnemyBaseCharacterRef.IsRagdollRecoveryCompleted())
+        base.FixedUpdate();
+    }
+
+    private void LateUpdate()
+    {
+        
+        
     }
 
     protected override void Awake()
     {
         base.Awake();
+        PelvisCharacterOffset = EnemyBaseCharacterRef.transform.position - PelvisTransform.position;
+        PelvisCapsuleOffset = EnemyBaseCharacterRef.CapsuleCollision.transform.position - PelvisTransform.position;
+        SkeletalMeshCapsuleOffset = EnemyBaseCharacterRef.SkeletalMesh.transform.position - EnemyBaseCharacterRef.CapsuleCollision.transform.position;
+
+
+        // BonesListAll.Clear();
+        // CollectBones(PelvisTransform);
         this.MyNavAgent.updateRotation = false;  // This is done by the custom movements that we have already.
         this.MyNavAgent.updateUpAxis = false;  // Done by custom gravity
         this.MyNavAgent.updatePosition = false;
-
     }
 
     // For the blackboard.
-    public void UpdatePlayerCharacterRef(PlayerCharacter playerCharacterRef = null)
+    public void UpdatePlayerCharacterRef(PlayerCharacter playerCharacterRef = null, Vector3 LastPlayerLocation = new Vector3())
     {
+        if (playerCharacterRef == null)
+        {
+            LookAtPlayer(false);
+            NavMeshPath p = new();
+            // Checking if player was on my surface/reachable.
+            this.MyBlackBoardRef.SetVariableValue<Vector3>("LastKnownPlayerLocation", LastPlayerLocation);
+            this.MyBlackBoardRef.SetVariableValue<bool>("WasLastPlayerLocationInMySurface", this.MyNavAgent.CalculatePath(LastPlayerLocation, p));
+        }
+        else
+            LookAtPlayer(true);
         this.MyBlackBoardRef.SetVariableValue<PlayerCharacter>("PlayerCharacterRef", playerCharacterRef);
+        this.MyBlackBoardRef.SetVariableValue<Transform>("PlayerCharacterRefTRANSFORM", playerCharacterRef == null ? null : playerCharacterRef.CapsuleCollision.transform);
+    }
+
+    public bool RagdollShouldGetUpFromBack() {
+        // The forward is actually the back side of pelvis.
+        return Physics.Raycast(PelvisTransform.position, PelvisTransform.forward, RagdollRecoverGetUpDistanceCheck, RagdollRecoverLayerMask);
+    }
+
+    public Vector3 CheckIsOnGround_RAGDOLL()
+    {
+        Vector3 Start = PelvisTransform.position;
+        Vector3 GravityDirection = GravityBeforeCustomGravity.normalized;
+        Debug.DrawLine(Start, Start + (GravityDirection * 0.3f), Color.cyan);
+        bool didHitGround = Physics.Raycast(Start, GravityDirection, out RaycastHit HitResult, 0.25f, GroundCheckLayerMask);
+        if (!didHitGround)
+        {
+            IsOnGround = false;
+            return Vector3.zero;
+        }
+        IsOnGround = !HitResult.collider.transform.CompareTag("GameController") && !HitResult.collider.transform.root.TryGetComponent<PhysicsObjectBasic>(out _);
+        return HitResult.point;
+    }
+
+    IEnumerator RagdollRecoveryTimer(Vector3 GroundLoc)
+    {
+        yield return new WaitForSeconds(CheckRagdollRecoveryEverySeconds);
+        // CacheRagdollPose();
+        // StartCoroutine(EnemyBaseCharacterRef.RecoverFromRagdollCoroutine(!RagdollShouldGetUpFromBack()));
+        // EnemyBaseCharacterRef.CapsuleCollision.transform.position = PelvisTransform.position + PelvisCapsuleOffset;
+        PelvisRigidBody.linearVelocity = Vector3.zero;
+        PelvisRigidBody.angularVelocity = Vector3.zero;
+        // StartCoroutine(EnemyBaseCharacterRef.RecoverFromRagdollCoroutine(!RagdollShouldGetUpFromBack()));
+        // Vector3 GroundLoc = CheckIsOnGround_RAGDOLL();
+        if (GroundLoc.Equals(Vector3.zero))
+            GroundLoc = PelvisTransform.position;
+        EnemyBaseCharacterRef.StopRagdolling(!RagdollShouldGetUpFromBack(), GroundLoc);
+        // Do something after the delay
+    }
+
+    public bool ShouldStopRagdolling()
+    {
+        bool Result = !IsInGravityField && IsOnGround && PelvisRigidBody.linearVelocity.magnitude <= 0.1f;
+        if (!Result)
+        {
+            Debug.Log("OnGround: " + IsOnGround + ", pelvis vel mag: " + PelvisRigidBody.linearVelocity.magnitude);
+        }
+        return Result;
+    }
+
+    public override Vector3 GetForwardShootingVector()
+    {
+        return base.GetForwardShootingVector();
     }
 }
