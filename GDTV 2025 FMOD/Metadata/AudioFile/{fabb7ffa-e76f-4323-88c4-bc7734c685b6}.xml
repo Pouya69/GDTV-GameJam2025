@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{fabb7ffa-e76f-4323-88c4-bc7734c685b6}">
 		<property name="assetPath">
-			<value>Objects, Bag, Sportsbag, Catch SND5921.wav</value>
+			<value>SFX/Objects, Bag, Sportsbag, Catch SND5921.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>96</value>

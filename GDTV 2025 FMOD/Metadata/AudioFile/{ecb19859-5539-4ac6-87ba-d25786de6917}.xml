@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{ecb19859-5539-4ac6-87ba-d25786de6917}">
 		<property name="assetPath">
-			<value>SFX - Pickup Chime.wav</value>
+			<value>SFX/SFX - Pickup Chime.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>

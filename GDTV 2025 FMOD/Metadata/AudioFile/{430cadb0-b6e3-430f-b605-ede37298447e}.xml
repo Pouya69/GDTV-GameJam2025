@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{430cadb0-b6e3-430f-b605-ede37298447e}">
 		<property name="assetPath">
-			<value>Click ClayDice.wav</value>
+			<value>UI/Click ClayDice.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>44.0999985</value>

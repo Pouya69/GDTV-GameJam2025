@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{04fa69e3-a93d-4f1e-a1d1-f0a048f9cf47}">
 		<property name="assetPath">
-			<value>Voices, Female, Type 02, Sudden Death, Combat, Pain, Video Game 01 SND85663.wav</value>
+			<value>SFX/Voices, Female, Type 02, Sudden Death, Combat, Pain, Video Game 01 SND85663.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>96</value>

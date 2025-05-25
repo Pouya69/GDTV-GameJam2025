@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{a5863dfe-20d8-4631-8f0e-6eb5bb77bde9}">
 		<property name="assetPath">
-			<value>Creatures, Humanoid, Goblin, Designed, Male, High Pitched, Death, Hurt SND115872.wav</value>
+			<value>SFX/Creatures, Humanoid, Goblin, Designed, Male, High Pitched, Death, Hurt SND115872.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>96</value>

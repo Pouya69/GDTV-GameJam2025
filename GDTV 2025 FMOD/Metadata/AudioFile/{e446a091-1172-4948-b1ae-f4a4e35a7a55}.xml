@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{e446a091-1172-4948-b1ae-f4a4e35a7a55}">
 		<property name="assetPath">
-			<value>Impact_Heartbeat_Dull_Slow.wav</value>
+			<value>SFX/Impact_Heartbeat_Dull_Slow.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>96</value>
