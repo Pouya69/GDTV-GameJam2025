@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FMODUnity;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -445,6 +446,7 @@ public class PlayerCharacter : CharacterBase
     public void PickupInteractable(InteractablePickable interactablePickable) {
         interactablePickable.IsInteractable = false;
         InventoryComp.AddItemToInventory(this, interactablePickable);
+        RuntimeManager.PlayOneShot("event:/SFX_Pickup", transform.position);
     }
 
     public override void AimWeapon(bool IsAiming)

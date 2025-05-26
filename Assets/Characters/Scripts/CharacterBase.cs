@@ -1,6 +1,7 @@
 using System;
-using Unity.VisualScripting;
+using FMODUnity;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CharacterBase : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class CharacterBase : MonoBehaviour
     float Health;
     public float MaxHealth = 100f;
     [NonSerialized] public bool HasDied = false;
+    public AfterEffects AfterEffects;
 
     public virtual void Start()
     {
@@ -117,8 +119,13 @@ public class CharacterBase : MonoBehaviour
             default:
                 break;
         }
+        if(AfterEffects != null)
+        {
+            AfterEffects.GettingHit();
+        }
         this.Health -= Amount;
         Debug.LogWarning("New Health: " +  this.Health);
+        RuntimeManager.PlayOneShot("event:/SFX_Gunshot Impact",transform.position);
         if (this.Health < 0) Die();
     }
     
