@@ -102,6 +102,8 @@ public class CharacterBase : MonoBehaviour
 
     public virtual void Die()
     {
+        if(AfterEffects != null) RuntimeManager.PlayOneShot("event:/VX_Player Death", transform.position);
+        else RuntimeManager.PlayOneShot("event:/VX_Enemy Death", transform.position);
         Debug.LogWarning("Dying...");
         this.Health = 0;
     }
@@ -112,7 +114,7 @@ public class CharacterBase : MonoBehaviour
         switch (DamageType)
         {
             case EDamageType.BULLET:
-                RuntimeManager.PlayOneShot("event:/SFX_Gunshot Impact", transform.position);
+                if(this.Health - Amount > 0) RuntimeManager.PlayOneShot("event:/SFX_Gunshot Impact", transform.position);
                 break;
             case EDamageType.DEFAULT:
                 break;

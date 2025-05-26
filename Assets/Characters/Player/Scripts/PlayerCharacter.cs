@@ -301,7 +301,10 @@ public class PlayerCharacter : CharacterBase
 
     public void BoostJump() {
         if (this.MyPlayerController.IsOnGround)
+        {
             this.MyPlayerController.RigidbodyRef.AddForce(-MyPlayerController.GetGravityDirection() * BoostUpForce);
+            RuntimeManager.PlayOneShot("event:/SFX_Jumps", transform.position);
+        }
        //  MyPlayerController.AddMovementInput(-MyPlayerController.GetGravityDirection(), BoostUpForce);
     }
 
