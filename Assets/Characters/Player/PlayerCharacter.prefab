@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 1800623795946688480}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.68, y: -3.35, z: -0.5353729}
+  m_LocalPosition: {x: -10.68, y: -3.3500004, z: -0.5353737}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -151,12 +151,12 @@ MonoBehaviour:
       m_Item7:
         transform: {fileID: 0}
         weight: 0
-    m_Offset: {x: 0, y: 45, z: 0}
+    m_Offset: {x: 0, y: 0, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
-    m_AimAxis: 4
+    m_AimAxis: 1
     m_UpAxis: 2
-    m_WorldUpType: 2
+    m_WorldUpType: 3
     m_WorldUpObject: {fileID: 1250550882918264945}
     m_WorldUpAxis: 2
     m_MaintainOffset: 1
@@ -372,6 +372,55 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &4663122276805592536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5121403350474310158}
+  - component: {fileID: 8444171970345118034}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5121403350474310158
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4663122276805592536}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5319121311838748760}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8444171970345118034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4663122276805592536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 5
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: 69ab11085a82e0049ac57b7bd66b448c, type: 2}
 --- !u!1 &5043409899933712041
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,8 +437,10 @@ GameObject:
   - component: {fileID: 6585543468267847589}
   - component: {fileID: 478720490366675557}
   - component: {fileID: 5550989815467117142}
-  - component: {fileID: 2431011199854424261}
   - component: {fileID: 4178817744578650694}
+  - component: {fileID: 101492228092171637}
+  - component: {fileID: 4753595418188766937}
+  - component: {fileID: 2749603349908224544}
   m_Layer: 9
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -413,6 +464,7 @@ Transform:
   - {fileID: 1250550882918264945}
   - {fileID: 8527536949906540405}
   - {fileID: 1311663566825220928}
+  - {fileID: 5121403350474310158}
   - {fileID: 4867567758158977920}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -466,6 +518,7 @@ MonoBehaviour:
   WeaponAttachHandTransform: {fileID: 1985836509849688411}
   CurrentWeaponEquipped: {fileID: 0}
   MaxHealth: 100
+  AfterEffects: {fileID: 2749603349908224544}
   BoostUpForce: 25000
   CameraComp: {fileID: 8082841036154253311}
   MyPlayerController: {fileID: 68458773095703299}
@@ -608,19 +661,6 @@ MonoBehaviour:
   MaxImpactDeath: 15
   MinDamageApplied: 10
   MaxDamageApplied: 150
---- !u!114 &2431011199854424261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5043409899933712041}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cbc9c618dc95a84397d7118a02cde45, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lowHealth: 2
 --- !u!114 &4178817744578650694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -654,6 +694,76 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 20
+--- !u!114 &101492228092171637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5043409899933712041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cbc9c618dc95a84397d7118a02cde45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: {fileID: 4829410219625231076}
+  State: 0
+  HeartBeat: {fileID: 4753595418188766937}
+  Ambiance: {fileID: 0}
+--- !u!114 &4753595418188766937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5043409899933712041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -85079282
+      Data2: 1166688387
+      Data3: 1225478546
+      Data4: -1581784063
+    Path: event:/SFX_Low Health
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: lowHealth
+    Value: 2
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &2749603349908224544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5043409899933712041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f3ed1ef288ad494cbea3cd66842646b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FreezeTimeEffect: {fileID: 0}
+  FreezeTransitionSpeed: 0
+  WorldScanner: {fileID: 0}
+  ScannerDuration: 0
+  BlurEffect: {fileID: 0}
+  BlueSpeed: 0
+  HitEffect: {fileID: 8444171970345118034}
+  HitSpeed: 4
+  SpawnPoint: {fileID: 0}
 --- !u!1 &5175022874877880778
 GameObject:
   m_ObjectHideFlags: 0
@@ -1000,7 +1110,7 @@ GameObject:
   - component: {fileID: -591612604885841356}
   m_Layer: 2
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1094,7 +1204,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0

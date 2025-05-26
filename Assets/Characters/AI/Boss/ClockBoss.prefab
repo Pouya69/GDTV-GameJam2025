@@ -237,7 +237,7 @@ MonoBehaviour:
   BossAnimationScript: {fileID: 8029725381392573628}
   BossThrowObjectPower: 10
   BossSuckerField: {fileID: 6156626738052876032}
-  EnemySpawnPrefab: {fileID: 0}
+  EnemySpawnPrefab: {fileID: 5043409899933712041, guid: a3f43d96dd0e02e41a70df4fbd4f2cff, type: 3}
   EnemySpawnPoints: []
   PlayerRef: {fileID: 0}
 --- !u!114 &5643657918973697875

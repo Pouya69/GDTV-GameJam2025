@@ -73,10 +73,10 @@ MonoBehaviour:
       m_Item7:
         transform: {fileID: 0}
         weight: 0
-    m_Offset: {x: 0, y: 45, z: 0}
+    m_Offset: {x: 0, y: -90, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
-    m_AimAxis: 4
+    m_AimAxis: 0
     m_UpAxis: 2
     m_WorldUpType: 2
     m_WorldUpObject: {fileID: 1250550882918264945}
@@ -217,8 +217,8 @@ MonoBehaviour:
   ManualItemDrop: 1
   GravityGrenadeConsumablePrefab: {fileID: 1480510668737768966, guid: 951d2fa6dafe4b043bd62407a712be79, type: 3}
   TimeGrenadeConsumablePrefab: {fileID: 1480510668737768966, guid: 319777d0d89fe5242bc05ed65fd20ae6, type: 3}
-  AmmoConsumablePrefab: {fileID: 0}
-  HealthConsumablePrefab: {fileID: 0}
+  AmmoConsumablePrefab: {fileID: 8378809893013092834, guid: e848731c5487f364da148514d9f2a8b6, type: 3}
+  HealthConsumablePrefab: {fileID: 8425294024936128454, guid: 8d677789d8a22e0488224bd0392fb2c8, type: 3}
 --- !u!114 &5959360942475724125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,6 +381,7 @@ MonoBehaviour:
   - rid: 1936166745124897646
   - rid: 1936166833489182822
   - rid: 1936166909828923667
+  - rid: 1936166911059427409
   m_IsInitialised: 0
   m_IsStarted: 0
   references:
@@ -418,6 +419,14 @@ MonoBehaviour:
           m_Value1: 18101309642635610610
         Name: HasPatrolPoints
         m_Value: 0
+    - rid: 1936166911059427409
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 6501637707912294575
+          m_Value1: 5834522578588499227
+        Name: CombatRange
+        m_Value: 20
 --- !u!114 &8834731050827106109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,7 +448,7 @@ MonoBehaviour:
   ObstructionLayerMask:
     serializedVersion: 2
     m_Bits: 1
-  ScanRadius: 80
+  ScanRadius: 35
   TimesToCheckPerSecond: 5
   PlayerCharacterRef_CHECK_ONLY: {fileID: 0}
   FOV_Angle: 360

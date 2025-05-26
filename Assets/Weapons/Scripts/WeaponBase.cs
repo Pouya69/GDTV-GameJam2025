@@ -107,11 +107,8 @@ public class WeaponBase : InteractablePickable
             PlayEmptySound();
             return false;
         }
-        if (CurrentBulletsInMagazine >= MaxBulletsInMagazine) return true;  // Already max ammo
-        BulletsAddingAfterAnimation = MaxBulletsInMagazine - CurrentBulletsInMagazine;
-        if (CurrentBulletsInMagazine <= 0)  // If 0 bullets left, we make it reload with 1 less bullet than max bullets in a mag.
-            BulletsAddingAfterAnimation--;
-        CurrentBulletsInMagazine = 0;
+        if (BulletsLeft <= 0) return false;
+        
         IsReloading = true;
         PlayReloadAnimation();
         RuntimeManager.PlayOneShot("event:/SFX_Reload", transform.position);
@@ -121,9 +118,11 @@ public class WeaponBase : InteractablePickable
     // For when the reload animation is done we finish it
     public void ReloadCompleted()
     {
-        CurrentBulletsInMagazine += BulletsAddingAfterAnimation;
-        BulletsLeft -= BulletsAddingAfterAnimation;
-        BulletsAddingAfterAnimation = 0;
+        int Add = Mathf.Abs(MaxBulletsInMagazine - CurrentBulletsInMagazine);
+        if (Add > BulletsLeft)
+            Add = BulletsLeft;
+        CurrentBulletsInMagazine += Add;
+        BulletsLeft -= Add;
         IsReloading = false;
     }
 

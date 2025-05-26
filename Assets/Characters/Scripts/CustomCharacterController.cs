@@ -1,4 +1,5 @@
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -55,9 +56,14 @@ public class CustomCharacterController : MonoBehaviour
         RigidbodyRef.linearDamping = Damping;
     }
 
-    protected virtual void Awake()
-    {
-        
+    protected virtual void Awake() {
+        /*
+        Vector3 Rot = transform.rotation.eulerAngles;
+        //if (Rot.y == 180)
+            //IK_Aim.data.upAxis = MultiAimConstraintData.Axis.Y_NEG;
+        IK_Aim.data.offset = new Vector3(0, 90, 0);
+        IK_Aim_RigBuilder.Build();
+        */
     }
 
     // Update is called once per frame

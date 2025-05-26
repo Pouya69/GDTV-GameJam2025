@@ -157,7 +157,7 @@ MonoBehaviour:
   FieldLifeTime: 17
   SphereOverlapArea: {fileID: 6541934610875934695}
   SphereMesh: {fileID: 50425206216477134}
-  FieldRadius: 13
+  FieldRadius: 25
   IsSuckingField: 1
   IsGravityPermanent: 0
   FieldGravity: {x: 0, y: -1, z: 0}

@@ -374,7 +374,7 @@ public class PlayerCharacter : CharacterBase
         // TODO: MAKE SURE TO USE LAYERS
         InteractableBase closest = null;
         float closestDist = float.MaxValue;
-        Vector3 position = transform.position;
+        Vector3 position = CapsuleCollision.transform.position;
         foreach (GameObject obj in NearbyInteractables)
         {
             if (obj == null) continue;
@@ -559,5 +559,11 @@ public class PlayerCharacter : CharacterBase
     public void ConsumeAmmo()
     {
         // TODO: Implement ammo consumable. ALREADY DONE in picking up weapon would add ammo. But here is an extra one.
+    }
+
+    public override void ReduceHealth(EDamageType DamageType, float Amount)
+    {
+        if (DamageType == EDamageType.BULLET)
+            base.ReduceHealth(DamageType, Amount / 4);
     }
 }

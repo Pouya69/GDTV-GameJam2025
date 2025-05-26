@@ -92,9 +92,11 @@ public class EnemyBaseCharacter : CharacterBase
         if (HasDied) return;
         HasDied = true;
         base.Die();
-        Destroy(MyEnemyController.MyNavAgent);
-        Destroy(MyEnemyController.MyBehaviourTreeAgent);
-        Destroy(MyEnemyController.MySenseHandler);
+        CapsuleCollision.attachedRigidbody.detectCollisions = false;
+        foreach (Transform child in transform)
+        {
+            GameObject.Destroy(child.gameObject, DisappearTimerAfterDeath);
+        }
         StartRagdolling();
         GameObject SpawnedLoot = DropLootOnDeath();
         Destroy(this.gameObject, DisappearTimerAfterDeath);

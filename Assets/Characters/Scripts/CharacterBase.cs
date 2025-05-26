@@ -108,7 +108,7 @@ public class CharacterBase : MonoBehaviour
         this.Health = 0;
     }
 
-    public void ReduceHealth(EDamageType DamageType, float Amount)
+    public virtual void ReduceHealth(EDamageType DamageType, float Amount)
     {
         // TODO: Handling DamageTypes
         switch (DamageType)
