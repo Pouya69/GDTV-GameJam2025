@@ -10,7 +10,8 @@ public class TrackableUI : MonoBehaviour
         Pickable = 2,
         GravityDevice = 3,
         GravityField = 4,
-        ReTime = 5
+        ReTime = 5,
+        Shot = 6
     }
     [Header("Tracking Paramters")]
     public Transform target; // The world object to track
