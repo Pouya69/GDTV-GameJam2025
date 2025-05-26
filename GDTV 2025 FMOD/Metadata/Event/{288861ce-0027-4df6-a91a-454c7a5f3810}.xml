@@ -5,7 +5,7 @@
 			<value>AMB_Clocktower</value>
 		</property>
 		<property name="outputFormat">
-			<value>2</value>
+			<value>5</value>
 		</property>
 		<relationship name="folder">
 			<destination>{742ff7a2-31c8-406b-a582-33041e14ae62}</destination>
@@ -68,7 +68,11 @@
 			<destination>{1a8c4ed0-f3d8-4086-b5ac-0cfc5b6912f7}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{769ecb0e-810d-493c-af1e-4f728946c9c3}" />
+	<object class="EventAutomatableProperties" id="{769ecb0e-810d-493c-af1e-4f728946c9c3}">
+		<property name="maximumDistance">
+			<value>5.20000029</value>
+		</property>
+	</object>
 	<object class="MarkerTrack" id="{2af0759c-f275-46e7-82af-26b1347da6a0}" />
 	<object class="MarkerTrack" id="{84a7aa28-886b-4458-844f-8c5fbdf33668}" />
 	<object class="GroupTrack" id="{1adbdbe5-0405-4999-8af8-3014bb0bfcb8}">
@@ -262,7 +266,6 @@
 		<relationship name="effects">
 			<destination>{17bf8a76-86db-4695-9153-726bbc0fd92a}</destination>
 			<destination>{1c47417e-9e57-49db-9286-a278b0893948}</destination>
-			<destination>{0ebf9bfe-470d-426e-9e12-01f6424354b3}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{e233d5b6-6ad5-4a14-b047-97cb51ce939a}" />
@@ -314,7 +317,6 @@
 		</relationship>
 	</object>
 	<object class="MixerBusFader" id="{1c47417e-9e57-49db-9286-a278b0893948}" />
-	<object class="SpatialiserEffect" id="{0ebf9bfe-470d-426e-9e12-01f6424354b3}" />
 	<object class="MixerBusFader" id="{bea83dc8-1c2f-4f09-9be7-11c1762757fb}" />
 	<object class="SingleSound" id="{d3c38ab0-e5e0-4dec-9bf5-1c5654748942}">
 		<relationship name="audioFile">
