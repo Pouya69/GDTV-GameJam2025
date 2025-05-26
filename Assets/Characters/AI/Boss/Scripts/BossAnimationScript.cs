@@ -28,8 +28,6 @@ public class BossAnimationScript : MonoBehaviour
         BossAnimator.SetFloat("CharacterSpeed", SelfBossRef.MyEnemyController.RigidbodyRef.linearVelocity.magnitude, CharacterSpeedDamping, deltaTime);
     }
 
-
-
     public void StartSucking()
     {
         BossAnimator.SetTrigger("SuckTrigger");
@@ -65,7 +63,7 @@ public class BossAnimationScript : MonoBehaviour
 
     }
 
-    public void StartedMeleeEVENT()
+    public void StartedMelee()
     {
 
     }
@@ -82,6 +80,6 @@ public class BossAnimationScript : MonoBehaviour
 
     public void SummonEnemiesEVENT()
     {
-
+        SelfBossRef.SummonEnemies();
     }
 }

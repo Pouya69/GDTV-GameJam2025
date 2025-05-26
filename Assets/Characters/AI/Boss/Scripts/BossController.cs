@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class BossController : EnemyBaseController
 {
@@ -18,5 +19,61 @@ public class BossController : EnemyBaseController
         // Setting speed.
         this.MyNavAgent.speed = BaseSpeed * this.CustomTimeDilation;
         this.MyBlackBoardRef.SetVariableValue<float>("MyBTMovementSpeed", this.MyNavAgent.speed);
+    }
+
+    protected override void Awake()
+    {
+        this.MyNavAgent.updateRotation = false;  // This is done by the custom movements that we have already.
+        this.MyNavAgent.updateUpAxis = false;  // Done by custom gravity
+        this.MyNavAgent.updatePosition = false;
+    }
+
+    public override void SetGravityForceAndDirection(Vector3 Final, bool IsDoneByForceField = false)
+    {
+        // base.SetGravityForceAndDirection(Final, IsDoneByForceField);
+    }
+
+    public override void CheckRaycastFromViewPoint()
+    {
+    }
+
+    public override Vector3 GetForwardShootingVector()
+    {
+        return MyBossCharacter.transform.forward;
+    }
+
+    public override void FixedUpdate()
+    {
+        // base.FixedUpdate();
+        InteroplateCharacterRotation();
+        if (!IsMovementDisabled)
+            UpdateCharacterMovement();
+    }
+
+    public override void UpdateCharacterMovement(float Multiplier = 1)
+    {
+        base.UpdateCharacterMovement(Multiplier);
+    }
+
+    public override void AddMovementInput(Vector3 Direction, float Scale)
+    {
+        base.AddMovementInput(Direction, Scale);
+    }
+
+    public override void InteroplateCharacterRotation()
+    {
+        Vector3 LocalUp = -GetGravityDirection();
+        Vector3 FinalDirection = GetEnemyForward();
+
+        if (FinalDirection.magnitude >= 0.01)
+        {
+            FinalDirection.Normalize();
+
+            if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
+                TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
+        }
+
+
+        MyBossCharacter.CapsuleCollision.transform.rotation = Quaternion.RotateTowards(MyBossCharacter.CapsuleCollision.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
     }
 }

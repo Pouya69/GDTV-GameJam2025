@@ -8,19 +8,29 @@ public class BossCharacter : EnemyBaseCharacter
     public BossController MyBossController;
     public BossAnimationScript BossAnimationScript;
     [NonSerialized] public PhysicsObjectBasic PhysObjectInHand;
-    [NonSerialized] public List<PhysicsObjectBasic> ObjectsSuckedIn = new List<PhysicsObjectBasic>();
+    [NonSerialized] public List<PhysicsObjectBasic> PhysObjectsSuckedIn = new List<PhysicsObjectBasic>();
     public float BossThrowObjectPower = 10f;
+    public BossGravityField BossSuckerField;
+    public GameObject EnemySpawnPrefab;
+    public List<Transform> EnemySpawnPoints;
 
     public override void Attack()
     {
         // base.Attack();
         // PUNCH HERE.
+        BossAnimationScript.StartedMelee();
     }
 
     public bool StartAttackThrowObjectsAtPlayer()
     {
-        if (ObjectsSuckedIn.Count == 0) return false;
-        BossAnimationScript.StartThrowObject();
+        if (PhysObjectInHand == null)
+        {
+            if (PhysObjectsSuckedIn.Count == 0) return false;
+            PhysObjectInHand = PhysObjectsSuckedIn[0];
+            PhysObjectsSuckedIn.RemoveAt(0);
+        }
+        else
+            BossAnimationScript.StartThrowObject();
         return true;
     }
 
@@ -39,14 +49,34 @@ public class BossCharacter : EnemyBaseCharacter
         BossAnimationScript.StartSummonEnemies();
     }
 
+    public void SummonEnemies()
+    {
+        for (int i = 0; i < EnemySpawnPoints.Count; i++)
+        {
+            GameObject EnemySpawned = Instantiate(EnemySpawnPrefab, EnemySpawnPoints[i].position, EnemySpawnPoints[i].rotation);
+            PlaySummonEffect(EnemySpawnPoints[i].position);
+            EnemyBaseCharacter _ = EnemySpawned.GetComponent<EnemyBaseCharacter>();
+        }
+    }
+
+    public void PlaySummonEffect(Vector3 Location) {
+    
+    }
+
     public void SuckStarted()
     {
-
+        BossSuckerField.TurnOnField();
     }
 
     public void SuckEnded()
     {
+        BossSuckerField.TurnOffField();
+    }
 
+    public void CaughtPhysicsObjectSuck(PhysicsObjectBasic PhysObj) {
+        this.PhysObjectsSuckedIn.Add(PhysObj);
+        PhysObj.RigidbodyRef.isKinematic = true;
+        PhysObj.RigidbodyRef.detectCollisions = false;
     }
 
     public void ThrowObject()
@@ -62,5 +92,21 @@ public class BossCharacter : EnemyBaseCharacter
         PhysObjectInHand.GravityBeforeCustomGravity = this.MyBossController.BaseGravity;
         PhysObjectInHand.CheckTimeDilationOnSpawn();
         PhysObjectInHand.UpdatePhysicsObjectBasedOnTimeDilation();
+    }
+
+    public override void Update()
+    {
+        // base.Update();
+    }
+
+    public override void Die()
+    {
+        base.Die();
+        // TODO: PLAYER WIN.
+    }
+
+    public override void Awake()
+    {
+        //base.Awake();
     }
 }

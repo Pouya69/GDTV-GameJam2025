@@ -33922,6 +33922,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 180}
+--- !u!1001 &1185544743
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -779.79083
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 54.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1651.0714
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266935416365004309, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7689308170686270465, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
+      propertyPath: m_Name
+      value: ClockBoss
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3149c3a0242b5c240a6ad26c156e0147, type: 3}
 --- !u!1 &1186882098
 GameObject:
   m_ObjectHideFlags: 0
@@ -61775,3 +61832,4 @@ SceneRoots:
   - {fileID: 1360753919}
   - {fileID: 725112066}
   - {fileID: 1129318394}
+  - {fileID: 1185544743}

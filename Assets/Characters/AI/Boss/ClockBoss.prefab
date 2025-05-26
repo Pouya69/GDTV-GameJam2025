@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3439098432283413218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 289667624547398961}
+  - component: {fileID: 6156626738052876032}
+  m_Layer: 0
+  m_Name: SuckerField
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &289667624547398961
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3439098432283413218}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4266935416365004309}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6156626738052876032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3439098432283413218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eda6c287c5dfcc4195a15fe0b766568, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7689308170686270465
 GameObject:
   m_ObjectHideFlags: 0
@@ -36,6 +80,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1548063850701445533}
+  - {fileID: 289667624547398961}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7132223397052127052
@@ -70,6 +115,9 @@ MonoBehaviour:
   TimeGrenadeConsumablePrefab: {fileID: 0}
   AmmoConsumablePrefab: {fileID: 0}
   HealthConsumablePrefab: {fileID: 0}
+  MyBossController: {fileID: 0}
+  BossAnimationScript: {fileID: 0}
+  BossThrowObjectPower: 10
 --- !u!114 &5643657918973697875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,6 +177,7 @@ MonoBehaviour:
   AimAccuracy: 0.7
   AccuracyMultiplier: 1.5
   BaseSpeed: 20
+  MyBossCharacter: {fileID: 0}
 --- !u!54 &1650216543215103525
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -288,7 +337,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ffd6819c78a292f419e4ca963e3afd3c, type: 3}
       propertyPath: m_Name
-      value: Boss Idle
+      value: BossMesh
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: ffd6819c78a292f419e4ca963e3afd3c, type: 3}
       propertyPath: m_Controller

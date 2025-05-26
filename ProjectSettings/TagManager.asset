@@ -9,6 +9,7 @@ TagManager:
   - Ground Carpet
   - Ground Wood
   - Ground Concrete
+  - Boss
   layers:
   - Default
   - TransparentFX
