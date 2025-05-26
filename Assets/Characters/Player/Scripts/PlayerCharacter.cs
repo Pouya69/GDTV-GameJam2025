@@ -383,8 +383,7 @@ public class PlayerCharacter : CharacterBase
             }
         }
         if (closest == null) return false;
-        InteractablePickable CloseInteractablePickable;
-        bool IsPickable = closest.transform.root.TryGetComponent<InteractablePickable>(out CloseInteractablePickable);
+        bool IsPickable = closest.transform.root.TryGetComponent<InteractablePickable>(out InteractablePickable CloseInteractablePickable);
         if (IsPickable)
         {
             if (closestDist <= this.PickableInteractablePickupDistance && CloseInteractablePickable.IsInstantPickup)
@@ -437,7 +436,7 @@ public class PlayerCharacter : CharacterBase
 
     public void InteractionComplete(InteractableBase Interactable)
     {
-        Interactable.Interact(this);
+        bool IsComplete = Interactable.Interact(this);
         ClosestInteractable = null;
         InteractionAmount = 0;
         CanInteract = false;
