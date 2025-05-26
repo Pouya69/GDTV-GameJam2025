@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{0f10e357-03ea-4473-a1bc-e6f60e614dab}">
 		<property name="assetPath">
-			<value>Swoosh Grow Intense.wav</value>
+			<value>SFX/Swoosh Grow Intense.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>44.0999985</value>

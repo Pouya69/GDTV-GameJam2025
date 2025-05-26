@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{fd3e730e-bc51-4982-b0a5-ee4033293432}">
 		<property name="assetPath">
-			<value>SFX - Boss Punch.wav</value>
+			<value>SFX/SFX - Boss Punch.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>

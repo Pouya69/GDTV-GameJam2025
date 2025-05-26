@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{59bd2bdd-55f8-4af0-9d53-84e55e71262c}">
+		<property name="assetPath">
+			<value>AMB/Portal/Portal Sfx by hedonfire Id-647448.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>24.214166666666667</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{0b75d310-c42a-49f9-88ef-1592d05eabf2}</destination>
+		</relationship>
+	</object>
+</objects>

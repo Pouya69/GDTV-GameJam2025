@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{612fda48-8df1-4c87-8420-4e6f5c616c4f}">
+		<property name="assetPath">
+			<value>AMB/Portal/Magic, Shimmer, Spell, Pad, Shimmer, Sparkle, Ethereal, Calm, Idle 01 SND92472.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>96</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>46.256916666666669</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{0b75d310-c42a-49f9-88ef-1592d05eabf2}</destination>
+		</relationship>
+	</object>
+</objects>
