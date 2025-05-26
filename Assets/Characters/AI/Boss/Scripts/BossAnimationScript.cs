@@ -55,17 +55,22 @@ public class BossAnimationScript : MonoBehaviour
 
     public void StartJumpStop()
     {
+        BossAnimator.SetTrigger("JumpStompTrigger");
+    }
 
+    public void JumpHappen()
+    {
+        SelfBossRef
     }
 
     public void CompletedJumpStop()
     {
-
+        SelfBossRef.StompHappened();
     }
 
     public void StartedMelee()
     {
-
+        
     }
 
     public void CompletedMeleeEVENT()

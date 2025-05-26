@@ -9,7 +9,16 @@ public class BossController : EnemyBaseController
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Start()
     {
-        base.Start();
+        // base.Start();
+        this.MyBlackBoardRef = this.MyBehaviourTreeAgent.BlackboardReference;
+        if (IsAirCharacter) IsOnGround = false;
+        if (!IsAirCharacter && BaseGravity.magnitude == 0)
+        {
+            BaseGravity = new Vector3(Physics.gravity.x, Physics.gravity.y, Physics.gravity.z); // * this.RigidbodyRef.mass;
+        }
+        else
+            SetGravityForceAndDirection(this.BaseGravity);
+        RigidbodyRef.linearDamping = Damping;
     }
 
     // Update is called once per frame
@@ -53,6 +62,19 @@ public class BossController : EnemyBaseController
     public override void UpdateCharacterMovement(float Multiplier = 1)
     {
         base.UpdateCharacterMovement(Multiplier);
+    }
+
+    public override void ManualMovementThroughNavAgent()
+    {
+        if (this.MyNavAgent.pathPending) return;
+        if (this.MyNavAgent.path.corners == null || this.MyNavAgent.path.corners.Length == 0)
+        {
+            return;
+        }
+        Vector3 MyPosition = MyBossCharacter.CapsuleCollision.transform.position;
+        Vector3 CurrentTargetInPath = this.MyNavAgent.nextPosition;
+        if (Vector3.Distance(MyPosition, CurrentTargetInPath) < 0.3f) return;
+        this.AddMovementInput((CurrentTargetInPath - MyPosition).normalized, MyBossCharacter.CurrentMovementSpeed);
     }
 
     public override void AddMovementInput(Vector3 Direction, float Scale)

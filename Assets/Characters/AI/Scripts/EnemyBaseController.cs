@@ -240,7 +240,8 @@ public class EnemyBaseController : CustomCharacterController
         
     }
 
-    public void ManualMovementThroughNavAgent()
+
+    public virtual void ManualMovementThroughNavAgent()
     {
         if (this.MyNavAgent.pathPending) return;
         if (this.MyNavAgent.path.corners == null || this.MyNavAgent.path.corners.Length == 0)

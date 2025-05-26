@@ -6,15 +6,10 @@ public class BossGravityField : GravityField
     public float CatchDistance = 4f;
     public BossCharacter SelfBossRef;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        IsSuckingField = true;
+        base.Start();
     }
 
     public override void FixedUpdate()
@@ -33,17 +28,21 @@ public class BossGravityField : GravityField
             if (Vector3.Distance(this.transform.position, ObjectOverlapping.transform.position) <= CatchDistance)
                 SelfBossRef.CaughtPhysicsObjectSuck(ObjectOverlapping);
         }
-        foreach (EnemyBaseCharacter ChaeracterOverlapping in CharactersInsideField)
-        {
-            if (ChaeracterOverlapping == null) continue;
-            // ChaeracterOverlapping.MyEnemyController.BaseGravity = this.IsSuckingField ? GetObjectForceTowardsMe(ChaeracterOverlapping) : this.FieldGravity;
-            ChaeracterOverlapping.MyEnemyController.SetGravityForceAndDirection(this.IsSuckingField ? GetCharacterForceTowardsMe(ChaeracterOverlapping) : this.FieldGravity, !IsGravityPermanent);
-        }
     }
 
     protected override void ResetPhysicsObject(PhysicsObjectBasic PhysicsObject)
     {
         base.ResetPhysicsObject(PhysicsObject);
+    }
+
+    public override void CharacterEntered(EnemyBaseCharacter Character)
+    {
+        // base.CharacterEntered(Character);
+    }
+
+    protected override void ResetCharacter(EnemyBaseCharacter Character)
+    {
+        // base.ResetCharacter(Character);
     }
 
     protected override void OnTriggerEnter(Collider other)

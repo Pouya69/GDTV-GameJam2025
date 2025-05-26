@@ -19,7 +19,6 @@ public class PhysicsObjectBasic : MonoBehaviour
     [NonSerialized] public float TimeDilationInterpSpeed;  // How fast we interpolate it.
     [NonSerialized] public bool IsInGravityField = false;
     [NonSerialized] public bool CanBeIncluded = true;
-    public bool CanBeThrown = true;
 
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
     {

@@ -24,6 +24,33 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &-8736147881307488418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX_Boss Land
+  m_EditorClassIdentifier: 
+  Path: event:/SFX_Boss Land
+  Guid:
+    Data1: 1568552551
+    Data2: 1197520366
+    Data3: 969667985
+    Data4: -1204175612
+  Banks:
+  - {fileID: 2079362251304842941}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1400
 --- !u!114 &-8195679384786863090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,10 +181,10 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Ambience.bank
   Name: Ambience
   StudioPath: bank:/Ambience
-  lastModified: 638837978160000000
+  lastModified: 638838188540000000
   FileSizes:
   - Name: Desktop
-    Value: 879808
+    Value: 3847456
   Exists: 1
 --- !u!114 &-7146224896043562049
 MonoBehaviour:
@@ -174,11 +201,38 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638837978160000000
+  lastModified: 638838188540000000
   FileSizes:
   - Name: Desktop
-    Value: 11032000
+    Value: 11031744
   Exists: 1
+--- !u!114 &-6663638479571747407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX_Boss Throw
+  m_EditorClassIdentifier: 
+  Path: event:/SFX_Boss Throw
+  Guid:
+    Data1: 182093373
+    Data2: 1329860065
+    Data3: -2081801068
+    Data4: 1956706947
+  Banks:
+  - {fileID: 2079362251304842941}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 917
 --- !u!114 &-6486958536359334909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,6 +285,33 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &-5913500705104490002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX_Boss Attack
+  m_EditorClassIdentifier: 
+  Path: event:/SFX_Boss Attack
+  Guid:
+    Data1: 106975709
+    Data2: 1212919939
+    Data3: -1369939038
+    Data4: 190230553
+  Banks:
+  - {fileID: 2079362251304842941}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 812
 --- !u!114 &-5456931386501636607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,10 +327,10 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Items.bank
   Name: Items
   StudioPath: bank:/Items
-  lastModified: 638837978160000000
+  lastModified: 638838188540000000
   FileSizes:
   - Name: Desktop
-    Value: 106528
+    Value: 106560
   Exists: 1
 --- !u!114 &-4786783709917872418
 MonoBehaviour:
@@ -354,10 +435,10 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 638837978160000000
+  lastModified: 638838188540000000
   FileSizes:
   - Name: Desktop
-    Value: 9561408
+    Value: 9561472
   Exists: 1
 --- !u!114 &-3278611022640442022
 MonoBehaviour:
@@ -374,7 +455,7 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/UI.bank
   Name: UI
   StudioPath: bank:/UI
-  lastModified: 638837978180000000
+  lastModified: 638838188540000000
   FileSizes:
   - Name: Desktop
     Value: 8128
@@ -566,7 +647,7 @@ MonoBehaviour:
   StudioPath: 
   Min: 0
   Max: 2
-  Default: 0.04
+  Default: 2
   ID:
     data1: 2501703434
     data2: 583856715
@@ -602,6 +683,87 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1612
+--- !u!114 &-434095393191447077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX_Boss Jump
+  m_EditorClassIdentifier: 
+  Path: event:/SFX_Boss Jump
+  Guid:
+    Data1: 731461923
+    Data2: 1142391070
+    Data3: -39468397
+    Data4: 1151056716
+  Banks:
+  - {fileID: 2079362251304842941}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1099
+--- !u!114 &-308668458526375796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/AMB_Main Menu
+  m_EditorClassIdentifier: 
+  Path: event:/AMB_Main Menu
+  Guid:
+    Data1: -1446186687
+    Data2: 1137668719
+    Data3: 1001902212
+    Data4: 600046502
+  Banks:
+  - {fileID: -7228744912043457551}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 17046
+--- !u!114 &-202637289922593137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/AMB_Bedroom
+  m_EditorClassIdentifier: 
+  Path: event:/AMB_Bedroom
+  Guid:
+    Data1: 1029756179
+    Data2: 1141967458
+    Data3: 1039640986
+    Data4: 595545321
+  Banks:
+  - {fileID: -7228744912043457551}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 225080
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,13 +808,21 @@ MonoBehaviour:
   - {fileID: -3273843773104196319}
   - {fileID: -7263267832078153596}
   - {fileID: -7756425152064957357}
+  - {fileID: -202637289922593137}
+  - {fileID: -308668458526375796}
+  - {fileID: -434095393191447077}
+  - {fileID: -6663638479571747407}
+  - {fileID: 562967372321340610}
+  - {fileID: -8736147881307488418}
+  - {fileID: 5569100380927690117}
+  - {fileID: -5913500705104490002}
   EditorParameters: []
   MasterBanks:
   - {fileID: -7146224896043562049}
   StringsBanks:
   - {fileID: 2337788140401494850}
   cacheVersion: 131847
-  cacheTime: 638837978180000000
+  cacheTime: 638838188540000000
   SerializableEventsDict:
   - key: event:/AMB_Time Field
     index: 0
@@ -698,6 +868,22 @@ MonoBehaviour:
     index: 20
   - key: event:/SFX_Ragdoll
     index: 21
+  - key: event:/AMB_Bedroom
+    index: 22
+  - key: event:/AMB_Main Menu
+    index: 23
+  - key: event:/SFX_Boss Jump
+    index: 24
+  - key: event:/SFX_Boss Throw
+    index: 25
+  - key: event:/SFX_Boss Suck
+    index: 26
+  - key: event:/SFX_Boss Land
+    index: 27
+  - key: event:/SFX_Boss Footsteps
+    index: 28
+  - key: event:/SFX_Boss Attack
+    index: 29
 --- !u!114 &86704658915646556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -726,6 +912,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 24
+--- !u!114 &562967372321340610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX_Boss Suck
+  m_EditorClassIdentifier: 
+  Path: event:/SFX_Boss Suck
+  Guid:
+    Data1: -845787822
+    Data2: 1136236199
+    Data3: 2113824922
+    Data4: 1961162959
+  Banks:
+  - {fileID: 2079362251304842941}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 9663
 --- !u!114 &948227043384997678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -874,10 +1087,10 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Player.bank
   Name: Player
   StudioPath: bank:/Player
-  lastModified: 638837978180000000
+  lastModified: 638838188540000000
   FileSizes:
   - Name: Desktop
-    Value: 388800
+    Value: 388736
   Exists: 1
 --- !u!114 &2079362251304842941
 MonoBehaviour:
@@ -894,10 +1107,10 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/NPC.bank
   Name: NPC
   StudioPath: bank:/NPC
-  lastModified: 638837978160000000
+  lastModified: 638838188540000000
   FileSizes:
   - Name: Desktop
-    Value: 231008
+    Value: 619040
   Exists: 1
 --- !u!114 &2248870330272672082
 MonoBehaviour:
@@ -942,10 +1155,10 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638837978160000000
+  lastModified: 638838188540000000
   FileSizes:
   - Name: Desktop
-    Value: 2176
+    Value: 2490
   Exists: 1
 --- !u!114 &2685879110647775850
 MonoBehaviour:
@@ -1055,6 +1268,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 2560
+--- !u!114 &5569100380927690117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX_Boss Footsteps
+  m_EditorClassIdentifier: 
+  Path: event:/SFX_Boss Footsteps
+  Guid:
+    Data1: -1323459164
+    Data2: 1245809259
+    Data3: -987070834
+    Data4: 988153352
+  Banks:
+  - {fileID: 2079362251304842941}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1150
 --- !u!114 &5908517587499130713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,7 +1366,7 @@ MonoBehaviour:
   StudioPath: 
   Min: 0
   Max: 2
-  Default: 0.04
+  Default: 2
   ID:
     data1: 2501703434
     data2: 583856715

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8817580079928959727}
   - component: {fileID: 2971769483014244585}
   - component: {fileID: 3127649341489294846}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Box_CustomPhysics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -153,7 +153,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 642c044b0d6c1844caf1f81a1fa9a41f, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

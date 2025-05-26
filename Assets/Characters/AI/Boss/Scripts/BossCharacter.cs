@@ -44,6 +44,11 @@ public class BossCharacter : EnemyBaseCharacter
         BossAnimationScript.StartJumpStop();
     }
 
+    public void StompHappened()
+    {
+        // TODO: Stomp.
+    }
+
     public void StartSummonEnemies()
     {
         BossAnimationScript.StartSummonEnemies();
@@ -59,8 +64,8 @@ public class BossCharacter : EnemyBaseCharacter
         }
     }
 
-    public void PlaySummonEffect(Vector3 Location) {
-    
+    public void PlaySummonEffect(Vector3 SummonLocation) {
+        
     }
 
     public void SuckStarted()
@@ -108,5 +113,10 @@ public class BossCharacter : EnemyBaseCharacter
     public override void Awake()
     {
         //base.Awake();
+    }
+
+    public void Jump()
+    {
+        this.MyBossController.AddMovementInput(-this.MyBossController.GetGravityDirection(), 15000f);
     }
 }
