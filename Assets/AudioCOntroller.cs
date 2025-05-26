@@ -14,7 +14,7 @@ public class AudioController : MonoBehaviour
 
         if (!emitter.IsPlaying())
         {
-            emitter.Play(); // Ensure it starts playing
+            emitter.Play(); 
         }
     }
 
