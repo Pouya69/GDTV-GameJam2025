@@ -53,7 +53,7 @@ public class BulletBase : PhysicsObjectBasic
             if (IsAnotherBullet) return;
             if (!IsCustomPhysicsObject)
             {
-                Debug.Log("CUSTOMPHYSICS Bullet Collided with: " + collision.gameObject.gameObject.name);
+                Debug.Log("CUSTOMPHYSICS Bullet Collided with: " + collision.gameObject.name);
                 Destroy(gameObject);
                 return;
             }

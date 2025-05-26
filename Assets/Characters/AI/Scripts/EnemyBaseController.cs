@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Behavior;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SocialPlatforms;
@@ -42,6 +43,7 @@ public class EnemyBaseController : CustomCharacterController
     public GameObject AimFocusPoint;
     [Range(0.1f, 1f)]
     public float AimAccuracy = 0.7f;
+    public float AccuracyMultiplier = 1.5f;
 
 
     public void CacheRagdollPose()
@@ -95,37 +97,50 @@ public class EnemyBaseController : CustomCharacterController
 
     public void RotateTowardsPlayer()
     {
-
-        Vector3 gravityUp = -GetGravityDirection(); // character's up
-        Vector3 targetPosition = MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform.position;
+        RotateTowardsTarget(MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform.position);
+        //Vector3 gravityUp = -GetGravityDirection(); // character's up
+        //Vector3 targetPosition = MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform.position;
         
-        Vector3 toTarget = (targetPosition - EnemyBaseCharacterRef.CapsuleCollision.transform.position).normalized;
+        //Vector3 toTarget = (targetPosition - EnemyBaseCharacterRef.CapsuleCollision.transform.position).normalized;
+        // Quaternion targetRotation = Quaternion.LookRotation(toTarget, gravityUp);
+        //EnemyBaseCharacterRef.CapsuleCollision.transform.LookAt(toTarget, gravityUp);
+        // Quaternion LocalYaw = Quaternion.AngleAxis(local, gravityUp);
+        //Quaternion TargetRotation = Quaternion.LookRotation(toTarget, gravityUp);
+        // transform.rotation = TargetRotation;
+        // transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         
-        Quaternion targetRotation = Quaternion.LookRotation(toTarget, gravityUp);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-
-
-        // TargetRotation = Quaternion.AngleAxis(CameraRotation.y - (gravityUp.y < 0 ? AimingYawRotationDifference : 180 + AimingYawRotationDifference), LocalUp) * Quaternion.LookRotation(GetForwardBasedOnGravity(), LocalUp);
-
-        // EnemyBaseCharacterRef.CapsuleCollision.transform.rotation = transform.rotation;
-
-        // transform.LookAt(targetPosition, gravityUp);
-
-
-        // Project direction onto the gravity plane
-        /*
-        Vector3 projected = Vector3.ProjectOnPlane(toTarget, gravityUp).normalized;
-
-        // Prevent NaN if projected is zero (e.g., target directly above/below)
-        if (projected.sqrMagnitude > 0.0001f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(projected, gravityUp);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-            
-        }
-        */
-
     }
+
+    public void RotateTowardsTarget(Vector3 targetPosition)
+    {
+        Vector3 toTarget = targetPosition - transform.position;
+        Vector3 localUp = -GetGravityDirection();
+        // Project the direction onto the plane perpendicular to the character's up
+        Vector3 projectedDirection = Vector3.ProjectOnPlane(toTarget, localUp).normalized;
+
+        if (projectedDirection.sqrMagnitude < 0.0001f)
+            return; // Avoid zero direction
+
+        // Compute the current forward direction projected on the same plane
+        Vector3 projectedForward = Vector3.ProjectOnPlane(transform.forward, localUp).normalized;
+
+        // Compute the rotation from current forward to the target direction
+        //Quaternion rotation = Quaternion.FromToRotation(projectedForward, projectedDirection);
+
+        // Apply rotation around the local up axis
+        transform.rotation = Quaternion.AngleAxis(
+            Vector3.SignedAngle(projectedForward, projectedDirection, localUp),
+            localUp
+        ) * transform.rotation;
+    }
+
+
+
+
+
+
+
+
 
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
     {
@@ -196,9 +211,9 @@ public class EnemyBaseController : CustomCharacterController
             return;
         }
         Vector3 LocalUp = -GetGravityDirection();
-
         if (EnemyBaseCharacterRef.IsAimingWeapon)
         {
+            
             RotateTowardsPlayer();
             //if (LocalUp.Equals(Vector3.zero))
             //    LocalUp = Vector3.up;
@@ -395,8 +410,11 @@ public class EnemyBaseController : CustomCharacterController
 
     public override Vector3 GetForwardShootingVector()
     {
-        return (TransformAimPoint.position + GetRandomGravityDirection(1 - AimAccuracy) - EnemyBaseCharacterRef.CurrentWeaponEquipped.ShootLocation_TEST_ONLY.transform.position).normalized;
-        // return PlayerCameraRef.transform.forward;
+        //float Accuracy = 1 - AimAccuracy;
+        //if (UnityEngine.Random.value >= Accuracy)
+            //return (TransformAimPoint.position - EnemyBaseCharacterRef.CurrentWeaponEquipped.ShootLocation_TEST_ONLY.transform.position).normalized;
+        // return ((TransformAimPoint.position + (Accuracy * AccuracyMultiplier * UnityEngine.Random.insideUnitSphere)) - EnemyBaseCharacterRef.CurrentWeaponEquipped.ShootLocation_TEST_ONLY.transform.position).normalized;
+        return (TransformAimPoint.position - EnemyBaseCharacterRef.CurrentWeaponEquipped.ShootLocation_TEST_ONLY.transform.position).normalized;
     }
 
     public override void CheckRaycastFromViewPoint()

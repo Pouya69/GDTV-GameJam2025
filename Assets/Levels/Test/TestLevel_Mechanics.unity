@@ -1569,10 +1569,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5959360942475724125, guid: edc321da727aab84cb70726b6834cca4, type: 3}
-      propertyPath: AimAccuracy
-      value: 0.716
-      objectReference: {fileID: 0}
-    - target: {fileID: 5959360942475724125, guid: edc321da727aab84cb70726b6834cca4, type: 3}
       propertyPath: AimFocusPoint
       value: 
       objectReference: {fileID: 2045691336}

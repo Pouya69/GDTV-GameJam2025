@@ -12,11 +12,11 @@ AvatarMask:
   - m_Path: 
     m_Weight: 1
   - m_Path: Ch32
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: mixamorig8:Hips
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: mixamorig8:Hips/mixamorig8:LeftUpLeg
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: mixamorig8:Hips/mixamorig8:LeftUpLeg/mixamorig8:LeftLeg
     m_Weight: 1
   - m_Path: mixamorig8:Hips/mixamorig8:LeftUpLeg/mixamorig8:LeftLeg/mixamorig8:LeftFoot
@@ -26,7 +26,7 @@ AvatarMask:
   - m_Path: mixamorig8:Hips/mixamorig8:LeftUpLeg/mixamorig8:LeftLeg/mixamorig8:LeftFoot/mixamorig8:LeftToeBase/mixamorig8:LeftToe_End
     m_Weight: 1
   - m_Path: mixamorig8:Hips/mixamorig8:RightUpLeg
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: mixamorig8:Hips/mixamorig8:RightUpLeg/mixamorig8:RightLeg
     m_Weight: 1
   - m_Path: mixamorig8:Hips/mixamorig8:RightUpLeg/mixamorig8:RightLeg/mixamorig8:RightFoot

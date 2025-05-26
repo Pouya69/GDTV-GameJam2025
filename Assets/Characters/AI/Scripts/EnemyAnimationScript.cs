@@ -32,7 +32,7 @@ public class EnemyAnimationScript : MonoBehaviour
         EnemyAnimator.SetFloat("TimeDIlation", EnemyCharacterRef.MyEnemyController.CustomTimeDilation);
         EnemyAnimator.SetBool("IsCharacterOnGround", IsEnemyOnGround);
         Vector3 Vel = EnemyCharacterRef.MyEnemyController.GetEnemyForward();  // THIS IS MOVEMENT DIRECTION OF NAVAGENT
-        EnemyAnimator.SetFloat("CharacterSpeed", Vel.magnitude, CharacterSpeedDamping, deltaTime);
+        EnemyAnimator.SetFloat("CharacterSpeed", EnemyCharacterRef.MyEnemyController.RigidbodyRef.linearVelocity.magnitude, CharacterSpeedDamping, deltaTime);
         EnemyAnimator.SetBool("IsAimingWeapon", EnemyCharacterRef.IsAimingWeapon);
         
         if (EnemyCharacterRef.IsAimingWeapon)

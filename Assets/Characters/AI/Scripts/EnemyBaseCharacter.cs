@@ -50,6 +50,8 @@ public class EnemyBaseCharacter : CharacterBase
         }
         Vector3 SpawnLocation = CapsuleCollision.transform.position + (CapsuleCollision.transform.forward * 1.5f);
         GameObject SpawnedLoot = Instantiate(PrefabToInst, SpawnLocation, Quaternion.identity);
+        SpawnedLoot.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectBasic PhysObj);
+        PhysObj.BaseGravity = this.MyEnemyController.BaseGravity;
         return SpawnedLoot;
     }
     
