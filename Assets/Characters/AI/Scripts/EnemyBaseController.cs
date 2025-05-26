@@ -6,6 +6,7 @@ using Unity.Behavior;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.SocialPlatforms;
 
 public class EnemyBaseController : CustomCharacterController
@@ -40,7 +41,6 @@ public class EnemyBaseController : CustomCharacterController
     public LayerMask AimColliderLayerMask = new LayerMask();
     [SerializeField] private Transform TransformAimPoint;
     [SerializeField] private float AimTransitionSpeed = 50f;
-    public GameObject AimFocusPoint;
     [Range(0.1f, 1f)]
     public float AimAccuracy = 0.7f;
     public float AccuracyMultiplier = 1.5f;
@@ -335,6 +335,17 @@ public class EnemyBaseController : CustomCharacterController
 
     protected override void Awake()
     {
+        if (TransformAimPoint == null)
+        {
+            GameObject newObject = new GameObject(name + "_AIM_POINT");
+            TransformAimPoint = newObject.transform;
+
+            IK_Aim.data.sourceObjects = new WeightedTransformArray(1)
+            {
+                new WeightedTransform(TransformAimPoint, 1f)
+            }; // clear existing
+        }
+        
         base.Awake();
         PelvisCharacterOffset = EnemyBaseCharacterRef.transform.position - PelvisTransform.position;
         PelvisCapsuleOffset = EnemyBaseCharacterRef.CapsuleCollision.transform.position - PelvisTransform.position;

@@ -36,6 +36,7 @@ public class AISenseHandler : MonoBehaviour
 
     public void CheckForPlayer_SIGHT()
     {
+        if (PlayerCharacterRef_CHECK_ONLY == null) return;
         Vector3 MyLocation = this.RaycastStartPoint.position;
         Collider[] RangeChecks = Physics.OverlapSphere(MyLocation, ScanRadius, PlayerScanLayerMask);
         if (RangeChecks.Length == 0) {

@@ -209,6 +209,7 @@ MonoBehaviour:
   WeaponAttachHandTransform: {fileID: 321923575762261643}
   CurrentWeaponEquipped: {fileID: 649124215847796427}
   MaxHealth: 100
+  AfterEffects: {fileID: 0}
   MyEnemyController: {fileID: 5959360942475724125}
   EnemyAnimationScript: {fileID: 5606390620951254193}
   EnemyAnimator: {fileID: 1320048968151968384}
@@ -238,7 +239,7 @@ MonoBehaviour:
     m_Bits: 1
   PhysicsObjectsLayerMaskGroundCheck:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   CanMoveInAir: 0
   DownGroundCheckAfterCapsule: 0.1
   RotationSpeed: 400
@@ -338,7 +339,6 @@ MonoBehaviour:
     m_Bits: 1
   TransformAimPoint: {fileID: 0}
   AimTransitionSpeed: 50
-  AimFocusPoint: {fileID: 0}
   AimAccuracy: 0.716
   AccuracyMultiplier: 1.5
 --- !u!195 &8769930563888592612
@@ -380,6 +380,7 @@ MonoBehaviour:
   - rid: 1936166745124897645
   - rid: 1936166745124897646
   - rid: 1936166833489182822
+  - rid: 1936166909828923667
   m_IsInitialised: 0
   m_IsStarted: 0
   references:
@@ -408,10 +409,15 @@ MonoBehaviour:
           m_Value0: 16007997852890121867
           m_Value1: 16729711343546576424
         Name: MyPatrolPoints
-        m_Value:
-        - {fileID: 0}
-        - {fileID: 0}
-        - {fileID: 0}
+        m_Value: []
+    - rid: 1936166909828923667
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 14792267824828509891
+          m_Value1: 18101309642635610610
+        Name: HasPatrolPoints
+        m_Value: 0
 --- !u!114 &8834731050827106109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,10 +439,10 @@ MonoBehaviour:
   ObstructionLayerMask:
     serializedVersion: 2
     m_Bits: 1
-  ScanRadius: 30
+  ScanRadius: 80
   TimesToCheckPerSecond: 5
   PlayerCharacterRef_CHECK_ONLY: {fileID: 0}
-  FOV_Angle: 230
+  FOV_Angle: 360
 --- !u!95 &8274042968071023866
 Animator:
   serializedVersion: 7
@@ -448,7 +454,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 0}
-  m_CullingMode: 0
+  m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -627,38 +633,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1250550882918264945}
     m_Modifications:
-    - target: {fileID: 3305736842895951852, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1511726832645573486, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-    - target: {fileID: 4814653483954417448, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1511726832645573486, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-    - target: {fileID: 4814653483954417448, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 1511726832645573486, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-    - target: {fileID: 4814653483954417448, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-      propertyPath: 'm_Materials.Array.data[2]'
-      value: 
-      objectReference: {fileID: 1511726832645573486, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-    - target: {fileID: 5866666021909216657, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 474f3caeb034dae4da30566d77bf82b9, type: 2}
-    - target: {fileID: 5866666021909216657, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-      propertyPath: m_UpdateMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-      propertyPath: m_CullingMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: e6cb08147ce23524d944832059313f3e, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: -8963838772662979419, guid: caf4043d2a01cda4aa4e9cb3120e7a19, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1226,6 +1200,38 @@ PrefabInstance:
     - target: {fileID: 9081628324164313385, guid: caf4043d2a01cda4aa4e9cb3120e7a19, type: 3}
       propertyPath: m_TagString
       value: Damagable
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305736842895951852, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1511726832645573486, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+    - target: {fileID: 4814653483954417448, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1511726832645573486, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+    - target: {fileID: 4814653483954417448, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1511726832645573486, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+    - target: {fileID: 4814653483954417448, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1511726832645573486, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+    - target: {fileID: 5866666021909216657, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 474f3caeb034dae4da30566d77bf82b9, type: 2}
+    - target: {fileID: 5866666021909216657, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+      propertyPath: m_UpdateMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: e6cb08147ce23524d944832059313f3e, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyBaseCharacter : CharacterBase
@@ -159,5 +160,15 @@ public class EnemyBaseCharacter : CharacterBase
     public bool IsRagdollRecoveryCompleted() { return MyEnemyController.MyNavAgent.enabled; }
 
     public bool IsRagdolling() { return this.EnemyAnimationScript.IsRagdolling; }
+
+
+
+    public void InitializeEnemySpawned(PlayerCharacter PlayerRef, Vector3 GravityDir) {
+        this.MyEnemyController.MySenseHandler.PlayerCharacterRef_CHECK_ONLY = PlayerRef;
+        this.MyEnemyController.BaseGravity = GravityDir;
+        this.MyEnemyController.GravityBeforeCustomGravity = GravityDir;
+
+        // this.MyEnemyController.InteroplateCharacterRotation();
+    }
 
 }

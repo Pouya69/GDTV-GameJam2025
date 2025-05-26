@@ -13,6 +13,7 @@ public class BossCharacter : EnemyBaseCharacter
     public BossGravityField BossSuckerField;
     public GameObject EnemySpawnPrefab;
     public List<Transform> EnemySpawnPoints;
+    public PlayerCharacter PlayerRef;
 
     public override void Attack()
     {
@@ -60,7 +61,8 @@ public class BossCharacter : EnemyBaseCharacter
         {
             GameObject EnemySpawned = Instantiate(EnemySpawnPrefab, EnemySpawnPoints[i].position, EnemySpawnPoints[i].rotation);
             PlaySummonEffect(EnemySpawnPoints[i].position);
-            EnemyBaseCharacter _ = EnemySpawned.GetComponent<EnemyBaseCharacter>();
+            EnemyBaseCharacter EnemyRef = EnemySpawned.GetComponent<EnemyBaseCharacter>();
+            EnemyRef.InitializeEnemySpawned(this.PlayerRef, -EnemySpawnPoints[i].up);
         }
     }
 

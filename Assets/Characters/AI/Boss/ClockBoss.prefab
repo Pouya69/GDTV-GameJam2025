@@ -66,10 +66,10 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 823
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -223,6 +223,7 @@ MonoBehaviour:
   WeaponAttachHandTransform: {fileID: 0}
   CurrentWeaponEquipped: {fileID: 0}
   MaxHealth: 8000
+  AfterEffects: {fileID: 0}
   MyEnemyController: {fileID: 5643657918973697875}
   EnemyAnimationScript: {fileID: 0}
   EnemyAnimator: {fileID: 0}
@@ -238,6 +239,7 @@ MonoBehaviour:
   BossSuckerField: {fileID: 6156626738052876032}
   EnemySpawnPrefab: {fileID: 0}
   EnemySpawnPoints: []
+  PlayerRef: {fileID: 0}
 --- !u!114 &5643657918973697875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,7 +295,6 @@ MonoBehaviour:
     m_Bits: 1
   TransformAimPoint: {fileID: 0}
   AimTransitionSpeed: 50
-  AimFocusPoint: {fileID: 0}
   AimAccuracy: 0.7
   AccuracyMultiplier: 1.5
   BaseSpeed: 20

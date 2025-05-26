@@ -57,14 +57,15 @@ public class BossGravityField : GravityField
         base.OnTriggerExit(other);
     }
 
-    public void TurnOnField()
-    {
+    public void TurnOnField() {
+        SphereOverlapArea.enabled = true;
         this.enabled = true;
     }
 
     public void TurnOffField()
     {
         PhysicsObjectsInsideField.Clear();
+        SphereOverlapArea.enabled = false;
         this.enabled = false;
     }
 
