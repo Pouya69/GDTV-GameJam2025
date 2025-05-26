@@ -43,9 +43,9 @@ MonoBehaviour:
     Data3: -524000860
     Data4: 1363351889
   Banks:
+  - {fileID: -7146224896043562049}
   - {fileID: 2079362251304842941}
   - {fileID: 1579537358560273340}
-  - {fileID: -7146224896043562049}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -100,8 +100,8 @@ MonoBehaviour:
     Data3: -741512024
     Data4: 1905377864
   Banks:
-  - {fileID: 2079362251304842941}
   - {fileID: -7146224896043562049}
+  - {fileID: 2079362251304842941}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -128,9 +128,9 @@ MonoBehaviour:
     Data3: -1488506690
     Data4: -1056427894
   Banks:
+  - {fileID: -7146224896043562049}
   - {fileID: 2079362251304842941}
   - {fileID: 1579537358560273340}
-  - {fileID: -7146224896043562049}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -154,7 +154,7 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Ambience.bank
   Name: Ambience
   StudioPath: bank:/Ambience
-  lastModified: 638837946737432304
+  lastModified: 638838315040862714
   FileSizes:
   - Name: Desktop
     Value: 879808
@@ -174,7 +174,7 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638837946739592130
+  lastModified: 638838315041997328
   FileSizes:
   - Name: Desktop
     Value: 11032000
@@ -246,7 +246,7 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Items.bank
   Name: Items
   StudioPath: bank:/Items
-  lastModified: 638837915363653440
+  lastModified: 638838315040885669
   FileSizes:
   - Name: Desktop
     Value: 106528
@@ -270,8 +270,8 @@ MonoBehaviour:
     Data3: 1225478546
     Data4: -1581784063
   Banks:
-  - {fileID: 1579537358560273340}
   - {fileID: -7146224896043562049}
+  - {fileID: 1579537358560273340}
   IsStream: 0
   Is3D: 0
   IsOneShot: 0
@@ -299,8 +299,8 @@ MonoBehaviour:
     Data3: 453983115
     Data4: 1964787255
   Banks:
-  - {fileID: -3567744813550041301}
   - {fileID: -7146224896043562049}
+  - {fileID: -3567744813550041301}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
@@ -354,7 +354,7 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 638837915365956590
+  lastModified: 638838315042983300
   FileSizes:
   - Name: Desktop
     Value: 9561408
@@ -374,7 +374,7 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/UI.bank
   Name: UI
   StudioPath: bank:/UI
-  lastModified: 638837915367450805
+  lastModified: 638838315043157767
   FileSizes:
   - Name: Desktop
     Value: 8128
@@ -398,8 +398,8 @@ MonoBehaviour:
     Data3: -1970551896
     Data4: 1843729791
   Banks:
-  - {fileID: 1579537358560273340}
   - {fileID: -7146224896043562049}
+  - {fileID: 1579537358560273340}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -426,8 +426,8 @@ MonoBehaviour:
     Data3: 546233018
     Data4: 309725561
   Banks:
-  - {fileID: -3278611022640442022}
   - {fileID: -7146224896043562049}
+  - {fileID: -3278611022640442022}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -482,8 +482,8 @@ MonoBehaviour:
     Data3: -375072084
     Data4: -182544707
   Banks:
-  - {fileID: 1579537358560273340}
   - {fileID: -7146224896043562049}
+  - {fileID: 1579537358560273340}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -510,8 +510,8 @@ MonoBehaviour:
     Data3: 188744116
     Data4: 858817338
   Banks:
-  - {fileID: 1579537358560273340}
   - {fileID: -7146224896043562049}
+  - {fileID: 1579537358560273340}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -566,7 +566,7 @@ MonoBehaviour:
   StudioPath: 
   Min: 0
   Max: 2
-  Default: 2
+  Default: 0.04
   ID:
     data1: 2501703434
     data2: 583856715
@@ -652,7 +652,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: 2337788140401494850}
   cacheVersion: 131847
-  cacheTime: 638837946739617543
+  cacheTime: 638838315043157767
   SerializableEventsDict:
   - key: event:/AMB_Time Field
     index: 0
@@ -717,8 +717,8 @@ MonoBehaviour:
     Data3: 2115591809
     Data4: -32521353
   Banks:
-  - {fileID: -3278611022640442022}
   - {fileID: -7146224896043562049}
+  - {fileID: -3278611022640442022}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -769,9 +769,9 @@ MonoBehaviour:
     Data3: -992867146
     Data4: -1736871756
   Banks:
+  - {fileID: -7146224896043562049}
   - {fileID: 2079362251304842941}
   - {fileID: 1579537358560273340}
-  - {fileID: -7146224896043562049}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -874,7 +874,7 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Player.bank
   Name: Player
   StudioPath: bank:/Player
-  lastModified: 638837915367226355
+  lastModified: 638838315043086698
   FileSizes:
   - Name: Desktop
     Value: 388800
@@ -894,7 +894,7 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/NPC.bank
   Name: NPC
   StudioPath: bank:/NPC
-  lastModified: 638837915366660952
+  lastModified: 638838315042983300
   FileSizes:
   - Name: Desktop
     Value: 231008
@@ -918,8 +918,8 @@ MonoBehaviour:
     Data3: -655993979
     Data4: 1248749087
   Banks:
-  - {fileID: 1579537358560273340}
   - {fileID: -7146224896043562049}
+  - {fileID: 1579537358560273340}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -942,7 +942,7 @@ MonoBehaviour:
   Path: GDTV 2025 FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638837946739617543
+  lastModified: 638838315041997328
   FileSizes:
   - Name: Desktop
     Value: 2176
@@ -994,8 +994,8 @@ MonoBehaviour:
     Data3: 405701283
     Data4: 1362254014
   Banks:
-  - {fileID: 1579537358560273340}
   - {fileID: -7146224896043562049}
+  - {fileID: 1579537358560273340}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -1046,8 +1046,8 @@ MonoBehaviour:
     Data3: -345655361
     Data4: -1400071385
   Banks:
-  - {fileID: 2079362251304842941}
   - {fileID: -7146224896043562049}
+  - {fileID: 2079362251304842941}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -1126,7 +1126,7 @@ MonoBehaviour:
   StudioPath: 
   Min: 0
   Max: 2
-  Default: 2
+  Default: 0.04
   ID:
     data1: 2501703434
     data2: 583856715
