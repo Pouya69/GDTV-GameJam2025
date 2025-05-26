@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{3198bb14-aaf3-4d6b-9146-2e34f006c845}">
+		<property name="assetPath">
+			<value>SFX/Footsteps/Boss/SFX - Giant Lands - Trimmed (4).wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.1000000000000001</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{0b75d310-c42a-49f9-88ef-1592d05eabf2}</destination>
+		</relationship>
+	</object>
+</objects>
