@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FMODUnity;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -305,7 +306,7 @@ public class PlayerCharacter : CharacterBase
             Quaternion.AngleAxis(MyPlayerController.CameraRotation.x + (capsuleUp.Equals(Vector3.forward) ? 90 : (capsuleUp.Equals(Vector3.back) ? -90 : 0)), capsuleRight);
         Vector3 FocusPosition = IsAimingWeapon ? MyPlayerController.AimFocusPoint.transform.position : MyPlayerController.CameraFocusTarget.transform.position + new Vector3(MyPlayerController.FramingOffset.x, MyPlayerController.FramingOffset.y, MyPlayerController.FramingOffset.z);
         Vector3 CameraDistance = TargetCameraRotation * new Vector3(0, 0, MyPlayerController.CameraDistance);
-        bool IsCameraBlocked = Physics.Raycast(FocusPosition, (FocusPosition - CameraDistance).normalized, out RaycastHit HitResult, MyPlayerController.CameraDistance, MyPlayerController.CameraClippingLayerMask);
+        /*bool IsCameraBlocked = Physics.Raycast(FocusPosition, (FocusPosition - CameraDistance).normalized, out RaycastHit HitResult, MyPlayerController.CameraDistance, MyPlayerController.CameraClippingLayerMask);
         if (IsCameraBlocked)
         {
             CameraDistance = TargetCameraRotation * new Vector3(0, 0, HitResult.distance - 1f);
@@ -313,7 +314,7 @@ public class PlayerCharacter : CharacterBase
             
         }
         Debug.DrawLine(FocusPosition, FocusPosition - CameraDistance, Color.green);
-
+        */
         CameraComp.transform.position = Vector3.Lerp(CameraComp.transform.position, FocusPosition - CameraDistance, Time.deltaTime * 10);
         CameraComp.transform.rotation = Quaternion.LookRotation((FocusPosition - CameraComp.transform.position).normalized, capsuleUp);
         // CameraComp.transform.rotation = TargetCameraRotation;
@@ -423,6 +424,7 @@ public class PlayerCharacter : CharacterBase
     public void PickupInteractable(InteractablePickable interactablePickable) {
         interactablePickable.IsInteractable = false;
         InventoryComp.AddItemToInventory(this, interactablePickable);
+        RuntimeManager.PlayOneShot("event:/SFX_Pickup", transform.position);
     }
 
     public override void AimWeapon(bool IsAiming)

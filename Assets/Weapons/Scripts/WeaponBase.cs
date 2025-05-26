@@ -1,4 +1,5 @@
 using System;
+using FMODUnity;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -113,6 +114,7 @@ public class WeaponBase : InteractablePickable
         CurrentBulletsInMagazine = 0;
         IsReloading = true;
         PlayReloadAnimation();
+        RuntimeManager.PlayOneShot("event:/SFX_Reload", transform.position);
         return true;
     }
 
@@ -178,6 +180,7 @@ public class WeaponBase : InteractablePickable
             // ShootLocation_TEST_ONLY.right
             BulletBase BulletComponentOnObject = BulletSpawned.GetComponent<BulletBase>();
             BulletComponentOnObject.InitializeBullet(OwnerCharacterRef, default, ForwardVector * BulletVelocityBase, 1f);
+            RuntimeManager.PlayOneShot("event:/SFX_Gun", transform.position);
             Debug.DrawLine(ShootLocation_TEST_ONLY.position, ShootLocation_TEST_ONLY.position + (ForwardVector * BulletVelocityBase), Color.red);
             if (!IsInfiniteAmmo)
                 CurrentBulletsInMagazine--;

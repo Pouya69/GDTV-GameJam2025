@@ -1,6 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
-
+using FMODUnity;
 public class BulletBase : PhysicsObjectBasic
 {
     [Header("Bullet")]
@@ -64,6 +64,7 @@ public class BulletBase : PhysicsObjectBasic
             return;
         }
         Debug.Log("DEFAULT Bullet Collided with: " + collision.gameObject.gameObject.name);
+        RuntimeManager.PlayOneShot("event:/SFX_Gunshot Impact",transform.position);
         Destroy(gameObject);
     }
 
