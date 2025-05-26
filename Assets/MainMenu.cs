@@ -14,23 +14,18 @@ public class MainMenu : MonoBehaviour
     }
     public void NewGame()
     {
-        //Reset Saved Data
+        SavingSystem.Instance.SaveData(100, 30, 0,80);
         SceneManager.LoadSceneAsync("FirstLevel_POUYA");
     }
     public void Continuo()
     {
-        //Load Data
-        //SceneManager.LoadSceneAsync("ClockTowerHub");
+        int lvl = PlayerPrefs.GetInt("Lvl",0);
+        if(lvl == 0) SceneManager.LoadSceneAsync("FirstLevel_POUYA");
+        else SceneManager.LoadSceneAsync("ClockTowerHub");
     }
     public void Credits()
     {
-        //Show Credits Menus
-
-    }
-    public void ReturnMainmenu()
-    {
-        //Hide Credits
-        //Show MainMenu
+        SceneManager.LoadSceneAsync("Credits");
     }
     public void LeaveGame()
     {
