@@ -1,7 +1,6 @@
 using System;
 using FMODUnity;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class CharacterBase : MonoBehaviour
 {
@@ -113,8 +112,11 @@ public class CharacterBase : MonoBehaviour
         switch (DamageType)
         {
             case EDamageType.BULLET:
+                RuntimeManager.PlayOneShot("event:/SFX_Gunshot Impact", transform.position);
                 break;
             case EDamageType.DEFAULT:
+                break;
+            case EDamageType.FALL_DAMAGE:
                 break;
             default:
                 break;
@@ -125,7 +127,6 @@ public class CharacterBase : MonoBehaviour
         }
         this.Health -= Amount;
         Debug.LogWarning("New Health: " +  this.Health);
-        RuntimeManager.PlayOneShot("event:/SFX_Gunshot Impact",transform.position);
         if (this.Health < 0) Die();
     }
     

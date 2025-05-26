@@ -60,7 +60,7 @@ public class BossAnimationScript : MonoBehaviour
 
     public void JumpHappen()
     {
-        SelfBossRef
+        SelfBossRef.Jump();
     }
 
     public void CompletedJumpStop()

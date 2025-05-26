@@ -145393,7 +145393,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 2.5166667
-    functionName: 
+    functionName: Magazine_InsideWeapon
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
