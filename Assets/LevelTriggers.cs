@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class LevelTriggers : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public GameObject NextObj;
+    public GameObject MyObj;
+    public void OnTriggerEnter(Collider other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (!other.transform.root.gameObject.CompareTag("Player")) return;
+        NextObj.SetActive(true);
+        MyObj.SetActive(false);
+        Destroy(gameObject);
     }
 }

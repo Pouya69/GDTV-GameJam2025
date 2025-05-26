@@ -13,9 +13,16 @@ public class HealthBarTrack : MonoBehaviour
     public RectTransform TxtFollow;
     public Text HealthText;
 
+
+    public Text BulletsTxt;
+    public Text LeftTxt;
+
+    public Image GravityGranede;
+    public Image TimeGranede;
+    public Image WeaponUI;
     void Update()
     {
-        float t = character.GetCurrentHealth();
+        float t = character.GetCurrentHealth() / 100;
         FillBar.fillAmount = t;
         t = FollowPath.Evaluate(t);
         Vector2 a = Vector2.Lerp(EndPoint, MidPoint, t);
@@ -23,6 +30,17 @@ public class HealthBarTrack : MonoBehaviour
         Vector2 final = Vector2.Lerp(a, b, t);
 
         TxtFollow.anchoredPosition = final;
-        HealthText.text = Mathf.RoundToInt(t * character.MaxHealth).ToString();
+        HealthText.text = Mathf.RoundToInt(t * 100).ToString();
+
+        WeaponUI.gameObject.SetActive(character.CurrentWeaponEquipped);
+        if (character.CurrentWeaponEquipped != null)
+        {
+            BulletsTxt.text = character.CurrentWeaponEquipped.CurrentBulletsInMagazine.ToString() + "/" + character.CurrentWeaponEquipped.MaxBulletsInMagazine.ToString();
+            LeftTxt.text = character.CurrentWeaponEquipped.BulletsLeft.ToString();
+        }
+        else { BulletsTxt.text = ""; LeftTxt.text = ""; }
     }
+
+    public void GravityGranedeCheck(bool Have) { GravityGranede.gameObject.SetActive(Have); }
+    public void TimeGranedeCheck(bool Have) { TimeGranede.gameObject.SetActive(Have); }
 }

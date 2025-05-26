@@ -1,26 +1,44 @@
 using UnityEngine;
 using FMODUnity;
-using FMOD.Studio;
 
 public class AudioController : MonoBehaviour
 {
-    [Range(0f, 2f)] public float lowHealth = 0f;
+    public PlayerCharacter character;
+    public float State = 0;
+    public StudioEventEmitter HeartBeat;
+    public StudioEventEmitter Ambiance;
 
-    private StudioEventEmitter emitter;
-
+    private float inCombat;
+    private float LastHealth;
     void Start()
     {
-        emitter = GetComponent<StudioEventEmitter>();
-
-        if (!emitter.IsPlaying())
+        LastHealth = character.GetCurrentHealth();
+        if (!HeartBeat.IsPlaying())
         {
-            emitter.Play(); 
+            HeartBeat.Play();
+        }
+        if (!Ambiance.IsPlaying())
+        {
+            Ambiance.Play();
         }
     }
 
     void Update()
     {
-        float parameterValue = Mathf.Clamp(lowHealth, 0f, 2f);
-        emitter.SetParameter("lowHealth", parameterValue);
+        if (LastHealth != character.GetCurrentHealth()) { State = 2; inCombat = 10f; LastHealth = character.GetCurrentHealth(); }
+        if(inCombat > 0)
+        {
+            inCombat -= Time.deltaTime;
+        }
+        else
+        {
+            State = 0;
+        }
+        float parameterValue = Mathf.Clamp((character.GetCurrentHealth() * 2) / 100, 0f, 2f);
+        HeartBeat.SetParameter("lowHealth", parameterValue);
+        Ambiance.SetParameter("lowHealth", parameterValue);
+
+        float GameStateParamter = Mathf.Clamp(State, 0f, 2f);
+        Ambiance.SetParameter("gameState", GameStateParamter);
     }
 }
