@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class BossController : EnemyBaseController
 {
+    [Header("Boss")]
     public float BaseSpeed = 20f;
+    public BossCharacter MyBossCharacter;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Start()
     {

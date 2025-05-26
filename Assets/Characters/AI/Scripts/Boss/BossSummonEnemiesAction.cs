@@ -16,7 +16,7 @@ public partial class BossSummonEnemiesAction : Action
 
     protected override Status OnUpdate()
     {
-        SelfBossCharacter.Value.SummonEnemies();
+        SelfBossCharacter.Value.StartSummonEnemies();
         return Status.Success;
     }
 

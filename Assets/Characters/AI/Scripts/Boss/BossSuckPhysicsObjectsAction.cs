@@ -16,7 +16,7 @@ public partial class BossSuckPhysicsObjectsAction : Action
 
     protected override Status OnUpdate()
     {
-        SelfBossCharacter.Value.SuckObjectsAround();
+        SelfBossCharacter.Value.StartSuckObjectsAround();
         return Status.Success;
     }
 

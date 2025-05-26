@@ -16,7 +16,7 @@ public partial class BossThrowObjectsSuckedAction : Action
 
     protected override Status OnUpdate()
     {
-        bool DidTStartThrow = SelfBossCharacter.Value.AttackThrowObjectsAtPlayer();
+        bool DidTStartThrow = SelfBossCharacter.Value.StartAttackThrowObjectsAtPlayer();
         return DidTStartThrow ? Status.Success : Status.Failure;
     }
 

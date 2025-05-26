@@ -16,7 +16,7 @@ public partial class BossJumpStompAction : Action
 
     protected override Status OnUpdate()
     {
-        SelfBossCharacter.Value.JumpStomp();
+        SelfBossCharacter.Value.StartJumpStomp();
         return Status.Success;
     }
 

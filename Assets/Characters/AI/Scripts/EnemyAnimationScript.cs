@@ -29,7 +29,7 @@ public class EnemyAnimationScript : MonoBehaviour
     {
         float deltaTime = Time.deltaTime;
         bool IsEnemyOnGround = EnemyCharacterRef.MyController.IsOnGround;
-        EnemyAnimator.SetFloat("TimeDIlation", EnemyCharacterRef.MyEnemyController.CustomTimeDilation);
+        EnemyAnimator.SetFloat("TimeDilation", EnemyCharacterRef.MyEnemyController.CustomTimeDilation);
         EnemyAnimator.SetBool("IsCharacterOnGround", IsEnemyOnGround);
         Vector3 Vel = EnemyCharacterRef.MyEnemyController.GetEnemyForward();  // THIS IS MOVEMENT DIRECTION OF NAVAGENT
         EnemyAnimator.SetFloat("CharacterSpeed", EnemyCharacterRef.MyEnemyController.RigidbodyRef.linearVelocity.magnitude, CharacterSpeedDamping, deltaTime);
