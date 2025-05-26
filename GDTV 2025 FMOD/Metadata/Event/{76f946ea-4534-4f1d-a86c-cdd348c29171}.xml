@@ -90,9 +90,6 @@
 	</object>
 	<object class="MixerBusPanner" id="{cc96167b-59a0-4672-8a06-250191daeeb3}" />
 	<object class="MultiSound" id="{f1d2c8ae-76db-4ae3-9e3c-60b6e280105f}">
-		<property name="triggerProbabilityEnabled">
-			<value>true</value>
-		</property>
 		<property name="isAsync">
 			<value>true</value>
 		</property>
@@ -101,12 +98,6 @@
 		</property>
 		<property name="delayType">
 			<value>0</value>
-		</property>
-		<property name="minimumTimeDelay">
-			<value>740</value>
-		</property>
-		<property name="maximumTimeDelay">
-			<value>740</value>
 		</property>
 		<property name="playlistMode">
 			<value>1</value>
