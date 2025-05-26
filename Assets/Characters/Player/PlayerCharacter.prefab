@@ -388,6 +388,8 @@ GameObject:
   - component: {fileID: 6585543468267847589}
   - component: {fileID: 478720490366675557}
   - component: {fileID: 5550989815467117142}
+  - component: {fileID: 2431011199854424261}
+  - component: {fileID: 4178817744578650694}
   m_Layer: 9
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -606,6 +608,52 @@ MonoBehaviour:
   MaxImpactDeath: 15
   MinDamageApplied: 10
   MaxDamageApplied: 150
+--- !u!114 &2431011199854424261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5043409899933712041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cbc9c618dc95a84397d7118a02cde45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lowHealth: 2
+--- !u!114 &4178817744578650694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5043409899933712041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -85079282
+      Data2: 1166688387
+      Data3: 1225478546
+      Data4: -1581784063
+    Path: event:/SFX_Low Health
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: lowHealth
+    Value: 2
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &5175022874877880778
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,7 +680,7 @@ Transform:
   m_GameObject: {fileID: 5175022874877880778}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.00000035762787, y: 0, z: -0.00000071525574}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -948,7 +996,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6817640312710914502}
   - component: {fileID: 8946129064234814182}
-  - component: {fileID: 744503682557135098}
   - component: {fileID: 3921520171635648366}
   - component: {fileID: -591612604885841356}
   m_Layer: 2
@@ -1024,14 +1071,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &744503682557135098
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8828882175835226471}
-  m_Enabled: 1
 --- !u!114 &3921520171635648366
 MonoBehaviour:
   m_ObjectHideFlags: 0

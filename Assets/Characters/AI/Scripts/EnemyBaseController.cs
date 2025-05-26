@@ -45,6 +45,9 @@ public class EnemyBaseController : CustomCharacterController
     public float AimAccuracy = 0.7f;
     public float AccuracyMultiplier = 1.5f;
 
+    // TODO: BASE SPEED FOR ENEMY
+    
+
 
     public void CacheRagdollPose()
     {
