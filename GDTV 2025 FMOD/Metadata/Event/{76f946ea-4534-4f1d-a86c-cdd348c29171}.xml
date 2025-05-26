@@ -33,6 +33,7 @@
 		</relationship>
 		<relationship name="banks">
 			<destination>{7598fc2b-80af-4b12-bbbe-9b033ce087ed}</destination>
+			<destination>{adc0cb1b-737f-40d1-90ac-9bbc5dbbb528}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixer" id="{6f5dabde-28df-47a1-b1fd-c2bf4e7e0eeb}">
@@ -89,6 +90,9 @@
 	</object>
 	<object class="MixerBusPanner" id="{cc96167b-59a0-4672-8a06-250191daeeb3}" />
 	<object class="MultiSound" id="{f1d2c8ae-76db-4ae3-9e3c-60b6e280105f}">
+		<property name="triggerProbabilityEnabled">
+			<value>true</value>
+		</property>
 		<property name="isAsync">
 			<value>true</value>
 		</property>
