@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{477d6444-f130-4158-ab96-084049ea9a3c}">
+		<property name="name">
+			<value>magCap</value>
+		</property>
+		<relationship name="folder">
+			<destination>{95790add-abc1-4b43-9deb-da5c85789a59}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{91428f02-c472-4049-92a5-5915b969eb34}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{91428f02-c472-4049-92a5-5915b969eb34}">
+		<property name="maximum">
+			<value>30</value>
+		</property>
+		<property name="initialValue">
+			<value>30</value>
+		</property>
+	</object>
+</objects>
