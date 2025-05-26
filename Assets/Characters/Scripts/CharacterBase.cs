@@ -35,6 +35,7 @@ public class CharacterBase : MonoBehaviour
     [Header("Health")]
     float Health;
     public float MaxHealth = 100f;
+    [NonSerialized] public bool HasDied = false;
 
     public virtual void Start()
     {
@@ -131,10 +132,25 @@ public class CharacterBase : MonoBehaviour
         MyController.AddMovementInput(Axis * -MyController.GetGravityDirection(), CurrentMovementSpeed);
     }
 
+    public bool IsAlive() { return this.Health > 0; }
+
+    public bool IsOnLowHealth() { return this.Health < 30f; }
+
     public bool HasWeaponEquipped() { return CurrentWeaponEquipped != null; }
 
     public virtual void Attack()
     {
         // Gets Derrived by child classes.
+    }
+
+    public void SetHealthDirectly(float InHealth)
+    {
+        this.Health = Mathf.Clamp(InHealth, 0, 100);
+    }
+
+    public void AddHealth(float InHealth)
+    {
+        this.Health = Mathf.Clamp(this.Health+InHealth, 0, 100);
+        // Used for consumables.
     }
 }

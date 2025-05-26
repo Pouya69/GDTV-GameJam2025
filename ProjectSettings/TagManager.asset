@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Damagable
   - No Fall Damage
+  - Ground Carpet
+  - Ground Wood
+  - Ground Concrete
   layers:
   - Default
   - TransparentFX

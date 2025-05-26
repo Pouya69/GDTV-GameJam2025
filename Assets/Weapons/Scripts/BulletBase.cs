@@ -36,6 +36,7 @@ public class BulletBase : PhysicsObjectBasic
         this.CustomTimeDilation = Mathf.Lerp(this.CustomTimeDilation, this.CustomTimeDilationTarget, 1 - Mathf.Exp(-this.TimeDilationInterpSpeed * Time.deltaTime));
         if (Mathf.Abs(this.CustomTimeDilationTarget - this.CustomTimeDilation) < TimeDilationDifferenceIgnore)
             this.CustomTimeDilation = this.CustomTimeDilationTarget;
+        this.transform.forward = this.RigidbodyRef.linearVelocity.normalized;
     }
 
     private void OnCollisionEnter(Collision collision)

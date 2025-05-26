@@ -1,7 +1,6 @@
 using UnityEngine;
 using static UnityEditor.Rendering.CameraUI;
 using UnityEngine.Windows;
-using GLTFast.Schema;
 
 public class EnemyAnimationScript : MonoBehaviour
 {
@@ -32,25 +31,16 @@ public class EnemyAnimationScript : MonoBehaviour
         bool IsEnemyOnGround = EnemyCharacterRef.MyController.IsOnGround;
         EnemyAnimator.SetFloat("TimeDIlation", EnemyCharacterRef.MyEnemyController.CustomTimeDilation);
         EnemyAnimator.SetBool("IsCharacterOnGround", IsEnemyOnGround);
-        Vector3 Vel = EnemyCharacterRef.MyEnemyController.RigidbodyRef.linearVelocity;
-        Vector3 EnemyRight = EnemyCharacterRef.CapsuleCollision.transform.right;
-        Vector3 EnemyForward = EnemyCharacterRef.CapsuleCollision.transform.forward;
+        Vector3 Vel = EnemyCharacterRef.MyEnemyController.GetEnemyForward();  // THIS IS MOVEMENT DIRECTION OF NAVAGENT
         EnemyAnimator.SetFloat("CharacterSpeed", Vel.magnitude, CharacterSpeedDamping, deltaTime);
-        //EnemyAnimator.SetBool("HasGrenadeInHand", EnemyCharacterRef.HasGrenadeInHand());
-        //  Debug.Log(EnemyCharacterRef.GetCurrentWeaponId());
-        // EnemyAnimator.SetInteger("CurrentWeaponID", EnemyCharacterRef.GetCurrentWeaponId());
-        // EnemyAnimator.SetBool("IsAimingWeapon", true);
         EnemyAnimator.SetBool("IsAimingWeapon", EnemyCharacterRef.IsAimingWeapon);
-        Vel.Normalize();
-        //output = output_start + ((output_end - output_start) / (input_end - input_start)) * (input - input_start);
-        //Vector3.Angle(EnemyRight, Vel, EnemyRight)
-        //EnemyCharacterRef.CapsuleCollision.transform.right
-        //    EnemyCharacterRef.CapsuleCollision.transform.forward
-        //EnemyAnimator.SetFloat("MovementDirection_LR", EnemyCharacterRef.MoveDirectionXYKeyboard.x, 0.2f, deltaTime);
-        //EnemyAnimator.SetFloat("MovementDirection_FB", EnemyCharacterRef.MoveDirectionXYKeyboard.y, 0.2f, deltaTime);
+        
         if (EnemyCharacterRef.IsAimingWeapon)
         {
-
+            Vector3 LocalVel = EnemyCharacterRef.CapsuleCollision.transform.InverseTransformDirection(Vel);
+            // Debug.LogError("Forward: " + LocalVel.z + ", Right: " + LocalVel.x);
+            EnemyAnimator.SetFloat("MovementDirection_LR", LocalVel.x, 0.2f, deltaTime);
+            EnemyAnimator.SetFloat("MovementDirection_FB", LocalVel.z, 0.2f, deltaTime);
             // EnemyAnimator.SetFloat("CharacterRotationPitch", , CharacterAimDamping, deltaTime);
         }
 

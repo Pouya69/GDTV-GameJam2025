@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using UnityEngine;
 
 public class EnemyBaseCharacter : CharacterBase
@@ -6,6 +6,53 @@ public class EnemyBaseCharacter : CharacterBase
     public EnemyBaseController MyEnemyController;
     public EnemyAnimationScript EnemyAnimationScript;
     public Animator EnemyAnimator;
+    [Header("Death")]
+    public float DisappearTimerAfterDeath = 10f;
+    public EItemDrop ManualItemDrop = EItemDrop.RANDOM;
+    public GameObject GravityGrenadeConsumablePrefab;
+    public GameObject TimeGrenadeConsumablePrefab;
+    public GameObject AmmoConsumablePrefab;
+    public GameObject HealthConsumablePrefab;
+
+    public enum EItemDrop
+    {
+        GRAVITY_GRENADE,
+        TIME_GRENADE,
+        AMMO,
+        HEALTH,
+        RANDOM,
+    }
+
+    public EItemDrop GetRandomItemDrop() { return (EItemDrop)UnityEngine.Random.Range(0, 3); }
+
+    public GameObject DropLootOnDeath()
+    {
+        if (ManualItemDrop == EItemDrop.RANDOM)
+            ManualItemDrop = GetRandomItemDrop();
+        GameObject PrefabToInst;
+        switch (ManualItemDrop)
+        {
+            case EItemDrop.HEALTH:
+                PrefabToInst = HealthConsumablePrefab;
+                break;
+            case EItemDrop.GRAVITY_GRENADE:
+                PrefabToInst = GravityGrenadeConsumablePrefab;
+                break;
+            case EItemDrop.TIME_GRENADE:
+                PrefabToInst = TimeGrenadeConsumablePrefab;
+                break;
+            case EItemDrop.AMMO:
+                PrefabToInst = AmmoConsumablePrefab;
+                break;
+            default:
+                PrefabToInst = AmmoConsumablePrefab;
+                break;
+        }
+        Vector3 SpawnLocation = CapsuleCollision.transform.position + (CapsuleCollision.transform.forward * 1.5f);
+        GameObject SpawnedLoot = Instantiate(PrefabToInst, SpawnLocation, Quaternion.identity);
+        return SpawnedLoot;
+    }
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Start()
@@ -35,6 +82,19 @@ public class EnemyBaseCharacter : CharacterBase
         if (CurrentWeaponEquipped == null) return;
         // Enemy Shoot at player logic.
         CurrentWeaponEquipped.StartShooting();
+    }
+
+    public override void Die()
+    {
+        if (HasDied) return;
+        HasDied = true;
+        base.Die();
+        Destroy(MyEnemyController.MyNavAgent);
+        Destroy(MyEnemyController.MyBehaviourTreeAgent);
+        Destroy(MyEnemyController.MySenseHandler);
+        StartRagdolling();
+        GameObject SpawnedLoot = DropLootOnDeath();
+        Destroy(this.gameObject, DisappearTimerAfterDeath);
     }
 
     public override void StopShootingWeapon()

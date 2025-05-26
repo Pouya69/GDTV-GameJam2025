@@ -4,6 +4,13 @@ using UnityEngine.Animations.Rigging;
 
 public class CustomCharacterController : MonoBehaviour
 {
+    public enum EGroundSurface
+    {
+        WOOD,
+        CONCRETE,
+        CARPET
+    }
+
     [Header("Components")]
     // public ConstantForce ConstantGravityForce;
     public Vector3 BaseGravity = new Vector3(0, -981f, 0);
@@ -32,6 +39,7 @@ public class CustomCharacterController : MonoBehaviour
     public Animator IK_Aim_RigAnimation;
     [Range(0f, 1f)]
     public float IK_Aim_Weight = 0f;
+    [NonSerialized] public EGroundSurface CurrentGround = EGroundSurface.WOOD;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
@@ -98,9 +106,8 @@ public class CustomCharacterController : MonoBehaviour
     {
         Vector3 Start = CharacterBaseRef.CapsuleCollision.transform.position;
         Vector3 GravityDirection = GetGravityDirection();
-        RaycastHit HitResult;
         Debug.DrawLine(Start, Start + (GravityDirection * (DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()))), Color.cyan);
-        bool didHitGround = Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), GroundCheckLayerMask)
+        bool didHitGround = Physics.Raycast(Start, GravityDirection, out RaycastHit HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), GroundCheckLayerMask)
             || Physics.Raycast(Start, GravityDirection, out HitResult, DownGroundCheckAfterCapsule + (CharacterBaseRef.GetCapsuleCollisionHeight()), PhysicsObjectsLayerMaskGroundCheck);
         if (!didHitGround)
         {
@@ -108,7 +115,16 @@ public class CustomCharacterController : MonoBehaviour
             return;
         }
         IsOnGround = !HitResult.collider.transform.CompareTag("GameController");
-
+        if (!IsOnGround) return;  // If not on ground, we don't do anything.
+        // Getting the surface.
+        if (HitResult.collider.CompareTag("Ground Carpet"))
+            CurrentGround = EGroundSurface.CARPET;
+        else if (HitResult.collider.CompareTag("Ground Wood"))
+            CurrentGround = EGroundSurface.WOOD;
+        else if (HitResult.collider.CompareTag("Ground Concrete"))
+            CurrentGround = EGroundSurface.CONCRETE;
+        else
+            CurrentGround = EGroundSurface.WOOD;
     }
 
     public Vector3 GetGravityDirection() { return BaseGravity.normalized; }

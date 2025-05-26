@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SocialPlatforms;
 
 public class EnemyBaseController : CustomCharacterController
 {
@@ -34,6 +35,14 @@ public class EnemyBaseController : CustomCharacterController
     Dictionary<Transform, Pose> ragdollPose = new Dictionary<Transform, Pose>();
     [NonSerialized] public bool IsTryingToRecoverFromRagdoll = false;
     public float CheckRagdollRecoveryEverySeconds = 1f;
+    [Header("Aiming")]
+    public LayerMask AimColliderLayerMask = new LayerMask();
+    [SerializeField] private Transform TransformAimPoint;
+    [SerializeField] private float AimTransitionSpeed = 50f;
+    public GameObject AimFocusPoint;
+    [Range(0.1f, 1f)]
+    public float AimAccuracy = 0.7f;
+
 
     public void CacheRagdollPose()
     {
@@ -80,16 +89,31 @@ public class EnemyBaseController : CustomCharacterController
         IK_Aim_Rig.weight = ShouldLookAtPlayer ? 1f : 0f;
         IK_Aim_RigBuilder.layers[0].active = ShouldLookAtPlayer;
         IK_Aim_RigAnimation.enabled = ShouldLookAtPlayer;
-        IK_Aim.data.sourceObjects.SetTransform(0, ShouldLookAtPlayer ? MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform : null);
+        // IK_Aim.data.sourceObjects.SetTransform(0, ShouldLookAtPlayer ? MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform : null);
         CharacterBaseRef.CurrentMovementSpeed = ShouldLookAtPlayer ? CharacterBaseRef.AimingMovementSpeed : CharacterBaseRef.MovementSpeed;
     }
 
-    public void RotateTowards(Vector3 targetPosition)
+    public void RotateTowardsPlayer()
     {
+
         Vector3 gravityUp = -GetGravityDirection(); // character's up
-        Vector3 toTarget = (targetPosition - transform.position).normalized;
+        Vector3 targetPosition = MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform.position;
+        
+        Vector3 toTarget = (targetPosition - EnemyBaseCharacterRef.CapsuleCollision.transform.position).normalized;
+        
+        Quaternion targetRotation = Quaternion.LookRotation(toTarget, gravityUp);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+
+
+        // TargetRotation = Quaternion.AngleAxis(CameraRotation.y - (gravityUp.y < 0 ? AimingYawRotationDifference : 180 + AimingYawRotationDifference), LocalUp) * Quaternion.LookRotation(GetForwardBasedOnGravity(), LocalUp);
+
+        // EnemyBaseCharacterRef.CapsuleCollision.transform.rotation = transform.rotation;
+
+        // transform.LookAt(targetPosition, gravityUp);
+
 
         // Project direction onto the gravity plane
+        /*
         Vector3 projected = Vector3.ProjectOnPlane(toTarget, gravityUp).normalized;
 
         // Prevent NaN if projected is zero (e.g., target directly above/below)
@@ -97,7 +121,10 @@ public class EnemyBaseController : CustomCharacterController
         {
             Quaternion targetRotation = Quaternion.LookRotation(projected, gravityUp);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            
         }
+        */
+
     }
 
     public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
@@ -168,8 +195,20 @@ public class EnemyBaseController : CustomCharacterController
         {
             return;
         }
-        Vector3 FinalDirection = GetEnemyForward();
         Vector3 LocalUp = -GetGravityDirection();
+
+        if (EnemyBaseCharacterRef.IsAimingWeapon)
+        {
+            RotateTowardsPlayer();
+            //if (LocalUp.Equals(Vector3.zero))
+            //    LocalUp = Vector3.up;
+            //TargetRotation = Quaternion.AngleAxis(CameraRotation.y - (LocalUp.y < 0 ? 0 : 180), LocalUp) * Quaternion.LookRotation(GetForwardBasedOnGravity(), LocalUp);
+            //EnemyBaseCharacterRef.CapsuleCollision.transform.rotation = Quaternion.RotateTowards(EnemyBaseCharacterRef.CapsuleCollision.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
+            return;
+        }
+
+        Vector3 FinalDirection = GetEnemyForward();
+        
         if (FinalDirection.magnitude >= 0.01)
         {
             FinalDirection.Normalize();
@@ -216,7 +255,16 @@ public class EnemyBaseController : CustomCharacterController
     // Update is called once per frame
     public override void Update()
     {
+        if (!EnemyBaseCharacterRef.IsAlive())
+        {
+            EnemyBaseCharacterRef.StopShootingWeapon();
+            return;
+        }
         base.Update();
+        if (EnemyBaseCharacterRef.CapsuleCollision.enabled)
+            CheckRaycastFromViewPoint();
+        if (!MySenseHandler.CanSeePlayer)
+            EnemyBaseCharacterRef.StopShootingWeapon();
         /*if (EnemyBaseCharacterRef.IsRagdolling() || !EnemyBaseCharacterRef.CapsuleCollision.enabled)
         {
             MyNavAgent.nextPosition = transform.position;
@@ -266,12 +314,6 @@ public class EnemyBaseController : CustomCharacterController
         base.FixedUpdate();
     }
 
-    private void LateUpdate()
-    {
-        
-        
-    }
-
     protected override void Awake()
     {
         base.Awake();
@@ -296,7 +338,7 @@ public class EnemyBaseController : CustomCharacterController
             NavMeshPath p = new();
             // Checking if player was on my surface/reachable.
             this.MyBlackBoardRef.SetVariableValue<Vector3>("LastKnownPlayerLocation", LastPlayerLocation);
-            this.MyBlackBoardRef.SetVariableValue<bool>("WasLastPlayerLocationInMySurface", this.MyNavAgent.CalculatePath(LastPlayerLocation, p));
+            // this.MyBlackBoardRef.SetVariableValue<bool>("WasLastPlayerLocationInMySurface", this.MyNavAgent.CalculatePath(LastPlayerLocation, p));
         }
         else
             LookAtPlayer(true);
@@ -342,6 +384,7 @@ public class EnemyBaseController : CustomCharacterController
 
     public bool ShouldStopRagdolling()
     {
+        if (!EnemyBaseCharacterRef.IsAlive()) return false;
         bool Result = !IsInGravityField && IsOnGround && PelvisRigidBody.linearVelocity.magnitude <= 0.1f;
         if (!Result)
         {
@@ -352,6 +395,27 @@ public class EnemyBaseController : CustomCharacterController
 
     public override Vector3 GetForwardShootingVector()
     {
-        return base.GetForwardShootingVector();
+        return (TransformAimPoint.position + GetRandomGravityDirection(1 - AimAccuracy) - EnemyBaseCharacterRef.CurrentWeaponEquipped.ShootLocation_TEST_ONLY.transform.position).normalized;
+        // return PlayerCameraRef.transform.forward;
     }
+
+    public override void CheckRaycastFromViewPoint()
+    {
+        if (!EnemyBaseCharacterRef.IsAimingWeapon) return;
+        Vector3 Start = MySenseHandler.RaycastStartPoint.position;
+        // Vector3 Direction = GetForwardShootingVector();
+        Vector3 Direction = MySenseHandler.RaycastStartPoint.forward;
+        Vector3 FinalAimLocation = MySenseHandler.PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform.position;
+        TransformAimPoint.position = Vector3.Lerp(TransformAimPoint.position, FinalAimLocation, Time.deltaTime * AimTransitionSpeed);
+        /*if (Physics.Raycast(Start, Direction, out RaycastHit HitResult, 999f, AimColliderLayerMask))
+        {
+            TransformAimPoint.position = Vector3.Lerp(TransformAimPoint.position, HitResult.point, Time.deltaTime * AimTransitionSpeed);
+        }
+        else
+        {
+            TransformAimPoint.position = Vector3.Lerp(TransformAimPoint.position, Start + Direction * 5, Time.deltaTime * AimTransitionSpeed);
+        }*/
+    }
+
+    
 }

@@ -122,29 +122,34 @@ public class PlayerCharacter : CharacterBase
 
     private void SprintAction_canceled(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         if (IsAimingWeapon) return;
         this.StopSprint();
     }
 
     private void SprintAction_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         if (IsAimingWeapon) return;
         this.StartSprint();
     }
 
     private void ChangeSelectedGrenade_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         this.CurrentGrenadeSelected = !this.CurrentGrenadeSelected;
         Debug.LogWarning("Grenade Selected: " + (this.CurrentGrenadeSelected ? "Time" : "Gravity"));
     }
 
     private void GrenadeAction_canceled(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         StartThrowingGrenade();
     }
 
     private void GrenadeAction_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         if (CurrentGrenadeSelected)
             GiveTimeGrenadeToPlayerFromInventory();
         else
@@ -153,23 +158,27 @@ public class PlayerCharacter : CharacterBase
 
     private void ReloadAction_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         Reload();
     }
 
     private void InteractAction_canceled(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         IsInteracting = false;
         InteractionAmount = 0f;
     }
 
     private void InteractAction_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         IsInteracting = true;
         CanInteract = true;
     }
 
     private void ChangeWorldGravityAction_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         Vector3 Dir = ChangeWorldGravityAction_DIRECTION.ReadValue<Vector3>().normalized;
         // Debug.Log(Dir * GravityForce);
         MyPlayerController.ChangeWorldGravity(Dir * GravityForce);
@@ -179,6 +188,7 @@ public class PlayerCharacter : CharacterBase
 
     private void ChangeSelfGravityAction_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         Vector3 Dir = ChangeSelfGravityAction_DIRECTION.ReadValue<Vector3>().normalized;
         // Debug.Log(Dir * GravityForce);
         MyPlayerController.SetGravityForceAndDirection(Dir * GravityForce);
@@ -187,6 +197,7 @@ public class PlayerCharacter : CharacterBase
 
     private void AttackSecondary_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         AimWeapon(true);
     }
 
@@ -196,6 +207,7 @@ public class PlayerCharacter : CharacterBase
     }
     private void Jump_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         BoostJump();
         //IsJumpBoosting = true;
     }
@@ -207,6 +219,7 @@ public class PlayerCharacter : CharacterBase
 
     private void AttackPrimary_performed(InputAction.CallbackContext obj)
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         Attack();
     }
 
@@ -277,6 +290,7 @@ public class PlayerCharacter : CharacterBase
 
     void HandleInputs()
     {
+        if (MyPlayerController.IsMovementDisabled) return;
         //if (IsJumpBoosting)
             //BoostJump();
         MoveDirectionXYKeyboard = MoveAction.ReadValue<Vector2>();
@@ -531,5 +545,15 @@ public class PlayerCharacter : CharacterBase
         Vector3 BaseVel = MyPlayerController.PlayerCameraRef.transform.forward * GrenadeThrowPower;
         CurrentGrenadeInHand.GrenadeThrown(BaseVel);
         CurrentGrenadeInHand = null;
+    }
+
+    public void ConsumeHealth()
+    {
+        // TODO: Implement health consumable.
+    }
+
+    public void ConsumeAmmo()
+    {
+        // TODO: Implement ammo consumable. ALREADY DONE in picking up weapon would add ammo. But here is an extra one.
     }
 }

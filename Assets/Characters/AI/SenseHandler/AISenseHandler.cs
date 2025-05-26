@@ -66,6 +66,12 @@ public class AISenseHandler : MonoBehaviour
                 EnemyBaseControllerRef.UpdatePlayerCharacterRef(PlayerCharacterRef_CHECK_ONLY);
             CanSeePlayer = true;
         }
+        else
+        {
+            if (CanSeePlayer)
+                EnemyBaseControllerRef.UpdatePlayerCharacterRef(null, PlayerCharacterRef_CHECK_ONLY.CapsuleCollision.transform.position);
+            CanSeePlayer = false;
+        }
     }
 
     private void Start()
@@ -80,7 +86,7 @@ public class AISenseHandler : MonoBehaviour
         while (true)
         {
             CheckForPlayer_SIGHT();
-
+           //  Debug.Log("Can See player? " + CanSeePlayer);
             yield return WaitTime;
         }
     }

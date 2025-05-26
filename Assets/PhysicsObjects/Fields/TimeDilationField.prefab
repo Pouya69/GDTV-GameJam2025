@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 50425206216477134}
   - component: {fileID: 8841356033179601733}
   - component: {fileID: 7200202406692022394}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 5105741896302669879}
   - component: {fileID: 6541934610875934695}
   - component: {fileID: 4343886160068788864}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: TimeDilationField
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -73,7 +73,7 @@ MonoBehaviour:
       m_Item7:
         transform: {fileID: 0}
         weight: 0
-    m_Offset: {x: 0, y: 0, z: 0}
+    m_Offset: {x: 0, y: 45, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
     m_AimAxis: 4
@@ -212,6 +212,12 @@ MonoBehaviour:
   MyEnemyController: {fileID: 5959360942475724125}
   EnemyAnimationScript: {fileID: 5606390620951254193}
   EnemyAnimator: {fileID: 1320048968151968384}
+  DisappearTimerAfterDeath: 10
+  ManualItemDrop: 1
+  GravityGrenadeConsumablePrefab: {fileID: 1480510668737768966, guid: 951d2fa6dafe4b043bd62407a712be79, type: 3}
+  TimeGrenadeConsumablePrefab: {fileID: 1480510668737768966, guid: 319777d0d89fe5242bc05ed65fd20ae6, type: 3}
+  AmmoConsumablePrefab: {fileID: 0}
+  HealthConsumablePrefab: {fileID: 0}
 --- !u!114 &5959360942475724125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,7 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84c0a4102854344896f2d0d960d3865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseGravity: {x: 0, y: 9.81, z: 0}
+  BaseGravity: {x: 0, y: 0, z: -9.81}
   CharacterBaseRef: {fileID: 373048305318883993}
   RigidbodyRef: {fileID: 3707294762048664588}
   GroundCheckLayerMask:
@@ -327,6 +333,13 @@ MonoBehaviour:
   - {fileID: 8148807419445793018}
   - {fileID: 3035939772370921694}
   CheckRagdollRecoveryEverySeconds: 1
+  AimColliderLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  TransformAimPoint: {fileID: 0}
+  AimTransitionSpeed: 50
+  AimFocusPoint: {fileID: 0}
+  AimAccuracy: 0.219
 --- !u!195 &8769930563888592612
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -361,7 +374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Graph: {fileID: 5494122069839070312, guid: 6c547ccaee2759a44903e97fd0176f6f, type: 2}
+  m_Graph: {fileID: 5494122069839070312, guid: eea7cfc016b645547bd10345847ec425, type: 2}
   m_BlackboardVariableOverridesList:
   - rid: 1936166745124897645
   - rid: 1936166745124897646
