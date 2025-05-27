@@ -73,6 +73,16 @@ public class BossAnimationScript : MonoBehaviour
         
     }
 
+    public void ChangeGravityOfEverything()
+    {
+
+    }
+
+    public void ChangeGravityEVENT()
+    {
+        SelfBossRef.ChangeGravityAroundMe();
+    }
+
     public void CompletedMeleeEVENT()
     {
 

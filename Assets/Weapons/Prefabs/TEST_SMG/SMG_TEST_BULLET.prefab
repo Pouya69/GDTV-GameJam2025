@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 71469979818786248}
   m_Layer: 7
   m_Name: SMG_TEST_BULLET
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 5597459051451679337}
   m_Layer: 7
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -14,6 +14,33 @@ public class BossCharacter : EnemyBaseCharacter
     public GameObject EnemySpawnPrefab;
     public List<Transform> EnemySpawnPoints;
     public PlayerCharacter PlayerRef;
+    public Transform HandTransform;
+    public Transform AttachTransform;
+
+    public void ChangeGravityAroundMe()
+    {
+        Collider[] Colliders = Physics.OverlapSphere(this.CapsuleCollision.transform.position, BossSuckerField.FieldRadius);
+        if (Colliders.Length == 0) return;
+        bool IsLeftRight = UnityEngine.Random.value >= 0.5f;
+        Vector3 NewGravity;
+        if (IsLeftRight)
+            NewGravity = new Vector3(UnityEngine.Random.value >= 0.5f ? -9.81f : 9.81f, 0, 0);
+        else
+            NewGravity = new Vector3(0, 0, UnityEngine.Random.value >= 0.5f ? -9.81f : 9.81f);
+        foreach (Collider ObjInField in Colliders)
+        {
+            if (!ObjInField.transform.root.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectBasic PhysObj)) return;
+            PhysObj.GravityBeforeCustomGravity = NewGravity;
+            PhysObj.BaseGravity = NewGravity;
+        }
+        PlayerRef.MyPlayerController.SetGravityForceAndDirection(NewGravity, false);
+        // By default we'll do player. No need for check.
+    }
+
+    public void StartChangeGravity()
+    {
+        BossAnimationScript.ChangeGravityOfEverything();
+    }
 
     public override void Attack()
     {
@@ -28,10 +55,10 @@ public class BossCharacter : EnemyBaseCharacter
         {
             if (PhysObjectsSuckedIn.Count == 0) return false;
             PhysObjectInHand = PhysObjectsSuckedIn[0];
-            PhysObjectsSuckedIn.RemoveAt(0);
         }
-        else
-            BossAnimationScript.StartThrowObject();
+        PhysObjectInHand.transform.SetParent(this.HandTransform, false);
+        PhysObjectInHand.transform.position = this.HandTransform.position;
+        BossAnimationScript.StartThrowObject();
         return true;
     }
 
@@ -81,14 +108,17 @@ public class BossCharacter : EnemyBaseCharacter
     }
 
     public void CaughtPhysicsObjectSuck(PhysicsObjectBasic PhysObj) {
+        Debug.Log("Caught");
         this.PhysObjectsSuckedIn.Add(PhysObj);
         PhysObj.RigidbodyRef.isKinematic = true;
         PhysObj.RigidbodyRef.detectCollisions = false;
+        PhysObj.transform.SetParent(this.AttachTransform, false);
+        PhysObj.transform.position = this.AttachTransform.position;
     }
 
     public void ThrowObject()
     {
-        Vector3 Vel = PhysObjectInHand.transform.forward * BossThrowObjectPower;
+        Vector3 Vel = (PlayerRef.CapsuleCollision.transform.position - HandTransform.position).normalized * BossThrowObjectPower;
 
         PhysObjectInHand.transform.SetParent(null, true);
         PhysObjectInHand.InitializePhysicsObject(this.MyBossController.BaseGravity, Vel);
@@ -99,6 +129,9 @@ public class BossCharacter : EnemyBaseCharacter
         PhysObjectInHand.GravityBeforeCustomGravity = this.MyBossController.BaseGravity;
         PhysObjectInHand.CheckTimeDilationOnSpawn();
         PhysObjectInHand.UpdatePhysicsObjectBasedOnTimeDilation();
+        PhysObjectInHand = null;
+        PhysObjectsSuckedIn.RemoveAt(0);
+        Debug.Log("Thrown");
     }
 
     public override void Update()

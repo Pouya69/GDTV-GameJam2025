@@ -65,15 +65,15 @@ public class FieldBaseGrenade : PhysicsObjectBasic
 
     public bool IsGravityFieldGrenade() { return FieldToSpawn.TryGetComponent<GravityField>(out GravityField _); }
 
-    public void GrenadeThrown(Vector3 Vel)
+    public void GrenadeThrown(Vector3 Vel, Vector3 Gravity)
     {
         this.transform.SetParent(null, true);
-        this.InitializePhysicsObject(this.BaseGravity, Vel);
+        this.InitializePhysicsObject(Gravity, Vel);
         this.RigidbodyRef.isKinematic = false;
         this.RigidbodyRef.detectCollisions = true;
         this.BaseVelocity = Vel;
         this.RigidbodyRef.linearVelocity = Vel;
-        this.GravityBeforeCustomGravity = this.BaseGravity;
+        this.GravityBeforeCustomGravity = Gravity;
         base.CheckTimeDilationOnSpawn();
         this.UpdatePhysicsObjectBasedOnTimeDilation();
         CanWork = true;

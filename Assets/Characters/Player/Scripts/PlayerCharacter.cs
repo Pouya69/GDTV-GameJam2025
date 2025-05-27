@@ -547,7 +547,7 @@ public class PlayerCharacter : CharacterBase
     {
         if (CurrentGrenadeInHand == null) return;
         Vector3 BaseVel = MyPlayerController.PlayerCameraRef.transform.forward * GrenadeThrowPower;
-        CurrentGrenadeInHand.GrenadeThrown(BaseVel);
+        CurrentGrenadeInHand.GrenadeThrown(BaseVel, this.MyPlayerController.BaseGravity);
         CurrentGrenadeInHand = null;
     }
 
@@ -565,5 +565,7 @@ public class PlayerCharacter : CharacterBase
     {
         if (DamageType == EDamageType.BULLET)
             base.ReduceHealth(DamageType, Amount / 4);
+        else
+            base.ReduceHealth(DamageType, Amount);
     }
 }

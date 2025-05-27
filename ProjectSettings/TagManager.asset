@@ -10,6 +10,7 @@ TagManager:
   - Ground Wood
   - Ground Concrete
   - Boss
+  - Bullet
   layers:
   - Default
   - TransparentFX

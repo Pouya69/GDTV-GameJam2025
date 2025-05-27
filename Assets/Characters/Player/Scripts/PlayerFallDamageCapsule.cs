@@ -10,7 +10,8 @@ public class PlayerFallDamageCapsule : MonoBehaviour
     public float MaxDamageApplied = 150f;
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag(IgnoreDamageTag)) return;
+        // We already handle damage.
+        if (collision.collider.CompareTag(IgnoreDamageTag) || collision.collider.CompareTag("Bullet")) return;
         float ImpactSpeed = Vector3.Project(collision.relativeVelocity, -PlayerRef.MyController.GetGravityDirection()).magnitude;
         //float ImpactSpeed = collision.relativeVelocity.magnitude;
         Debug.Log("Fall: " + ImpactSpeed);
