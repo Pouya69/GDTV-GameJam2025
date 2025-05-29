@@ -65,6 +65,8 @@ public class PlayerCharacter : CharacterBase
     public Vector3 MagazineHandAttachmentOffsetPosition;
     public Transform MagazineHoldTransform;
     [NonSerialized] public GameObject MagazineInHand = null;
+    [Header("UI")]
+    public HealthBarTrack HealthBarTrackComp;
 
     [Header("Player State")]
     public EPlayerState CurrentPlayerState = EPlayerState.GAMEPLAY_DEFAULT;  // Can be used to check for combat, and gameplay states.
@@ -139,6 +141,8 @@ public class PlayerCharacter : CharacterBase
     {
         if (MyPlayerController.IsMovementDisabled) return;
         this.CurrentGrenadeSelected = !this.CurrentGrenadeSelected;
+        this.HealthBarTrackComp.GravityGranedeCheck(!this.CurrentGrenadeSelected);
+        this.HealthBarTrackComp.TimeGranedeCheck(this.CurrentGrenadeSelected);
         Debug.LogWarning("Grenade Selected: " + (this.CurrentGrenadeSelected ? "Time" : "Gravity"));
     }
 
@@ -205,6 +209,7 @@ public class PlayerCharacter : CharacterBase
     private void AttackSecondary_canceled(InputAction.CallbackContext obj)
     {
         AimWeapon(false);
+        StopShootingWeapon();
     }
     private void Jump_performed(InputAction.CallbackContext obj)
     {
@@ -220,7 +225,7 @@ public class PlayerCharacter : CharacterBase
 
     private void AttackPrimary_performed(InputAction.CallbackContext obj)
     {
-        if (MyPlayerController.IsMovementDisabled) return;
+        if (MyPlayerController.IsMovementDisabled || !IsAimingWeapon) return;
         Attack();
     }
 
@@ -360,6 +365,7 @@ public class PlayerCharacter : CharacterBase
     public override void Die()
     {
         base.Die();
+        this.MyPlayerController.IsMovementDisabled = true;
         // TODO: Gameover logic.
     }
 

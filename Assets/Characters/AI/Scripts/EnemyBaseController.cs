@@ -116,25 +116,20 @@ public class EnemyBaseController : CustomCharacterController
 
     public void RotateTowardsTarget(Vector3 targetPosition)
     {
-        Vector3 toTarget = targetPosition - transform.position;
+        Vector3 toPlayer = targetPosition - transform.position;
         Vector3 localUp = -GetGravityDirection();
-        // Project the direction onto the plane perpendicular to the character's up
-        Vector3 projectedDirection = Vector3.ProjectOnPlane(toTarget, localUp).normalized;
 
-        if (projectedDirection.sqrMagnitude < 0.0001f)
-            return; // Avoid zero direction
+        // Remove the vertical component relative to the character's up
+        Vector3 flatDirection = -Vector3.ProjectOnPlane(toPlayer, localUp);
 
-        // Compute the current forward direction projected on the same plane
-        Vector3 projectedForward = Vector3.ProjectOnPlane(transform.forward, localUp).normalized;
+        // Make sure the direction is valid
+        if (flatDirection.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(flatDirection, localUp);
 
-        // Compute the rotation from current forward to the target direction
-        //Quaternion rotation = Quaternion.FromToRotation(projectedForward, projectedDirection);
-
-        // Apply rotation around the local up axis
-        transform.rotation = Quaternion.AngleAxis(
-            Vector3.SignedAngle(projectedForward, projectedDirection, localUp),
-            localUp
-        ) * transform.rotation;
+            // Optionally smooth the rotation
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+        }
     }
 
 
@@ -145,7 +140,7 @@ public class EnemyBaseController : CustomCharacterController
 
 
 
-    public void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
+    public virtual void SetTimeDilation(float NewTimeDilation, float NewTimeDilationInterpSpeed = -1f)
     {
         if (NewTimeDilationInterpSpeed > 0f)  // By default we don't change the speed but we can have custom interpolation speed for time.
             TimeDilationInterpSpeed = NewTimeDilationInterpSpeed;
@@ -236,7 +231,7 @@ public class EnemyBaseController : CustomCharacterController
         }
 
 
-        EnemyBaseCharacterRef.CapsuleCollision.transform.rotation = Quaternion.RotateTowards(EnemyBaseCharacterRef.CapsuleCollision.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
+        EnemyBaseCharacterRef.transform.rotation = Quaternion.RotateTowards(EnemyBaseCharacterRef.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
         
     }
 

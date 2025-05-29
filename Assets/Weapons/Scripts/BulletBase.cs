@@ -42,14 +42,11 @@ public class BulletBase : PhysicsObjectBasic
     private void OnCollisionEnter(Collision collision)
     {
         if (!this.CanDamageOrAffect() || collision.gameObject.transform.root.TryGetComponent<FieldBase>(out _)) return;
-        CharacterBase CharacterHit;
-        bool IsCharacter = collision.gameObject.transform.root.TryGetComponent<CharacterBase>(out CharacterHit);
+        bool IsCharacter = collision.gameObject.transform.root.TryGetComponent<CharacterBase>(out CharacterBase CharacterHit);
         if (!IsCharacter)
         {
-            PhysicsObjectBasic PhysicsObjectHit;
-            bool IsCustomPhysicsObject = collision.gameObject.transform.root.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectHit);
-            BulletBase AnotherBulletHit;
-            bool IsAnotherBullet = collision.gameObject.transform.root.TryGetComponent<BulletBase>(out AnotherBulletHit);  // For when we hit another bullet coincidentally.
+            bool IsCustomPhysicsObject = collision.gameObject.transform.root.TryGetComponent<PhysicsObjectBasic>(out PhysicsObjectBasic PhysicsObjectHit);
+            bool IsAnotherBullet = collision.gameObject.transform.root.TryGetComponent<BulletBase>(out BulletBase AnotherBulletHit);  // For when we hit another bullet coincidentally.
             if (IsAnotherBullet) return;
             if (!IsCustomPhysicsObject)
             {

@@ -51,7 +51,7 @@ MonoBehaviour:
   InteractionSpeed: 70
   InteractableName: Time Grenade Consumable
   IsInteractable: 1
-  Amount: 3
+  Amount: 1
   MaxAmountAllowed: 10
   IsInstantPickup: 1
   PhysicsObjectComponent: {fileID: -3808187156083168982}

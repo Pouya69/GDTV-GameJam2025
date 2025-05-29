@@ -75,7 +75,7 @@ public class BossAnimationScript : MonoBehaviour
 
     public void ChangeGravityOfEverything()
     {
-
+        BossAnimator.SetTrigger("ChangeGravity");
     }
 
     public void ChangeGravityEVENT()

@@ -43,4 +43,10 @@ public class HealthBarTrack : MonoBehaviour
 
     public void GravityGranedeCheck(bool Have) { GravityGranede.gameObject.SetActive(Have); }
     public void TimeGranedeCheck(bool Have) { TimeGranede.gameObject.SetActive(Have); }
+
+    private void Start()
+    {
+        GravityGranedeCheck(true);
+        TimeGranedeCheck(false);
+    }
 }

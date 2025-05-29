@@ -50,6 +50,7 @@ public class Puzzle_Elevator : MonoBehaviour
         if (Side_1.PlayerOnThisSide != null)
         {
             Vector3 PlayerLoc = Side_1.PlayerOnThisSide.CapsuleCollision.transform.position;
+
             PlayerLoc.y += Side_1_Loc.y - Side_1.movingObject.transform.position.y;
             Side_1.PlayerOnThisSide.CapsuleCollision.transform.position = PlayerLoc;
         }

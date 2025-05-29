@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: f63d574838ccfb44f84acc05fed0af48, type: 3}
+  - {fileID: 2100000, guid: c08ced13d68bc564785b38cade8eb0b3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FieldAmount: 0
-  FieldLifeTime: 25
+  FieldLifeTime: 5
   SphereOverlapArea: {fileID: 6541934610875934695}
   SphereMesh: {fileID: 50425206216477134}
   FieldRadius: 7

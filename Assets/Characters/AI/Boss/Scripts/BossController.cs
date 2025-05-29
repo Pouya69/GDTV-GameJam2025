@@ -85,16 +85,27 @@ public class BossController : EnemyBaseController
     public override void InteroplateCharacterRotation()
     {
         Vector3 LocalUp = -GetGravityDirection();
-        Vector3 FinalDirection = GetEnemyForward();
-
-        if (FinalDirection.magnitude >= 0.01)
+        if (MyBossCharacter.IsChangingGravity)
         {
-            FinalDirection.Normalize();
-
-            if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
-                TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
+            TargetRotation = Quaternion.LookRotation(-MyBossCharacter.NewGravity.normalized, LocalUp);
         }
+        else if (MyBossCharacter.IsLookingAtPlayer)
+        {
+            RotateTowardsPlayer();
+            return;
+        }
+        else
+        {
+            Vector3 FinalDirection = GetEnemyForward();
 
+            if (FinalDirection.magnitude >= 0.01)
+            {
+                FinalDirection.Normalize();
+
+                if (Mathf.RoundToInt(Vector3.Angle(FinalDirection, LocalUp)) <= 94)
+                    TargetRotation = Quaternion.LookRotation(FinalDirection, LocalUp);
+            }
+        }
 
         MyBossCharacter.CapsuleCollision.transform.rotation = Quaternion.RotateTowards(MyBossCharacter.CapsuleCollision.transform.rotation, TargetRotation, RotationSpeed * Time.deltaTime);
     }

@@ -132,6 +132,8 @@ public class EnemyBaseCharacter : CharacterBase
 
     public void StopRagdolling(bool IsFront, Vector3 GroundLoc)
     {
+        if (!IsAlive())
+            return;
         Vector3 FinalLoc = GroundLoc - (MyEnemyController.GetGravityDirection() * GetCapsuleCollisionHeight());
         transform.position = FinalLoc;
         CapsuleCollision.transform.position = FinalLoc;
@@ -147,6 +149,8 @@ public class EnemyBaseCharacter : CharacterBase
 
     public void RagdollRecoverComplete()
     {
+        if (!IsAlive())
+            return;
         Debug.LogWarning("Ragdoll Recover complete.");
         CapsuleCollision.enabled = true;
         MyEnemyController.RigidbodyRef.isKinematic = false;

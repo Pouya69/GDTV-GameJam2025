@@ -25,6 +25,8 @@ public class Portal : MonoBehaviour
     public GameObject LockedObject;
     public GameObject UnlockObject;
 
+    public AudioController CurrentAudioController;
+
     public int UnlockLvl;
     private void Start()
     {
@@ -42,7 +44,8 @@ public class Portal : MonoBehaviour
         controller.IsMovementDisabled = true;
         Active = true;
         Fade.SetActive(true);
-        if(SaveGame)
+        CurrentAudioController.StopCurrentMusic();
+        if (SaveGame)
         {
             SavingSystem.Instance.SaveData(controller.PlayerCharacterRef.GetCurrentHealth(),controller.PlayerCharacterRef.CurrentWeaponEquipped.CurrentBulletsInMagazine,Level,controller.PlayerCharacterRef.CurrentWeaponEquipped.BulletsLeft);
         }

@@ -9,6 +9,7 @@ public class BossGravityField : GravityField
     public override void Start()
     {
         IsSuckingField = true;
+        //TurnOffField();
         // base.Start();
     }
 
@@ -63,6 +64,7 @@ public class BossGravityField : GravityField
         SelfBossRef.CapsuleCollision.enabled = false;
         SphereOverlapArea.enabled = true;
         this.enabled = true;
+        //gameObject.SetActive(true);
     }
 
     public void TurnOffField()
@@ -71,6 +73,7 @@ public class BossGravityField : GravityField
         PhysicsObjectsInsideField.Clear();
         SphereOverlapArea.enabled = false;
         this.enabled = false;
+        //gameObject.SetActive(false);
     }
 
 }

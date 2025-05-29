@@ -41,4 +41,10 @@ public class AudioController : MonoBehaviour
         float GameStateParamter = Mathf.Clamp(State, 0f, 2f);
         Ambiance.SetParameter("gameState", GameStateParamter);
     }
+
+    public void StopCurrentMusic()
+    {
+        HeartBeat.Stop();
+        Ambiance.Stop();
+    }
 }

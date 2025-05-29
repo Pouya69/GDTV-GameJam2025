@@ -658,6 +658,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 968299952}
     - target: {fileID: 4341224258384206711, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
+      propertyPath: m_Data.m_AimAxis
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4341224258384206711, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
+      propertyPath: m_Data.m_Offset.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 4341224258384206711, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 107409615}
@@ -711,11 +719,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7500766881577441109, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.000004433928
       objectReference: {fileID: 0}
     - target: {fileID: 7500766881577441109, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00000047683716
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7500766881577441109, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1659,6 +1667,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &968299961 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 101492228092171637, guid: e5fbf799b6a766748ba9889b07d17b91, type: 3}
+  m_PrefabInstance: {fileID: 313571224}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cbc9c618dc95a84397d7118a02cde45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1004143058
 GameObject:
   m_ObjectHideFlags: 0
@@ -2362,6 +2381,7 @@ MonoBehaviour:
   Level: 0
   LockedObject: {fileID: 1703580718}
   UnlockObject: {fileID: 1404549556}
+  CurrentAudioController: {fileID: 968299961}
   UnlockLvl: 3
 --- !u!1 &1437973152
 GameObject:
@@ -2786,6 +2806,7 @@ MonoBehaviour:
   Level: 0
   LockedObject: {fileID: 417337031}
   UnlockObject: {fileID: 171565613}
+  CurrentAudioController: {fileID: 968299961}
   UnlockLvl: 1
 --- !u!1001 &1694490361
 PrefabInstance:
@@ -2946,6 +2967,7 @@ MonoBehaviour:
   Level: 0
   LockedObject: {fileID: 1268282872}
   UnlockObject: {fileID: 1344544575}
+  CurrentAudioController: {fileID: 968299961}
   UnlockLvl: 2
 --- !u!1001 &1703580716
 PrefabInstance:

@@ -38,12 +38,15 @@ public class PhysicsObjectBasic : MonoBehaviour
 
     public virtual void UpdatePhysicsObjectBasedOnTimeDilation()
     {
-        if (Mathf.Abs(this.CustomTimeDilation-1) <= 0.001)
-            this.BaseVelocity = this.RigidbodyRef.linearVelocity;
-        if (!this.RigidbodyRef.isKinematic)
+        if (this.RigidbodyRef != null)
         {
-            this.RigidbodyRef.linearVelocity = GetTimeScaledVelocity() + (GetGravityForceTimeScaled() * Time.deltaTime);
-            this.RigidbodyRef.angularVelocity *= CustomTimeDilation;
+            if (Mathf.Abs(this.CustomTimeDilation - 1) <= 0.001)
+                this.BaseVelocity = this.RigidbodyRef.linearVelocity;
+            if (!this.RigidbodyRef.isKinematic)
+            {
+                this.RigidbodyRef.linearVelocity = GetTimeScaledVelocity() + (GetGravityForceTimeScaled() * Time.deltaTime);
+                this.RigidbodyRef.angularVelocity *= CustomTimeDilation;
+            }
         }
         if (!IsInterpolatingTimeDilation()) return;
         this.CustomTimeDilation = Mathf.Lerp(this.CustomTimeDilation, this.CustomTimeDilationTarget, 1 - Mathf.Exp(-this.TimeDilationInterpSpeed * Time.deltaTime));

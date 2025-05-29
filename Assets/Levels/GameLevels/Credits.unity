@@ -268,7 +268,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Pouya - Lead Programming
+  m_Text: Pouya - Lead Programmer
 --- !u!222 &237825370
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -499,7 +499,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Ayuob - Assistant Programmer
+  m_Text: Ayuob
 --- !u!222 &330818849
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1210,6 +1210,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b0db3a969ba13140ba113189145b04d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GoBackAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: aaf54815-efa8-4623-98d0-870c5c4733ad
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!1 &1098142896
 GameObject:
   m_ObjectHideFlags: 0
@@ -1787,7 +1796,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: JemodyAudio
+  m_Text: Chris "CYGIL"
 --- !u!222 &1472910418
 CanvasRenderer:
   m_ObjectHideFlags: 0

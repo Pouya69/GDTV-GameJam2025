@@ -151,15 +151,15 @@ MonoBehaviour:
       m_Item7:
         transform: {fileID: 0}
         weight: 0
-    m_Offset: {x: 0, y: 0, z: 0}
+    m_Offset: {x: 0, y: -60, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
     m_AimAxis: 1
     m_UpAxis: 2
-    m_WorldUpType: 3
+    m_WorldUpType: 2
     m_WorldUpObject: {fileID: 1250550882918264945}
     m_WorldUpAxis: 2
-    m_MaintainOffset: 1
+    m_MaintainOffset: 0
     m_ConstrainedAxes:
       x: 1
       y: 1
@@ -510,13 +510,14 @@ MonoBehaviour:
   CapsuleCollision: {fileID: 2088728099371190200}
   SkeletalMesh: {fileID: 1079701535299034050}
   MyController: {fileID: 68458773095703299}
-  MovementSpeed: 2000
-  MovementSpeedSprint: 3500
+  MovementSpeed: 3000
+  MovementSpeedSprint: 6000
   MovementSpeedChangeSpeed: 1000
   AimingMovementSpeed: 1000
   GravityForce: 9.81
   WeaponAttachHandTransform: {fileID: 1985836509849688411}
   CurrentWeaponEquipped: {fileID: 0}
+  Health: 0
   MaxHealth: 100
   AfterEffects: {fileID: 2749603349908224544}
   BoostUpForce: 25000
@@ -525,13 +526,14 @@ MonoBehaviour:
   InteractionOverlapZone: {fileID: 6167923302890781064}
   InventoryComp: {fileID: 1455683732554113747}
   PlayerAnimation: {fileID: 7102785463310296368}
-  InteractionDistance: 1.8
+  InteractionDistance: 2.5
   PickableInteractablePickupDistance: 2.5
   GrenadeAttachPointToHand: {fileID: 1690330632370816301}
   GrenadeThrowPower: 20
   MagazineHandAttachmentOffsetRotation: {x: 0.094, y: 0.125, z: 0.023}
   MagazineHandAttachmentOffsetPosition: {x: 51.36937, y: 105.70433, z: 192.38803}
   MagazineHoldTransform: {fileID: 6342990037967106896}
+  HealthBarTrackComp: {fileID: 0}
   CurrentPlayerState: 0
 --- !u!114 &68458773095703299
 MonoBehaviour:
@@ -559,7 +561,7 @@ MonoBehaviour:
   RotationSpeed: 400
   RotationSpeed_GRAVITYONLY: 1000
   MaximumSpeed: 900
-  Damping: 4
+  Damping: 8
   IsMovementDisabled: 0
   IsAirCharacter: 0
   IK_Aim: {fileID: 4341224258384206711}
@@ -582,7 +584,7 @@ MonoBehaviour:
   CameraRotation: {x: 0, y: 0, z: 0}
   CameraDistance: 4
   CameraDistanceInterpSpeed: 3
-  CameraDistanceAiming: 2
+  CameraDistanceAiming: 0.5
   AimingYawRotationDifference: 0
   CapsuleAimingTransitionSpeed: 800
   CameraFocusTarget: {fileID: 6333090349096155681}
@@ -790,7 +792,7 @@ Transform:
   m_GameObject: {fileID: 5175022874877880778}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0000064336273, y: 0.00000047683716, z: 0.00004839897}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1024,7 +1026,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -1088,7 +1090,7 @@ BoxCollider:
     m_Bits: 64
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 54
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0

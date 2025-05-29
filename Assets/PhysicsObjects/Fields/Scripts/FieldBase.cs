@@ -72,7 +72,6 @@ public class FieldBase : MonoBehaviour
         bool IsCharacter = RootPrefab.TryGetComponent<EnemyBaseCharacter>(out CharacterOverlapping);
         if (IsCharacter)
         {
-            Debug.LogWarning("Exited: " + other.gameObject.name);
             ResetCharacter(CharacterOverlapping);
             CharactersInsideField.Remove(CharacterOverlapping);
             return;

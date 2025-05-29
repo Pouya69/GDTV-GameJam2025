@@ -53,6 +53,8 @@ public class TimeDilationField : FieldBase
     {
         Character.MyEnemyController.VelocityBeforeTimeDilation = Character.MyEnemyController.RigidbodyRef.linearVelocity;
         base.CharacterEntered(Character);
+        Character.MyEnemyController.InputVelocity = Vector3.zero;
+        Character.MyEnemyController.MyNavAgent.velocity = Vector3.zero;
         Character.MyEnemyController.SetTimeDilation(FieldAmount);
         Character.MyController.UpdateCharacterMovement();
     }
@@ -60,8 +62,11 @@ public class TimeDilationField : FieldBase
     public override void PhysicsObjectEntered(PhysicsObjectBasic PhysicsObject)
     {
         if (PhysicsObject == null) return;
-        if (!PhysicsObject.RigidbodyRef.isKinematic)
-            PhysicsObject.VelocityBeforeTimeDilation = PhysicsObject.RigidbodyRef.linearVelocity;
+        if (PhysicsObject.RigidbodyRef != null)
+        {
+            if (!PhysicsObject.RigidbodyRef.isKinematic)
+                PhysicsObject.VelocityBeforeTimeDilation = PhysicsObject.RigidbodyRef.linearVelocity;
+        }
         //PhysicsObject.RigidbodyRef.angularVelocity = Vector3.zero;
         base.PhysicsObjectEntered(PhysicsObject);
         PhysicsObject.SetTimeDilation(FieldAmount);
@@ -87,8 +92,11 @@ public class TimeDilationField : FieldBase
         base.ResetPhysicsObject(PhysicsObject);
         PhysicsObject.SetTimeDilation(1f);
         // We can add conditions to whether affect it or not after.
-        if(!PhysicsObject.RigidbodyRef.isKinematic)
-            PhysicsObject.RigidbodyRef.linearVelocity = PhysicsObject.VelocityBeforeTimeDilation;
+        if (PhysicsObject.RigidbodyRef != null)
+        {
+            if (!PhysicsObject.RigidbodyRef.isKinematic)
+                PhysicsObject.RigidbodyRef.linearVelocity = PhysicsObject.VelocityBeforeTimeDilation;
+        }
     }
 
 }

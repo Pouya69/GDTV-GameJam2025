@@ -1326,7 +1326,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c7f7da202c6504d4480e8cd00a5e293d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -300.14
+      value: -300.48
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c7f7da202c6504d4480e8cd00a5e293d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2203,6 +2203,7 @@ MonoBehaviour:
   Level: 2
   LockedObject: {fileID: 0}
   UnlockObject: {fileID: 0}
+  CurrentAudioController: {fileID: 0}
   UnlockLvl: 0
 --- !u!1001 &1177710525
 PrefabInstance:

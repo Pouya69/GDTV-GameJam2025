@@ -10,6 +10,7 @@ public class CharacterBase : MonoBehaviour
         DEFAULT,  // For when just want to do it.
         FALL_DAMAGE,
         BULLET,
+        SPECIAL_BOSS  // For when we damage the boss.
     }
 
     [Header("Components")]
@@ -33,7 +34,7 @@ public class CharacterBase : MonoBehaviour
     [NonSerialized] public bool IsAimingWeapon = false;
 
     [Header("Health")]
-    float Health;
+    public float Health;
     public float MaxHealth = 100f;
     [NonSerialized] public bool HasDied = false;
     public AfterEffects AfterEffects;

@@ -73,12 +73,12 @@ MonoBehaviour:
       m_Item7:
         transform: {fileID: 0}
         weight: 0
-    m_Offset: {x: 0, y: 0, z: 0}
+    m_Offset: {x: 0, y: -60, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
-    m_AimAxis: 0
+    m_AimAxis: 1
     m_UpAxis: 2
-    m_WorldUpType: 3
+    m_WorldUpType: 2
     m_WorldUpObject: {fileID: 1250550882918264945}
     m_WorldUpAxis: 2
     m_MaintainOffset: 1
@@ -208,7 +208,8 @@ MonoBehaviour:
   GravityForce: 9.81
   WeaponAttachHandTransform: {fileID: 321923575762261643}
   CurrentWeaponEquipped: {fileID: 649124215847796427}
-  MaxHealth: 100
+  Health: 0
+  MaxHealth: 70
   AfterEffects: {fileID: 0}
   MyEnemyController: {fileID: 5959360942475724125}
   EnemyAnimationScript: {fileID: 5606390620951254193}
